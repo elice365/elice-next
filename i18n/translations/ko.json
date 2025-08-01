@@ -1,0 +1,311 @@
+{
+  "locales": {
+    "lang": "ko"
+  },
+  "common": {
+    "all": "전체",
+    "search": "검색",
+    "filter": "필터",
+    "sort": "정렬",
+    "status": "상태",
+    "type": "유형",
+    "category": "카테고리",
+    "date": "날짜",
+    "latest": "최신순",
+    "oldest": "오래된순",
+    "popular": "인기순",
+    "views": "조회수순",
+    "likes": "좋아요순",
+    "draft": "임시저장",
+    "published": "게시됨",
+    "post": "일반 글",
+    "no_posts": "게시글이 없습니다.",
+    "card_view": "카드 뷰",
+    "list_view": "리스트 뷰",
+    "retry":"다시 시도",
+    "search_posts": "게시글 검색",
+    "loading_posts": "게시글을 불러오는 중입니다...",
+    "error_loading_posts":"게시글을 불러오는데 오류가 발생하였습니다.",
+    "sort_by": "정렬 기준",
+    "notice": "공지사항",
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "noData": "데이터가 없습니다",
+    "viewMore": "더보기",
+    "close": "닫기",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정",
+    "create": "생성",
+    "back": "뒤로가기",
+    "showing": "표시 중",
+    "of": "총",
+    "posts": "개 게시물",
+    "load_more": "더 보기",
+    "loading_more_posts": "게시물을 불러오는 중..."
+  },
+  "router": {
+    "notice": "공지사항",
+    "blog": "블로그",
+    "adminblog": "블로그",
+    "product": "제품",
+    "login": "로그인 페이지",
+    "register": "회원가입 페이지",
+    "dashboard": "관리자 대시보드",
+    "user": "유저관리",
+    "role": "유저권한",
+    "category":"카테고리",
+    "router":"라우터 관리",
+    "settings": "시스템 설정",
+    "notification": "알림 관리",
+    "session":"유저세션"
+  },
+  "article": {
+    "title": "앨리스 블로그",
+    "description": "유용한 정보를 확인해보세요 "
+  },
+  "product": {
+    "title": "앨리스 제품",
+    "description": "앨리스의 다양한 제품을 만나보세요"
+  },
+  "profile": {
+    "title": "사용자 프로필",
+    "description": "사용자 프로필을 확인해보세요"
+  },
+  "metaData": {
+    "title": "앨리스",
+    "description": "앨리스에 오신 것을 환영합니다!",
+    "openGraph": {
+      "type": "website",
+      "title": "앨리스 블로그",
+      "description": "앨리스에 오신 것을 환영합니다!",
+      "url": "https:/elice.pro/ko",
+      "images": [
+        {
+          "url": "https://cdn.elice.pro/images/logo.jpg",
+          "width": "1200",
+          "height": "630",
+          "alt": "앨리스 블로그 이미지"
+        }
+      ]
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "앨리스 이미지",
+      "description": "앨리스에 오신 것을 환영합니다!",
+      "images": [
+        {
+          "url": "https://cdn.elice.pro/images/logo.jpg",
+          "width": "1200",
+          "height": "630",
+          "alt": "앨리스 이미지"
+        }
+      ],
+      "alt": "앨리스 이미지"
+    },
+    "icons": {
+      "icon": "https://cdn.elice.pro/images/favicon.ico"
+    }
+  },
+  "button": {
+    "login": "로그인",
+    "register": "회원가입",
+    "logout": "로그아웃",
+    "settings": "설정",
+    "singUp": "회원가입",
+    "signIn": "로그인",
+    "cancel": "취소",
+    "close": "닫기",
+    "kakao": "카카오톡 로그인",
+    "google": "구글 로그인",
+    "naver": "네이버 로그인",
+    "apple": "애플 로그인",
+    "completed": "완료"
+  },
+  "input": {
+    "id": "아이디",
+    "name":"이름",
+    "password": "비밀번호",
+    "confirmPassword": "비밀번호 확인",
+    "email": "이메일",
+    "phone": "휴대폰 전화번호",
+    "verify": "휴대폰 인증번호",
+    "search": "검색어"
+  },
+  "titles": {
+    "login": "로그인",
+    "register": "회원가입"
+  },
+  "label": {
+    "id": "아이디",
+    "password": "비밀번호",
+    "confirmPassword": "비밀번호 확인",
+    "email": "이메일",
+    "sns": "SNS 로그인"
+  },
+  "text": {
+    "retrieve": "검색 결과",
+    "signIn": "이미 계정이 있으신가요?",
+    "signUp": "계정이 없으신가요?",
+    "social": "소셜 로그인으로 빠르고 안전하게 접근하세요",
+    "agreement": "계속 진행함으로써, 이용 약관에 동의하게 됩니다."
+  },
+  "messages": {
+    "id": "영문 소문자/숫자 6-20자리여야 합니다",
+    "password": "영문 대/소문자, 숫자, 특수문자를 모두 포함한 8-32자리여야 합니다",
+    "confirmPassword": "입력한 비밀번호가 일치 하지 않습니다.",
+    "email": "올바른 이메일 주소 형식으로 입력해 주세요. (예: mail@elice.pro)",
+    "emailVerification": "이메일 인증이 필요합니다. 이메일을 확인해 주세요.",
+    "phone": "전화번호를 숫자만 입력하거나 하이픈(-) 포함 형식으로 입력해 주세요.",
+    "inviteCode": "올바른 초대 코드를 입력해 주세요.",
+    "notificationsNull": "알림이 없습니다.",
+    "search": "검색어를 확인해주세요.",
+    "BadRequest": "잘못된 요청입니다.",
+    "AuthError": "계정 인증에 실패하였습니다.",
+    "Unauthorized": "접근 권한이 없습니다.",
+    "NotFound": "페이지를 찾을 수 없습니다.",
+    "NotFoundData": "데이터를 찾을 수 없습니다.",
+    "NetworkError": "현재 네트워크에 오류가 발생 하였습니다.",
+    "UnknownError": "시스템 오류 발생 ( Unknown Error )",
+    "APILimit": "API 호출 제한에 도달했습니다. 잠시 후 다시 시도해주세요.",
+    "AuthType": "인증 방식이 올바르지 않습니다.",
+    "TokenDenied": "로그인 후 이용해주세요.",
+    "InvalidToken": "유효하지 않은 토큰입니다.",
+    "InvalidField": "필수 필드가 누락되었습니다.",
+    "TokenExpired": "토큰이 만료되었습니다.",
+    "TokenVerification": "토큰 검증에 실패했습니다.",
+    "loginSuccess": "로그인에 성공했습니다.",
+    "registerSuccess": "회원가입이 완료되었습니다.\n로그인 해주세요.",
+    "Logout": "로그아웃 되었습니다.",
+    "InvalidType": "유효하지 않은 타입입니다.",
+    "AccountSuspended": "계정이 정지되었습니다.\n관리자에게 문의하세요.",
+    "AccountInactive": "계정이 비활성화되었습니다.\n관리자에게 문의하세요.",
+    "DuplicateField": "중복된 필드입니다.",
+    "ConflictError": "충돌 오류가 발생했습니다."
+  },
+  "notifications": {
+    "title": "알림",
+    "management": "알림 관리",
+    "create": "알림 생성",
+    "edit": "알림 수정",
+    "delete": "알림 삭제",
+    "view": "알림 보기",
+    "send": "알림 전송",
+    "markAsRead": "읽음 처리",
+    "markAsUnread": "읽지 않음 처리",
+    "categories": {
+      "system": "시스템",
+      "notification": "일반 알림",
+      "announcement": "공지사항",
+      "update": "업데이트",
+      "security": "보안",
+      "maintenance": "점검",
+      "marketing": "마케팅",
+      "event": "이벤트"
+    },
+    "status": {
+      "read": "읽음",
+      "unread": "읽지 않음",
+      "sent": "전송됨",
+      "pending": "대기 중",
+      "failed": "실패"
+    },
+    "targetTypes": {
+      "all": "전체 사용자",
+      "individual": "개별 사용자",
+      "bulk": "선택된 사용자",
+      "admin": "관리자",
+      "user": "일반 사용자"
+    },
+    "form": {
+      "title": "제목",
+      "content": "내용",
+      "category": "카테고리",
+      "targetType": "대상 유형",
+      "targetUsers": "대상 사용자",
+      "link": "링크 (선택사항)",
+      "scheduledTime": "예약 시간",
+      "priority": "우선순위",
+      "template": "템플릿"
+    },
+    "actions": {
+      "create": "알림 생성",
+      "send": "전송",
+      "save": "저장",
+      "cancel": "취소",
+      "delete": "삭제",
+      "edit": "수정",
+      "view": "보기",
+      "refresh": "새로고침",
+      "bulkDelete": "선택 삭제",
+      "selectAll": "전체 선택",
+      "clearSelection": "선택 해제"
+    },
+    "messages": {
+      "createSuccess": "알림이 성공적으로 생성되었습니다.",
+      "sendSuccess": "알림이 성공적으로 전송되었습니다.",
+      "deleteSuccess": "알림이 성공적으로 삭제되었습니다.",
+      "bulkDeleteSuccess": "선택된 알림이 삭제되었습니다.",
+      "updateSuccess": "알림이 성공적으로 업데이트되었습니다.",
+      "markReadSuccess": "알림을 읽음 처리했습니다.",
+      "noNotifications": "알림이 없습니다.",
+      "loadingNotifications": "알림을 불러오는 중...",
+      "sendingNotification": "알림을 전송하는 중...",
+      "deletingNotification": "알림을 삭제하는 중...",
+      "confirmDelete": "이 알림을 삭제하시겠습니까?",
+      "confirmBulkDelete": "선택된 {count}개의 알림을 삭제하시겠습니까?",
+      "confirmSend": "알림을 전송하시겠습니까?",
+      "invalidForm": "필수 항목을 모두 입력해주세요.",
+      "networkError": "네트워크 오류가 발생했습니다.",
+      "loadUsersError": "사용자 목록을 불러오는데 실패했습니다.",
+      "noUsersSelected": "대상 사용자를 선택해주세요.",
+      "titleRequired": "제목을 입력해주세요.",
+      "contentRequired": "내용을 입력해주세요."
+    },
+    "stats": {
+      "total": "전체 알림",
+      "unread": "읽지 않음",
+      "today": "오늘",
+      "thisWeek": "이번 주",
+      "thisMonth": "이번 달",
+      "sent": "전송됨",
+      "pending": "대기 중",
+      "failed": "실패"
+    },
+    "filters": {
+      "all": "전체",
+      "category": "카테고리별",
+      "status": "상태별",
+      "user": "사용자별",
+      "dateRange": "기간별"
+    },
+    "empty": {
+      "title": "알림이 없습니다",
+      "description": "새로운 알림을 생성해보세요.",
+      "createButton": "알림 생성하기"
+    },
+    "details": {
+      "createdAt": "생성일",
+      "updatedAt": "수정일",
+      "readAt": "읽은 시간",
+      "sentAt": "전송일",
+      "recipient": "수신자",
+      "sender": "발신자"
+    }
+  },
+  "footer": {
+    "company": "앨리스",
+    "commitment": "언제나 고객 본다는 일념 하에,\n정성과 진심을 다하는 서비스를 제공하겠습니다.",
+    "representative": "대표자",
+    "owner": "최한솔",
+    "address": "인천광역시 남동구 만수서로 97-14",
+    "business": "사업자번호",
+    "businessCheck": "사업자정보 확인",
+    "businessOrder": "통신판매업",
+    "businessNumber": "719-07-03250",
+    "businessOrderNumber": "제2025-인천남동구-0841호",
+    "tel": "050-1234-1234",
+    "mail": "mail@elice.pro"
+  }
+}

@@ -1,0 +1,311 @@
+{
+  "locales": {
+    "lang": "ja"
+  },
+  "common": {
+    "all": "すべて",
+    "search": "検索",
+    "filter": "フィルター",
+    "sort": "並び替え",
+    "status": "ステータス",
+    "type": "タイプ",
+    "category": "カテゴリー",
+    "date": "日付",
+    "latest": "最新順",
+    "oldest": "古い順",
+    "popular": "人気順",
+    "views": "閲覧数順",
+    "likes": "いいね順",
+    "draft": "下書き",
+    "published": "公開済み",
+    "post": "記事",
+    "retry":"再試行",
+    "no_posts": "記事がありません。",
+    "loading_posts": "記事を読み込んでいます...",
+    "error_loading_posts": "掲示文の読み込み中にエラーが発生しました。",
+    "card_view": "カードビュー",
+    "list_view": "リストビュー",
+    "search_posts": "記事を検索",
+    "sort_by": "並び順",
+    "notice": "お知らせ",
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "noData": "データがありません",
+    "viewMore": "もっと見る",
+    "close": "閉じる",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "create": "作成",
+    "back": "戻る",
+    "showing": "表示中",
+    "of": "全",
+    "posts": "件の記事",
+    "load_more": "もっと見る",
+    "loading_more_posts": "記事を読み込んでいます..."
+  },
+  "router": {
+    "notice": "お知らせ",
+    "blog": "ブログ",
+    "adminblog": "ブログ",
+    "product": "製品",
+    "login": "ログインページ",
+    "register": "新規登録ページ",
+    "user": "ユーザー管理",
+    "role": "ユーザー権限",
+    "category":"カテゴリ",
+    "router": "ルーター管理",
+    "settings": "システム設定",
+    "notification": "通知管理",
+    "session":"ユーザーセッション"
+  },
+  "article": {
+    "title": "アリスブログ",
+    "description": "有用な情報を確認してください"
+  },
+  "product": {
+    "title": "アリス製品",
+    "description": "アリスの多様な製品を発見してください"
+  },
+  "profile": {
+    "title": "ユーザープロフィール",
+    "description": "ユーザープロフィールを確認してください"
+  },
+  "metaData": {
+    "title": "アリス",
+    "description": "アリスへようこそ！",
+    "openGraph": {
+      "type": "website",
+      "title": "アリスブログ",
+      "description": "アリスへようこそ！",
+      "url": "https://elice.pro/ja",
+      "images": [
+        {
+          "url": "https://cdn.elice.pro/images/logo.jpg",
+          "width": "1200",
+          "height": "630",
+          "alt": "アリスブログのイメージ"
+        }
+      ]
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "アリスブログのイメージ",
+      "description": "アリスへようこそ！",
+      "images": [
+        {
+          "url": "https://cdn.elice.pro/images/logo.jpg",
+          "width": "1200",
+          "height": "630",
+          "alt": "アリスブログのイメージ"
+        }
+      ],
+      "alt": "アリスブログのイメージ"
+    },
+    "icons": {
+      "icon": "https://cdn.elice.pro/images/favicon.ico"
+    }
+  },
+  "button": {
+    "login": "ログイン",
+    "register": "新規登録",
+    "logout": "ログアウト",
+    "settings": "設定",
+    "singUp": "新規登録",
+    "signIn": "ログイン",
+    "cancel": "キャンセル",
+    "close": "閉じ",
+    "kakao": "カカオトーク ログイン",
+    "google": "グーグル ログイン",
+    "naver": "ネイバー ログイン",
+    "apple": "アップル ログイン",
+    "completed": "完了."
+  },
+  "input": {
+    "id": "ユーザーID",
+    "name": "名前",
+    "password": "パスワード",
+    "confirmPassword": "パスワードを確認",
+    "email": "メール",
+    "phone": "携帯電話番号",
+    "verify": "認証コード",
+    "search": "キーワード。。"
+  },
+  "titles": {
+    "login": "ログイン",
+    "register": "新規登録"
+  },
+  "label": {
+    "id": "ユーザーID",
+    "password": "パスワード",
+    "confirmPassword": "パスワードを確認",
+    "email": "メール",
+    "sns": "SNS でログイン",
+    "contact": "お問い合わせ (おといあわせ)"
+  },
+  "text": {
+    "retrieve": "検索結果",
+    "signIn": "すでにアカウントをお持ちですか？",
+    "signUp": "アカウントをお持ちでないですか？",
+    "social": "ソーシャルログインで簡単かつ安全にアクセス",
+    "agreement": "続行することで、利用規約に同意したことになります"
+  },
+  "messages": {
+    "id": "英小文字と数字を含む6〜20文字である必要があります。",
+    "password": "は英大文字・小文字、数字、特殊文字をすべて含む8〜32文字である必要があります。",
+    "confirmPassword": "入力したパスワードが一致しません。",
+    "email": "有効なメールアドレス形式で入力してください（例：mail@elice.pro）。",
+    "emailVerification": "メール認証が必要です。メールを確認してください。",
+    "phone": "電話番号は数字のみ、またはハイフン（-）を含む形式で入力してください。",
+    "inviteCode": "正しい招待コードを入力してください。",
+    "notificationsNull": "通知がありません。",
+    "search": "検索語を確認してください。",
+    "BadRequest": "無効なリクエストです。",
+    "AuthError": "アカウントの認証に失敗しました。",
+    "Unauthorized": "アクセス権限がありません。",
+    "NotFound": "ページが見つかりません。",
+    "NotFoundData": "データが見つかりません。",
+    "NetworkError": "現在ネットワークエラーが発生しています。",
+    "UnknownError": "システムエラーが発生しました（不明なエラー）。",
+    "APILimit": "API呼び出し制限に達しました。\nしばらくしてから再試行してください。",
+    "AuthType": "認証方式が正しくありません。",
+    "TokenDenied": "ログイン後にご利用ください。",
+    "InvalidToken": "正しくないトークンです。",
+    "InvalidField": "必須フィールドが欠落しています。",
+    "TokenExpired": "トークンの有効期限が切れました。",
+    "TokenVerification": "トークンの検証に失敗しました。",
+    "loginSuccess": "ログインに成功しました。",
+    "Logout": "ログアウトしました。",
+    "InvalidType": "無効なタイプです。",
+    "AccountSuspended": "アカウントが停止されています。\n管理者にお問い合わせください。",
+    "AccountInactive": "アカウントが無効化されています。\n管理者にお問い合わせください。",
+    "DuplicateField": "重複したフィールドです。",
+    "ConflictError": "競合エラーが発生しました。",
+    "registerSuccess": "会員登録が完了しました。\nログインしてください。"
+  },
+  "notifications": {
+    "title": "通知",
+    "management": "通知管理",
+    "create": "通知作成",
+    "edit": "通知編集",
+    "delete": "通知削除",
+    "view": "通知表示",
+    "send": "通知送信",
+    "markAsRead": "既読にする",
+    "markAsUnread": "未読にする",
+    "categories": {
+      "system": "システム",
+      "notification": "一般通知",
+      "announcement": "お知らせ",
+      "update": "アップデート",
+      "security": "セキュリティ",
+      "maintenance": "メンテナンス",
+      "marketing": "マーケティング",
+      "event": "イベント"
+    },
+    "status": {
+      "read": "既読",
+      "unread": "未読",
+      "sent": "送信済み",
+      "pending": "保留中",
+      "failed": "失敗"
+    },
+    "targetTypes": {
+      "all": "全ユーザー",
+      "individual": "個別ユーザー",
+      "bulk": "選択されたユーザー",
+      "admin": "管理者",
+      "user": "一般ユーザー"
+    },
+    "form": {
+      "title": "タイトル",
+      "content": "内容",
+      "category": "カテゴリー",
+      "targetType": "対象タイプ",
+      "targetUsers": "対象ユーザー",
+      "link": "リンク（オプション）",
+      "scheduledTime": "予約時間",
+      "priority": "優先度",
+      "template": "テンプレート"
+    },
+    "actions": {
+      "create": "通知作成",
+      "send": "送信",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "delete": "削除",
+      "edit": "編集",
+      "view": "表示",
+      "refresh": "更新",
+      "bulkDelete": "選択削除",
+      "selectAll": "すべて選択",
+      "clearSelection": "選択解除"
+    },
+    "messages": {
+      "createSuccess": "通知が正常に作成されました。",
+      "sendSuccess": "通知が正常に送信されました。",
+      "deleteSuccess": "通知が正常に削除されました。",
+      "bulkDeleteSuccess": "選択された通知が削除されました。",
+      "updateSuccess": "通知が正常に更新されました。",
+      "markReadSuccess": "既読に処理しました。",
+      "noNotifications": "通知がありません。",
+      "loadingNotifications": "通知を読み込み中...",
+      "sendingNotification": "通知を送信中...",
+      "deletingNotification": "通知を削除中...",
+      "confirmDelete": "この通知を削除しますか？",
+      "confirmBulkDelete": "選択された{count}個の通知を削除しますか？",
+      "confirmSend": "通知を送信しますか？",
+      "invalidForm": "必須項目をすべて入力してください。",
+      "networkError": "ネットワークエラーが発生しました。",
+      "loadUsersError": "ユーザーリストの読み込みに失敗しました。",
+      "noUsersSelected": "対象ユーザーを選択してください。",
+      "titleRequired": "タイトルを入力してください。",
+      "contentRequired": "内容を入力してください。"
+    },
+    "stats": {
+      "total": "全体通知",
+      "unread": "未読",
+      "today": "今日",
+      "thisWeek": "今週",
+      "thisMonth": "今月",
+      "sent": "送信済み",
+      "pending": "保留中",
+      "failed": "失敗"
+    },
+    "filters": {
+      "all": "すべて",
+      "category": "カテゴリー別",
+      "status": "ステータス別",
+      "user": "ユーザー別",
+      "dateRange": "期間別"
+    },
+    "empty": {
+      "title": "通知がありません",
+      "description": "新しい通知を作成してください。",
+      "createButton": "通知を作成する"
+    },
+    "details": {
+      "createdAt": "作成日",
+      "updatedAt": "更新日",
+      "readAt": "読んだ時間",
+      "sentAt": "送信日",
+      "recipient": "受信者",
+      "sender": "送信者"
+    }
+  },
+  "footer": {
+    "company": "アリス",
+    "commitment": "いつもお客様を第一に考え、\n誠意と真心を込めたサービスを提供いたします。",
+    "representative": "代表者",
+    "owner": "チェハンソル",
+    "address": "仁川広域市(仁川広域市)南洞区(南洞区)万寿西路(萬壽洞) 97-14",
+    "business": "事業者番号 （大韓民国）",
+    "businessCheck": "事業者情報確認",
+    "businessOrder": "通信販売業",
+    "businessNumber": "719-07-03250",
+    "businessOrderNumber": "第2025-仁川 南洞区-0841号",
+    "tel": "050-1234-1234",
+    "mail": "mail@elice.pro"
+  }
+}

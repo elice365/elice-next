@@ -1,0 +1,311 @@
+{
+  "locales": {
+    "lang": "en"
+  },
+  "common": {
+    "all": "All",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "status": "Status",
+    "type": "Type",
+    "category": "Category",
+    "date": "Date",
+    "latest": "Latest",
+    "oldest": "Oldest",
+    "popular": "Popular",
+    "views": "Views",
+    "likes": "Likes",
+    "draft": "Draft",
+    "published": "Published",
+    "post": "Post",
+    "retry":"Retry",
+    "no_posts": "No posts available.",
+    "card_view": "Card View",
+    "list_view": "List View",
+    "search_posts": "Search posts",
+    "loading_posts": "Loading posts...",
+    "error_loading_posts": "There was an error retrieving the post",
+    "sort_by": "Sort by",
+    "notice": "Notice",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "noData": "No data available",
+    "viewMore": "View more",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "showing": "Showing",
+    "of": "of",
+    "posts": "posts",
+    "load_more": "Load More",
+    "loading_more_posts": "Loading more posts..."
+  },
+  "router": {
+    "notice": "Notice",
+    "blog": "Blog",
+    "adminblog": "Blog",
+    "product": "Product",
+    "login": "Login Page",
+    "register": "Sign Up Page",
+    "user": "User Management",
+    "role": "User Roles",
+    "category": "category",
+    "router": "Router Management",
+    "settings": "System Settings",
+    "notification": "Notification Management",
+    "session":"User Session"
+  },
+  "article": {
+    "title": "Article",
+    "description": "Read useful information here"
+  },
+  "product": {
+    "title": "Alice Products",
+    "description": "Discover Alice's diverse range of products"
+  },
+  "profile": {
+    "title": "User Profile",
+    "description": "Check out the user profile"
+  },
+  "metaData": {
+    "title": "Alice",
+    "description": "Welcome to the Alice!",
+    "openGraph": {
+      "type": "website",
+      "title": "Alice",
+      "description": "Welcome to the Alice!",
+      "url": "https://elice.pro/en",
+      "images": [
+        {
+          "url": "https://cdn.elice.pro/images/logo.jpg",
+          "width": "1200",
+          "height": "630",
+          "alt": "Alice Image"
+        }
+      ]
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Alice Image",
+      "description": "Welcome to the Alice!",
+      "images": [
+        {
+          "url": "https://cdn.elice.pro/images/logo.jpg",
+          "width": "1200",
+          "height": "630",
+          "alt": "Alice Image"
+        }
+      ],
+      "alt": "Alice Image"
+    },
+    "icons": {
+      "icon": "https://cdn.elice.pro/images/favicon.ico"
+    }
+  },
+  "button": {
+    "login": "Login",
+    "register": "Sign Up",
+    "logout": "Logout",
+    "settings": "Settings",
+    "singUp": "Sign up",
+    "signIn": "Sign in",
+    "cancel": "Cancel",
+    "close": "Close",
+    "kakao": "KakaoTalk Login",
+    "google": "Google Login",
+    "naver": "Naver Login",
+    "apple": "Apple Login",
+    "completed": "completed"
+  },
+  "input": {
+    "id": "Username",
+    "name":"Name",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "email": "Email",
+    "phone": "Mobile Phone Number",
+    "verify": "Verification Code",
+    "search": "Search.."
+  },
+  "titles": {
+    "login": "Login",
+    "register": "Sign Up"
+  },
+  "label": {
+    "id": "UserID",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "email": "Email",
+    "sns": "Sign in with SNS",
+    "contact": "Contact Us"
+  },
+  "text": {
+    "retrieve": "Search Result",
+    "signIn": "Already have an account?",
+    "signUp": "Don't have an account?",
+    "social": "Social login for quick and secure access",
+    "agreement": "By continuing, you agree to our"
+  },
+  "messages": {
+    "id": "must be 6–20 characters using lowercase letters and numbers.",
+    "password": "must be 8–32 characters including uppercase, lowercase, numbers, and special characters.",
+    "confirmPassword": "The password you entered does not match.",
+    "email": "Please enter a valid email address (e.g., mail@elice.pro).",
+    "emailVerification": "Email verification is required. Please check your email.",
+    "phone": "Enter the phone number using digits only or with hyphens (e.g., 010-1234-5678).",
+    "inviteCode": "Please enter a valid invitation code.",
+    "notificationsNull": "You have no notifications.",
+    "search": "Please check the search term.",
+    "BadRequest": "Invalid request.",
+    "AuthError": "Account authentication failed.",
+    "Unauthorized": "Access denied.",
+    "NotFound": "Page not found.",
+    "NotFoundData": "Data not found.",
+    "NetworkError": "A network error has occurred.",
+    "UnknownError": "A system error has occurred (Unknown Error).",
+    "APILimit": "You have reached the API call limit.\nPlease try again later.",
+    "AuthType": "The authentication method is incorrect.",
+    "TokenDenied": "Please use this after logging in.",
+    "InvalidToken": "The token is invalid.",
+    "InvalidField": "Required fields are missing.",
+    "TokenExpired": "The token has expired.",
+    "TokenVerification": "Token verification failed.",
+    "loginSuccess": "Login successful.",
+    "Logout": "You have been logged out.",
+    "InvalidType": "Invalid type.",
+    "AccountSuspended": "Your account has been suspended.\nPlease contact the administrator.",
+    "AccountInactive": "Your account has been deactivated.\nPlease contact the administrator.",
+    "DuplicateField": "Duplicate field.",
+    "ConflictError": "Conflict error occurred.",
+    "registerSuccess": "Registration completed successfully.\nPlease log in."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "management": "Notification Management",
+    "create": "Create Notification",
+    "edit": "Edit Notification",
+    "delete": "Delete Notification",
+    "view": "View Notification",
+    "send": "Send Notification",
+    "markAsRead": "Mark as Read",
+    "markAsUnread": "Mark as Unread",
+    "categories": {
+      "system": "System",
+      "notification": "General",
+      "announcement": "Announcement",
+      "update": "Update",
+      "security": "Security",
+      "maintenance": "Maintenance",
+      "marketing": "Marketing",
+      "event": "Event"
+    },
+    "status": {
+      "read": "Read",
+      "unread": "Unread",
+      "sent": "Sent",
+      "pending": "Pending",
+      "failed": "Failed"
+    },
+    "targetTypes": {
+      "all": "All Users",
+      "individual": "Individual User",
+      "bulk": "Selected Users",
+      "admin": "Admin",
+      "user": "User"
+    },
+    "form": {
+      "title": "Title",
+      "content": "Content",
+      "category": "Category",
+      "targetType": "Target Type",
+      "targetUsers": "Target Users",
+      "link": "Link (optional)",
+      "scheduledTime": "Scheduled Time",
+      "priority": "Priority",
+      "template": "Template"
+    },
+    "actions": {
+      "create": "Create Notification",
+      "send": "Send",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View",
+      "refresh": "Refresh",
+      "bulkDelete": "Delete Selected",
+      "selectAll": "Select All",
+      "clearSelection": "Clear Selection"
+    },
+    "messages": {
+      "createSuccess": "Notification created successfully.",
+      "sendSuccess": "Notification sent successfully.",
+      "deleteSuccess": "Notification deleted successfully.",
+      "bulkDeleteSuccess": "Selected notifications deleted.",
+      "updateSuccess": "Notification updated successfully.",
+      "markReadSuccess": "Marked as read.",
+      "noNotifications": "No notifications.",
+      "loadingNotifications": "Loading notifications...",
+      "sendingNotification": "Sending notification...",
+      "deletingNotification": "Deleting notification...",
+      "confirmDelete": "Delete this notification?",
+      "confirmBulkDelete": "Delete {count} selected notifications?",
+      "confirmSend": "Send notification?",
+      "invalidForm": "Please fill in all required fields.",
+      "networkError": "Network error occurred.",
+      "loadUsersError": "Failed to load users.",
+      "noUsersSelected": "Please select target users.",
+      "titleRequired": "Please enter a title.",
+      "contentRequired": "Please enter content."
+    },
+    "stats": {
+      "total": "Total",
+      "unread": "Unread",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "sent": "Sent",
+      "pending": "Pending",
+      "failed": "Failed"
+    },
+    "filters": {
+      "all": "All",
+      "category": "By Category",
+      "status": "By Status",
+      "user": "By User",
+      "dateRange": "By Date"
+    },
+    "empty": {
+      "title": "No notifications",
+      "description": "Create a new notification.",
+      "createButton": "Create Notification"
+    },
+    "details": {
+      "createdAt": "Created",
+      "updatedAt": "Updated",
+      "readAt": "Read At",
+      "sentAt": "Sent At",
+      "recipient": "Recipient",
+      "sender": "Sender"
+    }
+  },
+  "footer": {
+    "company": "Alice",
+    "commitment": "With a constant focus on our customers,\nwe will provide sincere and heartfelt service at all times.",
+    "representative": "CEO",
+    "owner": "HANSOL CHOI",
+    "address": "97-14, Mansuseo-ro, Namdong-gu, Incheon, Republic of Korea",
+    "business": "Business Number",
+    "businessCheck": "Business Information Verification",
+    "businessOrder": "Mail Order Business",
+    "businessNumber": "719-07-03250 (Republic of Korea)",
+    "businessOrderNumber": "2025-Namdong-gu, Incheon-0841",
+    "tel": "050-1234-1234",
+    "mail": "mail@elice.pro"
+  }
+}
