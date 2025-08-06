@@ -26,6 +26,8 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState("");
   
   const [formData, setFormData] = useState({
     code: '',
@@ -52,6 +54,9 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
   useEffect(() => {
     if (isOpen) {
       loadCategories();
+      setErrors({});
+      setSuccessMessage('');
+      resetForm();
     }
   }, [isOpen]);
 
@@ -68,36 +73,40 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
     }
   }, [formData.name]);
 
+  // Clear field error when value changes
+  const handleFieldChange = (field: string, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
   // Form validation
   const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
     if (!formData.code.trim()) {
-      alert('카테고리 코드는 필수입니다.');
-      return false;
+      newErrors.code = '카테고리 코드는 필수입니다.';
+    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.code)) {
+      newErrors.code = '카테고리 코드는 영문, 숫자, 언더스코어(_)만 사용할 수 있습니다.';
     }
 
     if (!formData.name.trim()) {
-      alert('카테고리명은 필수입니다.');
-      return false;
+      newErrors.name = '카테고리명은 필수입니다.';
     }
 
     if (!formData.slug.trim()) {
-      alert('Slug는 필수입니다.');
-      return false;
+      newErrors.slug = 'Slug는 필수입니다.';
+    } else if (!/^[a-z0-9가-힣-]+$/.test(formData.slug)) {
+      newErrors.slug = 'Slug는 소문자, 숫자, 한글, 하이픈(-)만 사용할 수 있습니다.';
     }
 
-    // Validate code format (alphanumeric and underscore only)
-    if (!/^[a-zA-Z0-9_]+$/.test(formData.code)) {
-      alert('카테고리 코드는 영문, 숫자, 언더스코어(_)만 사용할 수 있습니다.');
-      return false;
-    }
-
-    // Validate slug format
-    if (!/^[a-z0-9가-힣-]+$/.test(formData.slug)) {
-      alert('Slug는 소문자, 숫자, 한글, 하이픈(-)만 사용할 수 있습니다.');
-      return false;
-    }
-
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   // Reset form
@@ -112,15 +121,17 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
 
   // Success handler
   const handleSuccess = (data: APIResult) => {
-    alert(data.data.message || '카테고리가 생성되었습니다.');
-    onSuccess();
-    onClose();
-    resetForm();
+    setSuccessMessage(data.data.message || '카테고리가 생성되었습니다.');
+    setTimeout(() => {
+      onSuccess();
+      onClose();
+      resetForm();
+    }, 1500);
   };
 
   // Error handler
   const handleError = (error: any) => {
-    alert('카테고리 생성 중 오류가 발생했습니다.');
+    setErrors({ general: '카테고리 생성 중 오류가 발생했습니다.' });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -142,7 +153,11 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
       if (data.success) {
         handleSuccess(data);
       } else {
-        alert(data.message || '카테고리 생성에 실패했습니다.');
+        if (data.message === 'DuplicateField' && data.data?.field) {
+          setErrors({ [data.data.field]: data.data.message || '중복된 값입니다.' });
+        } else {
+          setErrors({ general: data.message || '카테고리 생성에 실패했습니다.' });
+        }
       }
     } catch (error) {
       handleError(error);
@@ -164,33 +179,49 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
   };
 
   const footer = (
-    <div className="flex justify-end gap-3 p-4">
-      <button
-        type="button"
-        onClick={onClose}
-        disabled={loading}
-        className="px-4 py-2 text-[var(--text-color)] border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover)] transition-colors disabled:opacity-50"
-      >
-        취소
-      </button>
-      <button
-        type="submit"
-        form="category-create-form"
-        disabled={loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
-      >
-        {loading ? (
-          <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-            생성 중...
-          </>
-        ) : (
-          <>
-            <Icon name="Plus" size={16} />
-            카테고리 생성
-          </>
+    <div className="flex items-center justify-between">
+      <div className="flex-1">
+        {errors.general && (
+          <div className="flex items-center gap-2 text-red-600 text-sm">
+            <Icon name="AlertCircle" size={16} />
+            <span>{errors.general}</span>
+          </div>
         )}
-      </button>
+        {successMessage && (
+          <div className="flex items-center gap-2 text-green-600 text-sm">
+            <Icon name="CheckCircle" size={16} />
+            <span>{successMessage}</span>
+          </div>
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          disabled={loading}
+          className="px-4 py-2 text-[var(--text-color)] border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover)] transition-colors disabled:opacity-50"
+        >
+          취소
+        </button>
+        <button
+          type="submit"
+          form="category-create-form"
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+        >
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              생성 중...
+            </>
+          ) : (
+            <>
+              <Icon name="Plus" size={16} />
+              카테고리 생성
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 
@@ -212,11 +243,14 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
           <label htmlFor="category-code" className="block text-sm font-medium text-[var(--text-color)]">
             카테고리 코드 *
           </label>
+          {errors.code && (
+            <p className="text-sm text-red-600">{errors.code}</p>
+          )}
           <input
             id="category-code"
             type="text"
             value={formData.code}
-            onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+            onChange={(e) => handleFieldChange('code', e.target.value.toUpperCase())}
             placeholder="예: TECH, LIFESTYLE"
             required
             className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -231,11 +265,14 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
           <label htmlFor="category-name" className="block text-sm font-medium text-[var(--text-color)]">
             카테고리명 *
           </label>
+          {errors.name && (
+            <p className="text-sm text-red-600">{errors.name}</p>
+          )}
           <input
             id="category-name"
             type="text"
             value={formData.name}
-            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            onChange={(e) => handleFieldChange('name', e.target.value)}
             placeholder="예: 기술, 라이프스타일"
             required
             className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -247,11 +284,14 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
           <label htmlFor="category-slug" className="block text-sm font-medium text-[var(--text-color)]">
             Slug (URL용) *
           </label>
+          {errors.slug && (
+            <p className="text-sm text-red-600">{errors.slug}</p>
+          )}
           <input
             id="category-slug"
             type="text"
             value={formData.slug}
-            onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value.toLowerCase() }))}
+            onChange={(e) => handleFieldChange('slug', e.target.value.toLowerCase())}
             placeholder="예: tech, lifestyle"
             required
             className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"

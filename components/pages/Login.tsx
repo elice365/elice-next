@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/auth';
 import { useRouter } from 'next/navigation';
-import { useFingerprint } from '@/hooks/useFingerprint';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useFingerprint } from '@/hooks/utils';
+import { useAnalytics } from '@/hooks/tracking';
 import { AuthForm } from '@/components/features/auth/AuthForm';
 
 

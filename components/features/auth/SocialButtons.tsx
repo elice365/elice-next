@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { authConfig } from '@/constants/auth/client';
 import { Translated } from '@/components/i18n/Translated';
-import { useSocialLogin } from '@/hooks/useSocialLogin';
+import { useSocialLogin } from '@/hooks/auth/useSocialLogin';
 
 export const SocialButtons: React.FC = memo(() => {
   const { handleSocialLogin, loadingProvider } = useSocialLogin();

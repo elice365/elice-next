@@ -1,31 +1,22 @@
 /**
- * Optimized Authentication Hooks
- * Reusable hooks following Next.js 15.4.3 patterns
+ * Social Authentication Hook
+ * Handles social login message communication and provider loading states
  */
 
-import { useEffect, useCallback, useMemo, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/stores/hook';
-import { selectAuthError, setUser, setError as setAuthError, clearError } from '@/stores/slice/auth';
-import { SocialAuthMessage, validators } from './utils';
+import { useEffect, useCallback, useState, useMemo } from 'react';
+import { useAppDispatch } from '@/stores/hook';
+import { setUser } from '@/stores/slice/auth';
+import { SocialAuthMessage, validators } from '@/lib/auth/utils';
+import { useAuthError } from './useAuthError';
 
-// Enhanced error state management hook
-export const useAuthError = () => {
-  const dispatch = useAppDispatch();
-  const error = useAppSelector(selectAuthError);
-
-  const setError = useCallback((error: string | null) => {
-    if (error) {
-      dispatch(setAuthError(error));
-    } else {
-      dispatch(clearError());
-    }
-  }, [dispatch]);
-
-  return { error, setError };
-};
-
-// Optimized social login message handler
-export const useSocialAuthMessages = (onSuccess?: (user: any) => void, onError?: (error: string) => void) => {
+/**
+ * Hook for handling social authentication messages
+ * Listens for postMessage events from social login popups
+ */
+export const useSocialAuthMessages = (
+  onSuccess?: (user: any) => void, 
+  onError?: (error: string) => void
+) => {
   const dispatch = useAppDispatch();
   const { setError } = useAuthError();
 
@@ -49,7 +40,6 @@ export const useSocialAuthMessages = (onSuccess?: (user: any) => void, onError?:
         onError?.(accountError);
         break;
       }
-
       case 'SOCIAL_LOGIN_ERROR': {
         const loginError = error!;
         setError(loginError);
@@ -57,7 +47,6 @@ export const useSocialAuthMessages = (onSuccess?: (user: any) => void, onError?:
         break;
       }
     }
-
   }, [dispatch, setError, onSuccess, onError]);
 
   useEffect(() => {
@@ -68,24 +57,10 @@ export const useSocialAuthMessages = (onSuccess?: (user: any) => void, onError?:
   return handleMessage;
 };
 
-// Form error display hook with memoization
-export const useFormErrorDisplay = () => {
-  const { error } = useAuthError();
-
-  const displayError = useMemo(() => {
-    if (!error) return null;
-
-    if (typeof error === 'string') return error;
-    if (error && typeof error === 'object' && 'message' in error) {
-      return (error as { message: string }).message;
-    }
-    return 'An error occurred';
-  }, [error]);
-
-  return displayError;
-};
-
-// Loading state management for individual providers
+/**
+ * Hook for managing loading states per social provider
+ * Tracks which provider is currently authenticating
+ */
 export const useProviderLoading = () => {
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
 
@@ -99,10 +74,15 @@ export const useProviderLoading = () => {
 
   const isAnyLoading = useMemo(() => Boolean(loadingProvider), [loadingProvider]);
 
+  const clearLoading = useCallback(() => {
+    setLoadingProvider(null);
+  }, []);
+
   return {
     loadingProvider,
     setLoading,
     isLoading,
-    isAnyLoading
+    isAnyLoading,
+    clearLoading
   };
 };

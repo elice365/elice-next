@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from 'next-intl';
-import { useMounted } from '@/hooks/useMount';
+import { useMounted } from '@/hooks/utils';
 import { startTransition, useMemo } from 'react';
 import { locales, localeIcon } from '@/types/icon';
 import { routing, type Locale } from '@/i18n/route';

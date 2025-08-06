@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
-import { useAdminPage } from "@/hooks/useAdminPage";
+import { useAdminPage } from "@/hooks/admin";
 import { NotificationCreateModal } from "@/components/ui/modal/NotificationCreate";
 import { NotificationViewModal } from "@/components/ui/modal/NotificationView";
 import { DeleteModal } from "@/components/ui/modal/DeleteModal";

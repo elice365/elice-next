@@ -103,7 +103,7 @@ export const Header = memo(function Header({
         >
           {post.tags.map((tag, index) => (
             <motion.span
-              key={tag.uid}
+              key={`${post.uid}-tag-${tag.uid || index}`}
               className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--color-badge)] hover:bg-[var(--card-hover)] text-[var(--text-color)] rounded-full text-sm transition-all cursor-pointer hover-shimmer"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}

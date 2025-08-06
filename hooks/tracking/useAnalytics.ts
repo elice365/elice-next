@@ -2,7 +2,7 @@
 import { usePostHog } from 'posthog-js/react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useCallback } from 'react';
-import { useAuth } from './useAuth';
+import { useAuth } from '../auth';
 
 /**
  * 사용자 행동 추적을 위한 커스텀 훅

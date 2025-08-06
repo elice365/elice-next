@@ -5,7 +5,7 @@ import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { Icon } from "@/components/ui/Icon";
 import { ICON_CATEGORIES, IconCategory } from "@/constants/modal/iconCategories";
-import { useRoles, formatRolesForRouter } from "@/hooks/useRoles";
+import { useRoles, formatRolesForRouter } from "@/hooks/admin";
 
 interface WebRouter {
   uid: string;

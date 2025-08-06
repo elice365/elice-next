@@ -8,11 +8,9 @@ import { RouterEditModal } from "@/components/ui/modal/RouterEdit";
 import { DeleteModal } from "@/components/ui/modal/DeleteModal";
 import { WebRouter } from "@/types/admin";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
-import { useAdminPage } from "@/hooks/useAdminPage";
-import { useAdminModals } from "@/hooks/useAdminModals";
+import { useAdminPage, useAdminModals, useRoles, formatRolesForFilter } from "@/hooks/admin";
 import { getBadgeStyle, getBadgeText } from "@/utils/admin/badges";
 import { api } from "@/lib/fetch";
-import { useRoles, formatRolesForFilter } from "@/hooks/useRoles";
 
 // 웹 라우터 관리 페이지 메인 컴포넌트
 export default function AdminRouterPageOptimized() {

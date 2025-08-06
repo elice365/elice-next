@@ -44,10 +44,16 @@ export const deactivateSession = async (refreshToken: string) => {
 
 
 export const searchSession = async (refreshToken: string, userId: string) => {
+  console.log('[DB] searchSession - Input:', {
+    userId,
+    refreshTokenPrefix: refreshToken.substring(0, 20),
+    currentTime: new Date().toISOString()
+  });
+  
   const result = await prisma.session.findFirst({
     where: {
       refreshToken,
-      userId,
+      userId, // Prisma가 자동으로 uid로 변환
       active: true,
       expiresTime: {
         gt: new Date(),
@@ -87,6 +93,33 @@ export const searchSession = async (refreshToken: string, userId: string) => {
       },
     },
   });
+  
+  console.log('[DB] searchSession - Result:', result ? 'Session found' : 'No session found');
+  
+  // 세션을 찾지 못한 경우 추가 디버깅
+  if (!result) {
+    const debugSession = await prisma.session.findFirst({
+      where: { userId },
+      select: {
+        sessionId: true,
+        active: true,
+        expiresTime: true,
+        refreshToken: true
+      }
+    });
+    
+    if (debugSession) {
+      console.log('[DB] searchSession - Debug info:', {
+        hasUserSession: true,
+        isActive: debugSession.active,
+        isExpired: new Date(debugSession.expiresTime) < new Date(),
+        tokenMatches: debugSession.refreshToken === refreshToken,
+        expiresAt: debugSession.expiresTime
+      });
+    } else {
+      console.log('[DB] searchSession - No sessions found for userId:', userId);
+    }
+  }
   
   return result;
 };

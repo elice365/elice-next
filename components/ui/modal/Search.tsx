@@ -1,7 +1,7 @@
 "use client";
 import React, { memo } from "react";
 import { createPortal } from "react-dom";
-import { useSearch } from "@/hooks/useSearch";
+import { useSearch } from "@/hooks/search";
 import { Icon } from "@/components/ui/Icon";
 import { Feed } from "@/components/features/search/Feed";
 import { motion, AnimatePresence } from "framer-motion";

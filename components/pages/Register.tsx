@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { AuthForm } from '@/components/features/auth/AuthForm';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/auth';
 
 export const RegisterPage: React.FC = () => {
   const { register, isAuthenticated } = useAuth();

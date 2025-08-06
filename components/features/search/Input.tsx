@@ -1,5 +1,5 @@
 "use client";
-import { useSearch } from '@/hooks/useSearch';
+import { useSearch } from '@/hooks/search';
 import { Icon } from '@/components/ui/Icon';
 
 export const SearchInput = () => {

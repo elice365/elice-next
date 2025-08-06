@@ -5,8 +5,8 @@
 
 import { useCallback } from 'react';
 import { api } from '@/lib/fetch';
-import { useFingerprint } from './useFingerprint';
-import { useProviderLoading, useSocialAuthMessages, useAuthError } from '@/lib/auth/hooks';
+import { useFingerprint } from '../utils';
+import { useProviderLoading, useSocialAuthMessages, useAuthError } from '@/hooks/auth';
 import { popupUtils, validators, extractErrorMessage } from '@/lib/auth/utils';
 
 type SocialLoginResponse = {

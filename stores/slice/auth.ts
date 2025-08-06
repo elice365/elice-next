@@ -19,7 +19,7 @@ interface User {
 }
 
 // Auth 상태 타입 정의
-interface AuthState {
+export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;

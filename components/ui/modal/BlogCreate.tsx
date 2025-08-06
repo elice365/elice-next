@@ -18,6 +18,8 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState("");
   
   const [formData, setFormData] = useState({
     type: 'post',
@@ -48,27 +50,43 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
   useEffect(() => {
     if (isOpen) {
       loadCategories();
+      // Reset errors and success message when modal opens
+      setErrors({});
+      setSuccessMessage('');
+      resetForm();
     }
   }, [isOpen]);
 
   // Form validation
   const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
     if (!formData.title.trim()) {
-      alert('제목은 필수입니다.');
-      return false;
+      newErrors.title = '제목은 필수입니다.';
     }
 
     if (!formData.description.trim()) {
-      alert('설명은 필수입니다.');
-      return false;
+      newErrors.description = '설명은 필수입니다.';
     }
 
     if (!formData.categoryId) {
-      alert('카테고리를 선택해주세요.');
-      return false;
+      newErrors.categoryId = '카테고리를 선택해주세요.';
     }
 
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  // Clear field error when value changes
+  const handleFieldChange = (field: string, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
   // Reset form
@@ -88,15 +106,17 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
 
   // Success handler
   const handleSuccess = (data: APIResult) => {
-    alert(data.data.message || '블로그 글이 생성되었습니다.');
-    onSuccess();
-    onClose();
-    resetForm();
+    setSuccessMessage(data.data.message || '블로그 글이 생성되었습니다.');
+    setTimeout(() => {
+      onSuccess();
+      onClose();
+      resetForm();
+    }, 1500);
   };
 
   // Error handler
   const handleError = (error: any) => {
-    alert('블로그 글 생성 중 오류가 발생했습니다.');
+    setErrors({ general: '블로그 글 생성 중 오류가 발생했습니다.' });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -113,7 +133,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
       if (data.success) {
         handleSuccess(data);
       } else {
-        alert('블로그 글 생성에 실패했습니다.');
+        setErrors({ general: data.message || '블로그 글 생성에 실패했습니다.' });
       }
     } catch (error) {
       handleError(error);
@@ -146,33 +166,49 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
   };
 
   const footer = (
-    <div className="flex justify-end gap-3 p-4">
-      <button
-        type="button"
-        onClick={onClose}
-        disabled={loading}
-        className="px-4 py-2 text-[var(--text-color)] border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover)] transition-colors disabled:opacity-50"
-      >
-        취소
-      </button>
-      <button
-        type="submit"
-        form="blog-create-form"
-        disabled={loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
-      >
-        {loading ? (
-          <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-            생성 중...
-          </>
-        ) : (
-          <>
-            <Icon name="Plus" size={16} />
-            글 생성
-          </>
+    <div className="flex items-center justify-between">
+      <div className="flex-1">
+        {errors.general && (
+          <div className="flex items-center gap-2 text-red-600 text-sm">
+            <Icon name="AlertCircle" size={16} />
+            <span>{errors.general}</span>
+          </div>
         )}
-      </button>
+        {successMessage && (
+          <div className="flex items-center gap-2 text-green-600 text-sm">
+            <Icon name="CheckCircle" size={16} />
+            <span>{successMessage}</span>
+          </div>
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          disabled={loading}
+          className="px-4 py-2 text-[var(--text-color)] border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover)] transition-colors disabled:opacity-50"
+        >
+          취소
+        </button>
+        <button
+          type="submit"
+          form="blog-create-form"
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+        >
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              생성 중...
+            </>
+          ) : (
+            <>
+              <Icon name="Plus" size={16} />
+              글 생성
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 
@@ -225,11 +261,14 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
           <label htmlFor="blog-title" className="block text-sm font-medium text-[var(--text-color)]">
             제목 *
           </label>
+          {errors.title && (
+            <p className="text-sm text-red-600">{errors.title}</p>
+          )}
           <input
             id="blog-title"
             type="text"
             value={formData.title}
-            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+            onChange={(e) => handleFieldChange('title', e.target.value)}
             placeholder="블로그 글 제목을 입력하세요"
             required
             className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -241,10 +280,13 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
           <label htmlFor="blog-description" className="block text-sm font-medium text-[var(--text-color)]">
             설명 *
           </label>
+          {errors.description && (
+            <p className="text-sm text-red-600">{errors.description}</p>
+          )}
           <textarea
             id="blog-description"
             value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            onChange={(e) => handleFieldChange('description', e.target.value)}
             placeholder="글에 대한 간단한 설명을 입력하세요"
             rows={3}
             required
@@ -257,6 +299,9 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
           <label htmlFor="blog-category" className="block text-sm font-medium text-[var(--text-color)]">
             카테고리 *
           </label>
+          {errors.categoryId && (
+            <p className="text-sm text-red-600">{errors.categoryId}</p>
+          )}
           {loadingCategories ? (
             <div className="text-center py-2">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mx-auto"></div>
@@ -265,7 +310,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
             <select
               id="blog-category"
               value={formData.categoryId}
-              onChange={(e) => setFormData(prev => ({ ...prev, categoryId: e.target.value }))}
+              onChange={(e) => handleFieldChange('categoryId', e.target.value)}
               className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >

@@ -1,7 +1,7 @@
 "use client";
 import { DropdownProps } from '@/types/dropdown';
 import { Icon } from '@/components/ui/Icon';
-import { useDropdown } from '@/hooks/useDropdown';
+import { useDropdown } from '@/hooks/ui';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function Dropdown({

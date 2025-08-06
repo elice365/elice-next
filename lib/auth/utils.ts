@@ -1,4 +1,4 @@
-/**
+  /**
  * Shared Authentication Utilities
  * Centralizes common auth logic for Next.js 15.4.3 App Router
  */

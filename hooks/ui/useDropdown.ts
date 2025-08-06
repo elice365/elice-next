@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState, useCallback } from 'react';
-import { useClickOutside } from '@/hooks/useClickOutside';
+import { useClickOutside } from '../utils';
 
 export function useDropdown() {
   const [open, setOpen] = useState(false);

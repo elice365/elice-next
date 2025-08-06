@@ -5,7 +5,7 @@ import { Icon } from '@/components/ui/Icon';
 import { StatCard } from '@/components/ui/card/Stat';
 import { Table } from '@/components/ui/Table';
 import { Pagination } from '@/components/ui/Pagination';
-import { AdminPageState, AdminPageActions } from '@/hooks/useAdminPage';
+import { AdminPageState, AdminPageActions } from '@/hooks/admin/useAdminPage';
 
 export interface StatCardConfig {
   title: string;

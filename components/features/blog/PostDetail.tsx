@@ -13,7 +13,7 @@ import { ReadingProgressIndicator as ReadingProgress } from '@/components/ui/Rea
 import { PostSkeleton } from '@/components/ui/skeleton/Post';
 import { Related } from './Related';
 import { Comment } from './Comment';
-import { useBlogActions } from '@/hooks/useBlogActions';
+import { useBlogActions } from '@/hooks/blog';
 import { parseContent } from '@/utils/blog/contentParser';
 
 interface BlogPostDetailProps {

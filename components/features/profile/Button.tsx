@@ -3,9 +3,9 @@
 import { memo, useCallback, useMemo } from "react";
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/hooks/useAuth';
-import { useMounted } from "@/hooks/useMount";
-import { useDropdown } from '@/hooks/useDropdown';
+import { useAuth } from '@/hooks/auth';
+import { useMounted } from "@/hooks/utils";
+import { useDropdown } from '@/hooks/ui';
 import { Icon } from '@/components/ui/Icon';
 import { Avatar } from '@/components/ui/Avatar';
 import { Translated } from "@/components/i18n/Translated";

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { api } from '@/lib/fetch';
 import { authConfig } from '@/constants/auth/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/auth';
 import { extractErrorMessage, processAuthToken, extractTokenFromHeaders } from '@/lib/auth/utils';
 
 // 지원되는 소셜 제공자 타입

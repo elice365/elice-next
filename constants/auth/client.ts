@@ -50,6 +50,7 @@ export const authConfig = {
   
   // 보호된 경로
   protected: [
+    '/admin',    // 관리자 페이지 추가
     '/product',
   ],
   

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/stores/hook';
 import { setQuery, setDebouncedQuery, clearSearch } from '@/stores/slice/search';
 import { useSearchAPI } from './useSearchAPI';
 import { filterField } from '@/utils/regex/input';
-import { useModal } from './useModal';
+import { useModal } from '../modal';
 
 interface SearchOptions {
   debounceDelay?: number;

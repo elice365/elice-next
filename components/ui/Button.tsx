@@ -1,8 +1,8 @@
 'use client';
 import { ButtonType } from '@/types/button';
 import { memo, useCallback, useMemo } from 'react';
-import { useModal } from '@/hooks/useModal';
-import { usePanel } from '@/hooks/usePanel';
+import { useModal } from '@/hooks/modal';
+import { usePanel } from '@/hooks/ui';
 
 export const Button = memo(
     ({ type, name, event, className, disabled, children }: ButtonType) => {

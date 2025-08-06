@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Session } from "@/types/session";
 import { BaseModal } from "@/components/ui/modal/BaseModal";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
-import { useAdminPage } from "@/hooks/useAdminPage";
+import { useAdminPage } from "@/hooks/admin";
 import { api } from "@/lib/fetch";
 
 // 세션 관리 페이지 메인 컴포넌트

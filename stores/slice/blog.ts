@@ -30,7 +30,7 @@ interface BlogFilters {
 }
 
 // Blog state type definition
-interface BlogState {
+export interface BlogState {
   // Post list state
   posts: Post[];
   selectedPost: Post | null;

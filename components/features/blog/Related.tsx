@@ -4,7 +4,7 @@ import { memo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Post } from '@/types/post';
-import { usePost } from '@/hooks/usePost';
+import { usePost } from '@/hooks/blog';
 import { Badge } from '@/components/ui/Badge';
 import { Icon } from '@/components/ui/Icon';
 import { useAppSelector } from '@/stores/hook';

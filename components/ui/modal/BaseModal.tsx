@@ -28,6 +28,14 @@ interface BaseModalExtendedProps extends BaseModalProps {
   readonly loading?: boolean;
   /** Additional CSS classes for the modal container */
   readonly className?: string;
+  /** Prevent closing on backdrop click */
+  readonly closeOnBackdrop?: boolean;
+  /** Prevent closing on ESC key */
+  readonly closeOnEscape?: boolean;
+  /** Custom loading message */
+  readonly loadingMessage?: string;
+  /** Modal variant for different styles */
+  readonly variant?: 'default' | 'danger' | 'success' | 'warning';
 }
 
 /**
@@ -88,7 +96,11 @@ export function BaseModal({
   children,
   footer,
   loading = false,
-  className = ""
+  className = "",
+  closeOnBackdrop = true,
+  closeOnEscape = true,
+  loadingMessage = "처리 중...",
+  variant = 'default'
 }: BaseModalExtendedProps) {
 
   /**
@@ -97,7 +109,7 @@ export function BaseModal({
    */
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen && !loading) {
+      if (event.key === 'Escape' && isOpen && !loading && closeOnEscape) {
         onClose();
       }
     };
@@ -106,20 +118,54 @@ export function BaseModal({
       document.addEventListener('keydown', handleEscapeKey);
       // Prevent background scrolling when modal is open
       document.body.style.overflow = 'hidden';
+      
+      // Focus trap setup
+      const modalElement = document.querySelector('[role="dialog"]') as HTMLElement;
+      if (modalElement) {
+        const focusableElements = modalElement.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstFocusable = focusableElements[0] as HTMLElement;
+        const lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement;
+        
+        firstFocusable?.focus();
+        
+        const handleTabKey = (e: KeyboardEvent) => {
+          if (e.key === 'Tab') {
+            if (e.shiftKey) {
+              if (document.activeElement === firstFocusable) {
+                e.preventDefault();
+                lastFocusable?.focus();
+              }
+            } else {
+              if (document.activeElement === lastFocusable) {
+                e.preventDefault();
+                firstFocusable?.focus();
+              }
+            }
+          }
+        };
+        
+        modalElement.addEventListener('keydown', handleTabKey);
+        
+        return () => {
+          modalElement.removeEventListener('keydown', handleTabKey);
+        };
+      }
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscapeKey);
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen, onClose, loading]);
+  }, [isOpen, onClose, loading, closeOnEscape]);
 
   /**
    * Handle backdrop click to close modal
    * Only closes if clicking the backdrop itself (not modal content) and not loading
    */
   const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget && !loading) {
+    if (e.target === e.currentTarget && !loading && closeOnBackdrop) {
       onClose();
     }
   };
@@ -129,10 +175,34 @@ export function BaseModal({
    * Maps text color classes to corresponding background color classes
    */
   const getIconBgColor = () => {
+    // Use variant-based colors if no custom color provided
+    if (variant !== 'default' && !iconColor.includes('text-')) {
+      const variantColors = {
+        danger: 'bg-red-500',
+        success: 'bg-green-500',
+        warning: 'bg-yellow-500',
+        default: 'bg-blue-500'
+      };
+      return variantColors[variant];
+    }
+    
     if (iconColor.includes('blue')) return 'bg-blue-500';
     if (iconColor.includes('green')) return 'bg-green-500';
     if (iconColor.includes('red')) return 'bg-red-500';
+    if (iconColor.includes('yellow')) return 'bg-yellow-500';
     return 'bg-gray-500';
+  };
+  
+  const getVariantIconColor = () => {
+    if (iconColor && iconColor.includes('text-')) return iconColor;
+    
+    const variantColors = {
+      danger: 'text-red-600',
+      success: 'text-green-600',
+      warning: 'text-yellow-600',
+      default: 'text-blue-600'
+    };
+    return variantColors[variant];
   };
 
   /**
@@ -160,15 +230,18 @@ export function BaseModal({
       />
       <dialog
         open
+        role="dialog"
+        aria-modal="true"
         className={`bg-[var(--color-modal)] rounded-xl shadow-xl w-full ${getModalSizeClass()} max-h-[95vh] sm:max-h-[90vh] overflow-hidden transform transition-all duration-200 scale-100 ${className} border-0 p-0 m-0 relative z-10 flex flex-col`}
         aria-labelledby="modal-title"
+        aria-describedby={subtitle ? "modal-subtitle" : undefined}
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[var(--modal-border)] bg-[var(--modal-header-bg)] flex-shrink-0">
           <div className="flex items-center gap-3">
             {icon && (
               <div className={`p-2 rounded-lg bg-opacity-10 ${getIconBgColor()}`}>
-                <Icon name={icon} size={20} className={iconColor} />
+                <Icon name={icon} size={20} className={getVariantIconColor()} />
               </div>
             )}
             <div>
@@ -176,7 +249,7 @@ export function BaseModal({
                 {title}
               </h2>
               {subtitle && (
-                <p className="text-sm text-[var(--text-color)] opacity-70 mt-1">
+                <p id="modal-subtitle" className="text-sm text-[var(--text-color)] opacity-70 mt-1">
                   {subtitle}
                 </p>
               )}
@@ -209,7 +282,7 @@ export function BaseModal({
           <div className="absolute inset-0 bg-[var(--color-modal)] bg-opacity-75 flex items-center justify-center backdrop-blur-sm rounded-xl">
             <div className="flex items-center gap-3">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--hover-primary)]"></div>
-              <span className="text-[var(--text-color)]">처리 중...</span>
+              <span className="text-[var(--text-color)]">{loadingMessage}</span>
             </div>
           </div>
         )}

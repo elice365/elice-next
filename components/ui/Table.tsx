@@ -266,10 +266,17 @@ export const Table = memo(function Table<T = any>({
 
                             return (
                                 onRowClick ? (
-                                    <button
+                                    <div
                                         key={rowKeyValue}
-                                        type="button"
+                                        role="button"
+                                        tabIndex={0}
                                         onClick={() => onRowClick(record, index)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                onRowClick(record, index);
+                                            }
+                                        }}
                                         aria-pressed={isRowSelected}
                                         aria-label={`항목 ${index + 1} 선택`}
                                         className={`w-full p-4 text-left bg-transparent border-none cursor-pointer active:bg-[var(--hover)] active:text-[var(--hover-text)] focus:outline-none focus:ring-2 focus:ring-[var(--hover-primary)] focus:ring-inset ${isRowSelected ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' : ''} touch-manipulation transition-all duration-200`}
@@ -317,7 +324,7 @@ export const Table = memo(function Table<T = any>({
                                                 })
                                             }
                                         </div>
-                                    </button>
+                                    </div>
                                 ) : (
                                     <div
                                         key={rowKeyValue}

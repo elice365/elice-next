@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
-import { useAdminPage } from "@/hooks/useAdminPage";
+import { useAdminPage } from "@/hooks/admin";
 import { BlogCreateModal } from "@/components/ui/modal/BlogCreate";
 import { BlogEditModal } from "@/components/ui/modal/BlogEdit";
 import { DeleteModal } from "@/components/ui/modal/DeleteModal";
@@ -312,7 +312,10 @@ export default function AdminBlogPage() {
       render: (record: BlogData) => (
         <div className="flex items-center gap-2">
           <button
-            onClick={() => handlePublishToggle(record)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePublishToggle(record);
+            }}
             className="p-1 hover:bg-[var(--hover)] rounded transition-colors"
             title={(record?.status || 'draft') === 'published' ? '비공개' : '게시'}
           >
@@ -323,14 +326,20 @@ export default function AdminBlogPage() {
             />
           </button>
           <button
-            onClick={() => setEditingPost(record)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingPost(record);
+            }}
             className="p-1 hover:bg-[var(--hover)] rounded transition-colors"
             title="수정"
           >
             <Icon name="Edit" size={16} className="text-[var(--text-color)] opacity-60" />
           </button>
           <button
-            onClick={() => setDeletingPost(record)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setDeletingPost(record);
+            }}
             className="p-1 hover:bg-red-50 rounded transition-colors"
             title="삭제"
           >

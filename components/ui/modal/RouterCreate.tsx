@@ -9,7 +9,7 @@ import { filterField } from "@/utils/regex/input";
 import { validateRouter } from "@/utils/regex/admin";
 import { FormErrors } from "@/types/admin";
 import { ICON_CATEGORIES, IconCategory } from "@/constants/modal/iconCategories";
-import { useRoles, formatRolesForRouter } from "@/hooks/useRoles";
+import { useRoles, formatRolesForRouter } from "@/hooks/admin";
 import { useTranslations } from "next-intl";
 
 interface RouterCreateModalProps {

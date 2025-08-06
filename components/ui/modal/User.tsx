@@ -5,9 +5,11 @@ import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { UserModalProps } from "@/types/user";
 import { Input } from "@/components/ui/Input";
+import { BaseModal } from "./BaseModal";
+import { Icon } from "@/components/ui/Icon";
+import { useModalForm } from "@/hooks/modal";
 
 export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose, onUpdate }) => {
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phoneNumber: '',
@@ -15,9 +17,11 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose, onU
     marketing: false,
     terms: false
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    if (user) {
+    if (user && isOpen) {
       setFormData({
         name: user.name || '',
         phoneNumber: user.phoneNumber || '',
@@ -25,14 +29,17 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose, onU
         marketing: user.marketing ?? false,
         terms: user.terms ?? false
       });
+      setError('');
     }
-  }, [user]);
+  }, [user, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
 
     setLoading(true);
+    setError('');
+    
     try {
       const { data } = await api.patch<APIResult>('/api/admin/users', {
         userId: user.id,
@@ -42,30 +49,73 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose, onU
       if (data.success) {
         onUpdate();
         onClose();
+      } else {
+        setError(data.message || '사용자 정보 수정에 실패했습니다.');
       }
     } catch (error) {
       console.error('[UserModal] User update failed:', error);
+      setError('네트워크 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (!isOpen || !user) return null;
+  if (!user) return null;
+
+  const footer = (
+    <div className="flex items-center justify-between">
+      <div className="flex-1">
+        {error && (
+          <div className="flex items-center gap-2 text-red-600 text-sm">
+            <Icon name="AlertCircle" size={16} />
+            <span>{error}</span>
+          </div>
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          disabled={loading}
+          className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 font-medium transition-colors disabled:opacity-50"
+        >
+          취소
+        </button>
+        <button
+          type="submit"
+          form="user-form"
+          disabled={loading}
+          className="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              처리 중...
+            </>
+          ) : (
+            <>
+              <Icon name="Save" size={16} />
+              수정
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[var(--color-modal)] rounded-lg overflow-hidden w-full max-w-md shadow-xl">
-        <div className="flex justify-between items-center p-6 border-b border-[var(--modal-border)] bg-[var(--modal-header-bg)]">
-          <h2 className="text-xl font-semibold text-[var(--title)]">사용자 정보 수정</h2>
-          <button
-            onClick={onClose}
-            className="text-[var(--text-color)] hover:text-[var(--hover-text)] p-2 hover:bg-[var(--hover)] rounded-lg transition-colors"
-          >
-            ✕
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="사용자 정보 수정"
+      subtitle={user?.email}
+      icon="User"
+      iconColor="text-blue-600"
+      size="md"
+      footer={footer}
+      loading={loading}
+    >
+      <form id="user-form" onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
             <Input
               id="email"
@@ -153,8 +203,7 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose, onU
               {loading ? '저장 중...' : '저장'}
             </button>
           </div>
-        </form>
-      </div>
-    </div>
+      </form>
+    </BaseModal>
   );
 };

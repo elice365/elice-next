@@ -5,7 +5,7 @@ import { memo, useCallback, useMemo } from "react";
 import { setThemeCookie } from "@/utils/cookie/theme";
 import { themeIcon , type Theme } from "@/types/icon";
 import { Dropdown } from '@/components/ui/Dropdown';
-import { useMounted } from "@/hooks/useMount";
+import { useMounted } from "@/hooks/utils";
 
 
 export default memo(function ThemeSwitcher() {

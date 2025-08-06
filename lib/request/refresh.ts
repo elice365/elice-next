@@ -4,7 +4,6 @@ import { tokenServer } from "../services/token/server";
 import { searchSession, searchSessionId, updateSession } from "@/lib/db/session";
 import { setMessage } from "../response";
 import { requestIP } from "../server/info";
-import { prisma } from "@/lib/db/prisma";
 
 // Types for token validation
 interface TokenValidationResult {
@@ -26,14 +25,14 @@ async function validateRequest(request: NextRequest): Promise<APIResult | null> 
   return null;
 }
 
-async function validateRequestType(type: string): Promise<APIResult | null> {
+async function validateType(type: string): Promise<APIResult | null> {
   if (!["refresh", "token"].includes(type)) {
     return await setMessage('InvalidType', null, 405);
   }
   return null;
 }
 
-function extractTokensFromCookies(request: NextRequest): RefreshTokens {
+function extractTokens(request: NextRequest): RefreshTokens {
   return {
     refreshToken: request.cookies.get('token')?.value,
     fingerprint: request.cookies.get('fp')?.value
@@ -47,7 +46,7 @@ async function validateTokens(tokens: RefreshTokens): Promise<APIResult | null> 
   return null;
 }
 
-async function validateRefreshToken(refreshToken: string, fingerprint: string): Promise<TokenValidationResult | APIResult> {
+async function validateToken(refreshToken: string, fingerprint: string): Promise<TokenValidationResult | APIResult> {
   try {
     const refreshTokenResult = tokenServer.verifyRefreshToken(refreshToken);
 
@@ -83,7 +82,7 @@ async function validateRefreshToken(refreshToken: string, fingerprint: string): 
   }
 }
 
-async function handleRefreshTokenRequest(
+async function refreshToken(
   request: NextRequest,
   tokenValidation: TokenValidationResult
 ): Promise<APIResult> {
@@ -113,7 +112,7 @@ async function handleRefreshTokenRequest(
   }
 
   // IP validation
-  const ipValidationResult = await validateIPAddress(request, session);
+  const ipValidationResult = await validateIP(request, session);
   if (ipValidationResult) {
     return ipValidationResult;
   }
@@ -123,7 +122,7 @@ async function handleRefreshTokenRequest(
   }, 200);
 }
 
-async function validateIPAddress(request: NextRequest, session: any): Promise<APIResult | null> {
+async function validateIP(request: NextRequest, session: any): Promise<APIResult | null> {
   const currentIP = await requestIP(request);
 
   if (session.active && session.ipAddress && session.ipAddress !== currentIP) {
@@ -134,15 +133,25 @@ async function validateIPAddress(request: NextRequest, session: any): Promise<AP
   return null;
 }
 
-async function handleTokenGeneration(
+async function tokenGen(
   tokenValidation: TokenValidationResult,
   fingerprint: string,
   refreshToken: string
 ): Promise<APIResult> {
   try {
+    console.log('[REFRESH] tokenGen - Searching session with:', {
+      userId: tokenValidation.userId,
+      sessionId: tokenValidation.sessionId,
+      hasRefreshToken: !!refreshToken
+    });
+    
     const session = await searchSession(refreshToken, tokenValidation.userId);
 
     if (!session) {
+      console.error('[REFRESH] No session found for:', {
+        userId: tokenValidation.userId,
+        refreshTokenPrefix: refreshToken.substring(0, 20)
+      });
       return await setMessage('TokenExpired', null, 401);
     }
 
@@ -159,7 +168,7 @@ async function handleTokenGeneration(
     }
 
     // Validate user account status
-    const statusValidation = await validateUserStatus(session.user.status);
+    const statusValidation = await validateUser(session.user.status);
     if (statusValidation) {
       return statusValidation;
     }
@@ -208,7 +217,7 @@ async function handleTokenGeneration(
   }
 }
 
-async function validateUserStatus(status: string): Promise<APIResult | null> {
+async function validateUser(status: string): Promise<APIResult | null> {
   if (status === 'suspended') {
     return await setMessage('AccountSuspended', null, 403);
   }
@@ -227,16 +236,16 @@ export const refresh = async (request: NextRequest): Promise<APIResult> => {
     const { type } = await request.json();
 
     // Step 2: Validate request type
-    const typeValidation = await validateRequestType(type);
+    const typeValidation = await validateType(type);
     if (typeValidation) return typeValidation;
 
     // Step 3: Extract and validate tokens
-    const tokens = extractTokensFromCookies(request);
+    const tokens = extractTokens(request);
     const tokenValidation = await validateTokens(tokens);
         if (tokenValidation) return tokenValidation;
 
     // Step 4: Validate refresh token
-    const refreshValidation = await validateRefreshToken(tokens.refreshToken!, tokens.fingerprint!);
+    const refreshValidation = await validateToken(tokens.refreshToken!, tokens.fingerprint!);
     if ('success' in refreshValidation || 'message' in refreshValidation) {
       return refreshValidation;
     }
@@ -245,11 +254,11 @@ export const refresh = async (request: NextRequest): Promise<APIResult> => {
 
     // Step 5: Handle different request types
     if (type === "refresh") {
-      return await handleRefreshTokenRequest(request, tokenValidationResult);
+      return await refreshToken(request, tokenValidationResult);
     }
 
     // Step 6: Handle token generation
-    return await handleTokenGeneration(tokenValidationResult, tokens.fingerprint!, tokens.refreshToken!);
+    return await tokenGen(tokenValidationResult, tokens.fingerprint!, tokens.refreshToken!);
 
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {

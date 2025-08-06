@@ -1,3 +1,8 @@
+/**
+ * Main Authentication Hook
+ * Provides complete authentication functionality with PostHog analytics
+ */
+
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/stores/hook';
 import { 
@@ -18,6 +23,10 @@ import { Auth, AuthType } from '@/types/auth';
 import { SocialProvider } from '@/types/social';
 import { usePostHog } from 'posthog-js/react';
 
+/**
+ * Main authentication hook that combines all auth functionality
+ * Includes login, register, logout, social auth, and PostHog analytics
+ */
 export const useAuth = () => {
   const dispatch = useAppDispatch();
   const posthog = usePostHog();
@@ -134,7 +143,6 @@ export const useAuth = () => {
     
     return result;
   }, [dispatch, posthog]);
-
 
   const handleResendVerification = useCallback(async (email: string) => {
     return await dispatch(resendVerification(email)).unwrap();

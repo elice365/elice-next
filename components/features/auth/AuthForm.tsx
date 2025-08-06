@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { SocialButtons } from "@/components/features/auth/SocialButtons";
 import { Field, inputValue } from "@/utils/regex/input";
 import { AuthFormProps } from "@/types/auth";
-import { useAuthError, useFormErrorDisplay } from "@/lib/auth/hooks";
+import { useAuthError, useFormErrorDisplay } from "@/hooks/auth";
 import { extractErrorMessage } from "@/lib/auth/utils";
 
 export const AuthForm: React.FC<AuthFormProps> = memo(
