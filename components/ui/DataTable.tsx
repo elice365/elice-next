@@ -39,6 +39,17 @@ export interface DataTableProps<T> {
   size?: 'small' | 'middle' | 'large';
 }
 
+function getAlignmentClass(align?: 'left' | 'center' | 'right'): string {
+  switch (align) {
+    case 'center':
+      return 'text-center';
+    case 'right':
+      return 'text-right';
+    default:
+      return 'text-left';
+  }
+}
+
 export function DataTable<T extends Record<string, any>>({
   columns,
   data,
@@ -100,10 +111,7 @@ export function DataTable<T extends Record<string, any>>({
               {columns.map((column, index) => (
                 <th
                   key={`${String(column.key)}-${index}`}
-                  className={`px-4 py-3 font-medium text-gray-900 ${
-                    column.align === 'center' ? 'text-center' :
-                    column.align === 'right' ? 'text-right' : 'text-left'
-                  } ${column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                  className={`px-4 py-3 font-medium text-gray-900 ${getAlignmentClass(column.align)} ${column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
                   style={{ width: column.width }}
                   onClick={() => handleSort(column)}
                 >
@@ -129,14 +137,15 @@ export function DataTable<T extends Record<string, any>>({
                   </div>
                 </td>
               </tr>
-            ) : data.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length + (rowSelection ? 1 : 0)} className="px-4 py-8 text-center text-gray-500">
-                  {emptyText}
-                </td>
-              </tr>
             ) : (
-              data.map((record, index) => {
+              data.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length + (rowSelection ? 1 : 0)} className="px-4 py-8 text-center text-gray-500">
+                    {emptyText}
+                  </td>
+                </tr>
+              ) : (
+                data.map((record, index) => {
                 const key = getRowKey(record, index);
                 const isSelected = rowSelection?.selectedRowKeys?.includes(key);
                 
@@ -172,7 +181,8 @@ export function DataTable<T extends Record<string, any>>({
                     ))}
                   </tr>
                 );
-              })
+                })
+              )
             )}
           </tbody>
         </table>

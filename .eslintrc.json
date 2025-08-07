@@ -1,0 +1,20 @@
+{
+  "extends": ["next/core-web-vitals"],
+  "rules": {
+    "complexity": ["error", { "max": 15 }],
+    "max-depth": ["error", 4],
+    "react/jsx-key": "error",
+    "jsx-a11y/label-has-associated-control": "error",
+    "no-nested-ternary": "warn",
+    "react/no-array-index-key": "warn",
+    "max-lines-per-function": ["warn", { "max": 100, "skipBlankLines": true, "skipComments": true }],
+    "max-nested-callbacks": ["error", 3],
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/prefer-readonly": "warn",
+    "react/jsx-no-duplicate-props": "error",
+    "jsx-a11y/alt-text": "error",
+    "jsx-a11y/anchor-is-valid": "warn",
+    "jsx-a11y/role-has-required-aria-props": "error",
+    "jsx-a11y/role-supports-aria-props": "error"
+  }
+}
