@@ -3,9 +3,9 @@
 import React from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
-import { RoleCreateModal } from "@/components/ui/modal/RoleCreate";
-import { RoleEditModal } from "@/components/ui/modal/RoleEdit";
-import { DeleteModal } from "@/components/ui/modal/DeleteModal";
+import { RoleCreateModal } from "@/components/ui/modal/role/RoleCreate";
+import { RoleEditModal } from "@/components/ui/modal/role/RoleEdit";
+import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { Role } from "@/types/admin";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
 import { useAdminPage } from "@/hooks/admin";

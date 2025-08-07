@@ -38,13 +38,15 @@ const getBlogPosts = async (
     });
 
     // Format response
-    const formattedPosts = posts.map((post: any) => ({
-      ...post,
-      id: post.uid, // Map uid to id for frontend compatibility
-      status: post.status || 'draft',
-      views: post.views || 0,
-      likeCount: post.likeCount || 0
-    }));
+    const formattedPosts = posts.map((post: any) => {
+      return {
+        ...post,
+        id: post.uid, // Map uid to id for frontend compatibility
+        status: post.status || 'draft',
+        views: post._count?.view || 0, // PostView 테이블에서 계산된 조회수
+        likeCount: post.likeCount || 0
+      };
+    });
 
     const totalPages = Math.ceil(totalCount / limit);
 

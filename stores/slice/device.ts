@@ -10,7 +10,7 @@ const getDeviceFlags = (width: number) => {
   if (width <= 710) {
     return { mobile: true, tablet: false, desktop: false };
   } else if (width < 1024) {
-    return { mobile: true, tablet: true, desktop: false };
+    return { mobile: false, tablet: true, desktop: false };
   } else {
     return { mobile: false, tablet: false, desktop: true };
   }

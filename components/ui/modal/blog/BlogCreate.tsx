@@ -1,41 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { BaseModal } from "./BaseModal";
+import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { Category } from "@/types/post";
 
-interface BlogData {
-  id: string;
-  uid: string;
-  type: string;
-  title: string;
-  description: string;
-  category?: Category;
-  tags: Array<{ uid: string; name: string }>;
-  images: string[] | any; // Support both new array format and legacy object format
-  status: 'draft' | 'published';
-  publishedAt?: string;
-  views: number;
-  likeCount: number;
-  createdTime: string;
-  updatedTime: string;
-}
-
-interface BlogEditModalProps {
+interface BlogCreateModalProps {
   readonly isOpen: boolean;
   readonly onClose: () => void;
   readonly onSuccess: () => void;
-  readonly post: BlogData | null;
 }
 
-export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModalProps) {
+export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalProps) {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState("");
   
   const [formData, setFormData] = useState({
     type: 'post',
@@ -44,7 +28,7 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
     categoryId: '',
     tags: [] as string[],
     images: [] as string[],
-    status: 'draft' as 'draft' | 'published',
+    status: 'draft',
     language: 'ko'
   });
 
@@ -63,86 +47,93 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
     }
   };
 
-  // Initialize form with post data
   useEffect(() => {
-    if (isOpen && post) {
-      // Convert legacy object format to array format
-      let imagesArray: string[] = [];
-      if (Array.isArray(post.images)) {
-        imagesArray = post.images;
-      } else if (post.images && typeof post.images === 'object') {
-        // Handle legacy format: { main: "url", thumbnail: "url" }
-        if (post.images.main) imagesArray.push(post.images.main);
-        if (post.images.thumbnail && post.images.thumbnail !== post.images.main) {
-          imagesArray.push(post.images.thumbnail);
-        }
-      }
-      
-      setFormData({
-        type: post.type || 'post',
-        title: post.title,
-        description: post.description,
-        categoryId: post.category?.uid || '',
-        tags: post.tags?.map(tag => tag.name) || [],
-        images: imagesArray,
-        status: post.status,
-        language: 'ko'
-      });
-      
-      const mainImage = imagesArray[0] || '';
-      setImagePreview(mainImage);
-      
+    if (isOpen) {
       loadCategories();
+      // Reset errors and success message when modal opens
+      setErrors({});
+      setSuccessMessage('');
+      resetForm();
     }
-  }, [isOpen, post]);
+  }, [isOpen]);
 
   // Form validation
   const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
     if (!formData.title.trim()) {
-      alert('제목은 필수입니다.');
-      return false;
+      newErrors.title = '제목은 필수입니다.';
     }
 
     if (!formData.description.trim()) {
-      alert('설명은 필수입니다.');
-      return false;
+      newErrors.description = '설명은 필수입니다.';
     }
 
     if (!formData.categoryId) {
-      alert('카테고리를 선택해주세요.');
-      return false;
+      newErrors.categoryId = '카테고리를 선택해주세요.';
     }
 
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  // Clear field error when value changes
+  const handleFieldChange = (field: string, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  // Reset form
+  const resetForm = () => {
+    setFormData({
+      type: 'post',
+      title: '',
+      description: '',
+      categoryId: '',
+      tags: [],
+      images: [],
+      status: 'draft',
+      language: 'ko'
+    });
+    setImagePreview('');
   };
 
   // Success handler
   const handleSuccess = (data: APIResult) => {
-    alert(data.data.message || '블로그 글이 수정되었습니다.');
-    onSuccess();
-    onClose();
+    setSuccessMessage(data.data.message || '블로그 글이 생성되었습니다.');
+    setTimeout(() => {
+      onSuccess();
+      onClose();
+      resetForm();
+    }, 1500);
   };
 
   // Error handler
   const handleError = (error: any) => {
-    alert('블로그 글 수정 중 오류가 발생했습니다.');
+    setErrors({ general: '블로그 글 생성 중 오류가 발생했습니다.' });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!post || !validateForm()) {
+    if (!validateForm()) {
       return;
     }
 
     setLoading(true);
     try {
-      const { data } = await api.put<APIResult>(`/api/admin/blog/${post.uid}`, formData);
+      const { data } = await api.post<APIResult>('/api/admin/blog', formData);
       
       if (data.success) {
         handleSuccess(data);
       } else {
-        alert('블로그 글 수정에 실패했습니다.');
+        setErrors({ general: data.message || '블로그 글 생성에 실패했습니다.' });
       }
     } catch (error) {
       handleError(error);
@@ -174,83 +165,66 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
     }));
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return {
-      date: date.toLocaleDateString('ko-KR', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      }),
-      time: date.toLocaleTimeString('ko-KR', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      })
-    };
-  };
-
   const footer = (
-    <div className="flex justify-end gap-3 p-4">
-      <button
-        type="button"
-        onClick={onClose}
-        disabled={loading}
-        className="px-4 py-2 text-[var(--text-color)] border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover)] transition-colors disabled:opacity-50"
-      >
-        취소
-      </button>
-      <button
-        type="submit"
-        form="blog-edit-form"
-        disabled={loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
-      >
-        {loading ? (
-          <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-            수정 중...
-          </>
-        ) : (
-          <>
-            <Icon name="Save" size={16} />
-            변경사항 저장
-          </>
+    <div className="flex items-center justify-between">
+      <div className="flex-1">
+        {errors.general && (
+          <div className="flex items-center gap-2 text-red-600 text-sm">
+            <Icon name="AlertCircle" size={16} />
+            <span>{errors.general}</span>
+          </div>
         )}
-      </button>
+        {successMessage && (
+          <div className="flex items-center gap-2 text-green-600 text-sm">
+            <Icon name="CheckCircle" size={16} />
+            <span>{successMessage}</span>
+          </div>
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          disabled={loading}
+          className="px-4 py-2 text-[var(--text-color)] border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover)] transition-colors disabled:opacity-50"
+        >
+          취소
+        </button>
+        <button
+          type="submit"
+          form="blog-create-form"
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+        >
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              생성 중...
+            </>
+          ) : (
+            <>
+              <Icon name="Plus" size={16} />
+              글 생성
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
-
-  if (!post) return null;
 
   return (
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title="글 수정"
-      subtitle={`"${post.title}" 글을 수정합니다`}
-      icon="Edit"
+      title="새 글 작성"
+      subtitle="블로그에 새로운 글을 작성합니다"
+      icon="FileText"
       iconColor="text-blue-600"
       size="xl"
       footer={footer}
       loading={loading}
     >
-      <form id="blog-edit-form" onSubmit={handleSubmit} className="p-6 space-y-6">
-        {/* Metadata info */}
-        <div className="grid grid-cols-2 gap-4 p-4 bg-[var(--modal-header-bg)] rounded-lg">
-          <div>
-            <span className="text-xs text-[var(--text-color)] opacity-60">작성일</span>
-            <div className="text-sm text-[var(--text-color)]">
-              {formatDate(post.createdTime).date} {formatDate(post.createdTime).time}
-            </div>
-          </div>
-          <div>
-            <span className="text-xs text-[var(--text-color)] opacity-60">조회수 / 좋아요</span>
-            <div className="text-sm text-[var(--text-color)]">
-              {post.views.toLocaleString()} / {post.likeCount.toLocaleString()}
-            </div>
-          </div>
-        </div>
-
+      <form id="blog-create-form" onSubmit={handleSubmit} className="p-6 space-y-6">
         {/* Type selection */}
         <div className="space-y-2">
           <label className="block text-sm font-medium text-[var(--text-color)]">
@@ -287,11 +261,14 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
           <label htmlFor="blog-title" className="block text-sm font-medium text-[var(--text-color)]">
             제목 *
           </label>
+          {errors.title && (
+            <p className="text-sm text-red-600">{errors.title}</p>
+          )}
           <input
             id="blog-title"
             type="text"
             value={formData.title}
-            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+            onChange={(e) => handleFieldChange('title', e.target.value)}
             placeholder="블로그 글 제목을 입력하세요"
             required
             className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -303,10 +280,13 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
           <label htmlFor="blog-description" className="block text-sm font-medium text-[var(--text-color)]">
             설명 *
           </label>
+          {errors.description && (
+            <p className="text-sm text-red-600">{errors.description}</p>
+          )}
           <textarea
             id="blog-description"
             value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            onChange={(e) => handleFieldChange('description', e.target.value)}
             placeholder="글에 대한 간단한 설명을 입력하세요"
             rows={3}
             required
@@ -319,6 +299,9 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
           <label htmlFor="blog-category" className="block text-sm font-medium text-[var(--text-color)]">
             카테고리 *
           </label>
+          {errors.categoryId && (
+            <p className="text-sm text-red-600">{errors.categoryId}</p>
+          )}
           {loadingCategories ? (
             <div className="text-center py-2">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mx-auto"></div>
@@ -327,7 +310,7 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
             <select
               id="blog-category"
               value={formData.categoryId}
-              onChange={(e) => setFormData(prev => ({ ...prev, categoryId: e.target.value }))}
+              onChange={(e) => handleFieldChange('categoryId', e.target.value)}
               className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             >
@@ -513,7 +496,7 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
                 name="status"
                 value="draft"
                 checked={formData.status === 'draft'}
-                onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
+                onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
                 className="w-4 h-4 text-blue-600"
               />
               <span className="text-[var(--text-color)]">📝 임시저장</span>
@@ -524,7 +507,7 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
                 name="status"
                 value="published"
                 checked={formData.status === 'published'}
-                onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
+                onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
                 className="w-4 h-4 text-blue-600"
               />
               <span className="text-[var(--text-color)]">✅ 게시</span>
@@ -537,19 +520,9 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
           <div className="flex items-start gap-3">
             <Icon name="Info" size={20} className="text-blue-600 mt-0.5" />
             <div className="text-sm text-blue-700 dark:text-blue-300">
-              <p>글 내용 편집은 별도의 콘텐츠 에디터에서 진행됩니다.</p>
-              <p className="mt-1">이미지 업로드는 추후 Cloudflare R2 기능이 추가될 예정입니다.</p>
-              <p className="mt-1">
-                <a
-                  href={`/admin/blog/content/${post.uid}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 underline"
-                >
-                  콘텐츠 에디터 열기
-                  <Icon name="ExternalLink" size={14} />
-                </a>
-              </p>
+              <p>글 내용은 생성 후 콘텐츠 에디터에서 작성할 수 있습니다.</p>
+              <p className="mt-1">콘텐츠 에디터에서는 제품 정보, 작성자 정보, 본문 내용을 구조화된 형식으로 작성할 수 있습니다.</p>
+              <p className="mt-1">이미지는 추후 Cloudflare R2 업로드 기능이 추가될 예정입니다.</p>
             </div>
           </div>
         </div>

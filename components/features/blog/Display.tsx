@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Card } from "./Card";
-import { List, ListItem } from "./List";
-import { Tag, Post } from "@/types/post";
+import { ListItem } from "./List";
+import { Tag } from "@/types/post";
 
 interface BlogPost {
   uid: string;
@@ -147,7 +147,7 @@ export function Display({
       {/* Content Area with Animation */}
       <div className={`transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]`}>
         {viewType === "card" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
             {posts.map((post, index) => (
               <div
                 key={post.uid}

@@ -3,7 +3,7 @@
 import { memo, useState, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Post } from '@/types/post';
+import { PostType } from '@/types/post';
 import { Badge } from '@/components/ui/Badge';
 import { Icon } from '@/components/ui/Icon';
 import { useAppSelector, useAppDispatch } from '@/stores/hook';
@@ -11,7 +11,7 @@ import { togglePostLike } from '@/stores/slice/blog';
 import { motion } from 'framer-motion';
 
 interface BlogCardProps {
-  post: Post;
+  post: PostType;
   className?: string;
 }
 
@@ -88,8 +88,8 @@ export const Card = memo(function Card({ post, className = '' }: BlogCardProps) 
   const cardClasses = mobile
     ? "w-full max-w-full"
     : tablet
-      ? "w-full"
-      : "w-full";
+      ? "w-full max-w-lx"
+      : "w-full max-w-xs";
 
   const imageHeight = mobile ? "h-[180px]" : tablet ? "h-[200px]" : "h-[220px]";
 
@@ -244,12 +244,16 @@ export const Card = memo(function Card({ post, className = '' }: BlogCardProps) 
               >
                 <Icon name="Bookmark" size={14} fill={isBookmarked ? "currentColor" : "none"} className='text-white'/>
               </button>
-              <Link href={`/blog/${post.uid}`} className="flex-1">
-                <button className="bg-[var(--blog-accent)] text-white px-4 py-2 rounded-full transition-all duration-300 active:bg-[var(--blog-accent)]/90 text-xs font-medium w-full flex items-center justify-center gap-1">
-                  <span>자세히 보기</span>
-                  <Icon name="ArrowRight" size={12} />
-                </button>
-              </Link>
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href = `/blog/${post.uid}`;
+                }}
+                className="bg-[var(--blog-accent)] text-white px-4 py-2 rounded-full transition-all duration-300 active:bg-[var(--blog-accent)]/90 text-xs font-medium w-full flex items-center justify-center gap-1 flex-1"
+              >
+                <span>자세히 보기</span>
+                <Icon name="ArrowRight" size={12} />
+              </button>
             </div>
           ) : (
             <div 

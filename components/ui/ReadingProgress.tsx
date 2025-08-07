@@ -32,19 +32,33 @@ export function ReadingProgressIndicator({ targetRef }: ReadingProgressIndicator
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     if (!prefersReducedMotion) {
+      // Add both scroll and touchmove for better mobile support
       window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('touchmove', handleScroll, { passive: true });
+      document.addEventListener('scroll', handleScroll, { passive: true });
       handleScroll(); // Initial calculation
     }
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('touchmove', handleScroll);
+      document.removeEventListener('scroll', handleScroll);
     };
   }, [targetRef]);
 
   return (
     <>
       {/* Main Progress Bar Container */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-800 z-50">
+      <div 
+        className="fixed top-0 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-800 z-[9999]"
+        style={{ 
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 9999
+        }}
+      >
         {/* Progress Fill with Wave Animation */}
         <motion.div
           className="relative h-full overflow-hidden"
@@ -89,7 +103,16 @@ export function ReadingProgressIndicator({ targetRef }: ReadingProgressIndicator
       </div>
 
       {/* Subtle milestone dots */}
-      <div className="fixed top-0 left-0 right-0 h-1 z-40 pointer-events-none flex items-center">
+      <div 
+        className="fixed top-0 left-0 right-0 h-1 z-[9998] pointer-events-none flex items-center"
+        style={{ 
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 9998
+        }}
+      >
         {[25, 50, 75].map((milestone) => (
           <motion.div
             key={milestone}
@@ -137,7 +160,14 @@ export function ReadingProgressIndicator({ targetRef }: ReadingProgressIndicator
 
       {/* Enhanced progress bar shadow for depth */}
       <motion.div 
-        className="fixed top-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--blog-accent)]/20 to-transparent pointer-events-none z-40"
+        className="fixed top-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--blog-accent)]/20 to-transparent pointer-events-none z-[9997]"
+        style={{ 
+          position: 'fixed',
+          top: '4px',
+          left: 0,
+          right: 0,
+          zIndex: 9997
+        }}
         initial={{ opacity: 0 }}
         animate={{ opacity: progress > 0 ? 1 : 0 }}
         transition={{ duration: 0.3 }}

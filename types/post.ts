@@ -1,6 +1,6 @@
 // Blog post related types
 
-export interface Post {
+export interface PostType {
   uid: string;
   type: string;
   title: string;
@@ -90,12 +90,12 @@ export interface LikeRequest {
 
 // Response types
 export interface PostListResponse {
-  posts: Post[];
+  posts: PostType[];
   pagination: PaginationInfo;
 }
 
 export interface PostDetailResponse {
-  post: Post;
+  post: PostType;
   content?: {
     language: string;
     data: any;

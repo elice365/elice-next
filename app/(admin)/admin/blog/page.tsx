@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
 import { useAdminPage } from "@/hooks/admin";
-import { BlogCreateModal } from "@/components/ui/modal/BlogCreate";
-import { BlogEditModal } from "@/components/ui/modal/BlogEdit";
-import { DeleteModal } from "@/components/ui/modal/DeleteModal";
+import { BlogCreateModal } from "@/components/ui/modal/blog/BlogCreate";
+import { BlogEditModal } from "@/components/ui/modal/blog/BlogEdit";
+import { BlogViewStatsModal } from "@/components/ui/modal/blog/BlogViewStats";
+import { BlogLikeStatsModal } from "@/components/ui/modal/blog/BlogLikeStats";
+import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { Post } from "@/types/post";
@@ -17,9 +19,10 @@ import { Post } from "@/types/post";
 interface BlogData extends Post {
   publishedAt: Date | null;
   status: 'draft' | 'published';
+  views: number;
   _count: {
     likes: number;
-    viewsDetail: number;
+    view: number;
   };
 }
 
@@ -29,6 +32,8 @@ export default function AdminBlogPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogData | null>(null);
   const [deletingPost, setDeletingPost] = useState<BlogData | null>(null);
+  const [viewStatsPost, setViewStatsPost] = useState<BlogData | null>(null);
+  const [likeStatsPost, setLikeStatsPost] = useState<BlogData | null>(null);
   
   // Page state management
   const [pageState, pageActions] = useAdminPage<BlogData>({
@@ -273,16 +278,30 @@ export default function AdminBlogPage() {
       title: '통계',
       key: 'stats',
       width: '150px',
-      render: (record: BlogData) => (
+      render: (value: any, record: BlogData) => (
         <div className="flex items-center gap-4 text-sm text-gray-500">
-          <div className="flex items-center gap-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setViewStatsPost(record);
+            }}
+            className="flex items-center gap-1 hover:text-blue-600 transition-colors cursor-pointer"
+            title="조회 통계 보기"
+          >
             <Icon name="Eye" size={14} />
             <span>{(record?.views || 0).toLocaleString()}</span>
-          </div>
-          <div className="flex items-center gap-1">
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setLikeStatsPost(record);
+            }}
+            className="flex items-center gap-1 hover:text-pink-600 transition-colors cursor-pointer"
+            title="좋아요 통계 보기"
+          >
             <Icon name="Heart" size={14} />
             <span>{(record?.likeCount || 0).toLocaleString()}</span>
-          </div>
+          </button>
         </div>
       )
     },
@@ -309,7 +328,7 @@ export default function AdminBlogPage() {
       title: '작업',
       key: 'actions',
       width: '120px',
-      render: (record: BlogData) => (
+      render: (value: any, record: BlogData) => (
         <div className="flex items-center gap-2">
           <button
             onClick={(e) => {
@@ -421,8 +440,8 @@ export default function AdminBlogPage() {
         post={editingPost ? {
           id: editingPost.uid,
           ...editingPost,
-          createdTime: new Date(editingPost.createdTime).toLocaleString('ko-KR'),
-          updatedTime: new Date(editingPost.updatedTime).toLocaleString('ko-KR'),
+          createdTime: editingPost.createdTime ? new Date(editingPost.createdTime).toLocaleString('ko-KR') : '',
+          updatedTime: editingPost.updatedTime ? new Date(editingPost.updatedTime).toLocaleString('ko-KR') : '',
           publishedAt: editingPost.publishedAt ? new Date(editingPost.publishedAt).toLocaleString('ko-KR') : undefined
         } : null}
         onSuccess={() => {
@@ -446,6 +465,22 @@ export default function AdminBlogPage() {
           setDeletingPost(null);
           pageActions.refresh();
         }}
+      />
+
+      {/* View stats modal */}
+      <BlogViewStatsModal
+        isOpen={!!viewStatsPost}
+        onClose={() => setViewStatsPost(null)}
+        postId={viewStatsPost?.uid || null}
+        postTitle={viewStatsPost?.title}
+      />
+
+      {/* Like stats modal */}
+      <BlogLikeStatsModal
+        isOpen={!!likeStatsPost}
+        onClose={() => setLikeStatsPost(null)}
+        postId={likeStatsPost?.uid || null}
+        postTitle={likeStatsPost?.title}
       />
     </>
   );

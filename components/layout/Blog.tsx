@@ -64,7 +64,7 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
     <div className="flex items-center bg-[var(--selecter)] rounded-lg p-1">
       <motion.button
         onClick={() => handleLayoutChange('card')}
-        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-shimmer overflow-hidden ${
+        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]  overflow-hidden ${
           layout === 'card'
             ? 'bg-[var(--background)] text-[var(--hover-primary)] shadow-sm'
             : 'text-[var(--text-color)] hover:text-[var(--title)] hover:bg-[var(--hover)]'
@@ -77,7 +77,7 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
       
       <motion.button
         onClick={() => handleLayoutChange('list')}
-        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover-shimmer overflow-hidden ${
+        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]  overflow-hidden ${
           layout === 'list'
             ? 'bg-[var(--background)] text-[var(--hover-primary)] shadow-sm'
             : 'text-[var(--text-color)] hover:text-[var(--title)] hover:bg-[var(--hover)]'
@@ -126,10 +126,12 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
           <h3 className="text-lg font-medium text-[var(--title)] mb-2">
             {t('error_loading_posts')}
           </h3>
-          <p className="text-[var(--text-color)] opacity-60 mb-4">{error}</p>
+          <p className="text-[var(--text-color)] opacity-60 mb-4">
+            {typeof error === 'string' ? error : error?.message || 'An error occurred'}
+          </p>
           <button
             type="button"
-            className="bg-gradient-to-r from-[var(--hover-primary)] to-[var(--hover-primary)]/80 text-white px-6 py-3 rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300 hover-shimmer overflow-hidden"
+            className="bg-gradient-to-r from-[var(--hover-primary)] to-[var(--hover-primary)]/80 text-white px-6 py-3 rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300  overflow-hidden"
             onClick={() => dispatch(fetchBlogPosts({
               page: 1,
               limit: 12,
@@ -185,7 +187,7 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
           type="button"
           onClick={handleLoadMore}
           disabled={isLoading}
-          className="group relative bg-gradient-to-r from-[var(--hover-primary)] to-[var(--hover-primary)]/80 text-white px-8 py-4 rounded-lg hover:shadow-xl transform hover:scale-105 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] disabled:opacity-50 disabled:cursor-not-allowed hover-shimmer overflow-hidden"
+          className="group relative bg-gradient-to-r from-[var(--hover-primary)] to-[var(--hover-primary)]/80 text-white px-8 py-4 rounded-lg hover:shadow-xl transform hover:scale-105 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] disabled:opacity-50 disabled:cursor-not-allowed  overflow-hidden"
         >
           <span className="relative z-10">
             {isLoading ? (

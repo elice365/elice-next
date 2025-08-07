@@ -24,9 +24,9 @@ export const SellerInfo = memo(function SellerInfo({
   return (
     <motion.div
       className={`
-        relative overflow-hidden rounded-xl shadow-sm
-        bg-[var(--color-modal)]/80 backdrop-blur-lg
-        border border-[var(--border-color)]/30
+        
+        bg-[var(--color-modal)]/80 
+        
         ${isDesktop ? 'p-6' : 'p-4'}
       `}
       initial={{ opacity: 0, y: 20 }}
@@ -38,17 +38,11 @@ export const SellerInfo = memo(function SellerInfo({
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--blog-accent)]/5 to-transparent pointer-events-none" />
       
       <div className="relative z-10">
-        {isDesktop && (
-          <h3 className="text-lg font-semibold text-[var(--title)] mb-4">작성자</h3>
-        )}
-        
         <div className="flex items-center space-x-4">
           {/* Profile Image with online indicator */}
           <div className="relative">
             <motion.div
-              className={`${
-                isDesktop ? 'h-16 w-16' : 'h-14 w-14'
-              } rounded-full overflow-hidden bg-[var(--hover)] ring-2 ring-[var(--blog-accent)]/20`}
+              className={`h-10 w-10 rounded-full overflow-hidden bg-[var(--hover)] ring-2 ring-[var(--blog-accent)]/20`}
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
             >
@@ -93,19 +87,19 @@ export const SellerInfo = memo(function SellerInfo({
 
           {!isDesktop && (
             <motion.button 
-              className="bg-[var(--blog-accent)] text-white px-4 py-2 rounded-lg text-sm font-medium hover-shimmer"
+              className="bg-[var(--blog-accent)] text-white px-4 py-2 rounded-lg text-sm font-medium "
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              연락하기
+              구매하기
             </motion.button>
           )}
         </div>
 
         {isDesktop && (
           <motion.button 
-            className="w-full mt-4 bg-[var(--blog-accent)] text-white px-4 py-2 rounded-lg font-medium hover-shimmer relative overflow-hidden"
+            className="w-full mt-4 bg-[var(--blog-accent)] text-white px-4 py-2 rounded-lg font-medium  relative overflow-hidden"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -115,16 +109,6 @@ export const SellerInfo = memo(function SellerInfo({
         )}
       </div>
 
-      {/* Easter egg: signature watermark after 5 seconds */}
-      <motion.div
-        className="absolute bottom-2 right-2 text-[var(--text-color)] opacity-5 text-4xl font-signature select-none pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.05 }}
-        transition={{ delay: 5, duration: 2 }}
-        style={{ fontFamily: 'cursive' }}
-      >
-        {author.name}
-      </motion.div>
     </motion.div>
   );
 });

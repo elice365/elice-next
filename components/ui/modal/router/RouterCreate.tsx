@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-import { BaseModal } from "./BaseModal";
+import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
 import { filterField } from "@/utils/regex/input";
 import { validateRouter } from "@/utils/regex/admin";

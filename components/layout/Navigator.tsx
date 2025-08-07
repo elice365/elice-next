@@ -15,7 +15,7 @@ import { useAnimatedWidth } from "@/hooks/ui"
 import { Icon } from "../ui/Icon";
 export default memo(function Navigator({ router }: PanelProps) {
     const dispatch = useAppDispatch()
-    const { mobile } = useAppSelector((s) => s.device)
+    const { mobile, desktop } = useAppSelector((s) => s.device)
     const { setPanel } = usePanel();
     const { setSearch } = useModal();
     const { user, isAuthenticated } = useAuth();
@@ -25,10 +25,10 @@ export default memo(function Navigator({ router }: PanelProps) {
         dispatch(setDevice(window.innerWidth))
     }, [dispatch])
     useEffect(() => {
-        if (mobile) setPanel(false)
-        if (mobile) setSearch(false)
-        if (!mobile) setPanel(true)
-    }, [mobile, setPanel, setSearch])
+        if (!desktop) setPanel(false)
+        if (!desktop) setSearch(false)
+        if (desktop) setPanel(true)
+    }, [desktop , setPanel, setSearch])
 
 
     useEffect(() => {

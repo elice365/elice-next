@@ -3,14 +3,14 @@
 import { memo, useState, useCallback, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Post } from '@/types/post';
+import { PostType } from '@/types/post';
 import { Icon } from '@/components/ui/Icon';
 import { useAppSelector, useAppDispatch } from '@/stores/hook';
 import { togglePostLike } from '@/stores/slice/blog';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface BlogListItemProps {
-  post: Post;
+  post: PostType;
   className?: string;
 }
 
@@ -335,7 +335,7 @@ export const ListItem = memo(function ListItem({ post, className = '' }: BlogLis
 });
 
 interface BlogListProps {
-  posts: Post[];
+  posts: PostType[];
   className?: string;
 }
 

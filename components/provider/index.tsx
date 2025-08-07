@@ -3,7 +3,7 @@ import { Panel } from "@/components/layout/Panel";
 import { Redux } from "@/components/provider/Redux";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { SearchModal } from "@/components/ui/modal/Search";
+import { SearchModal } from "@/components/ui/modal/common/Search";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Auth } from "./Auth";
@@ -34,7 +34,9 @@ export async function App({ children, type }: AppProps) {
             <Header />
           </div>
           <div className="flex flex-1">
-            <Panel type={type} />
+            <div className="max-w-[250px]">
+              <Panel type={type} />
+            </div>
             <main className="flex-1 flex items-center justify-center min-h-[90vh]">
               {children}
             </main>

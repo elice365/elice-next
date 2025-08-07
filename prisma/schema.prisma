@@ -192,15 +192,14 @@ model Post {
   publishedAt   DateTime?  @map("published_at")
   createdTime   DateTime   @default(now()) @map("created_time")
   updatedTime   DateTime   @updatedAt @map("updated_time")
-  views         Int        @default(0)
   likeCount     Int        @default(0) @map("like_count")
 
-  // Relations
+  // Relations - views는 view count로 자동 계산
   categoryId    String?    @map("category_id")
   category      Category?  @relation(fields: [categoryId], references: [uid])
   tags          Tag[]      @relation("PostTags")
   likes         Like[]     @relation("PostLikes")
-  viewsDetail   PostView[] @relation("PostViewRelation")
+  view          PostView[] @relation("PostViewRelation")
 
   @@map("posts")
 }
@@ -246,7 +245,7 @@ model Category {
 model PostView {
   id        String   @id @default(uuid())
   postId    String   @map("post_id")
-  post      Post     @relation("PostViewRelation", fields: [postId], references: [uid])
+  post      Post     @relation("PostViewRelation", fields: [postId], references: [uid], onDelete: Cascade)
   userId    String?  @map("user_id")
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   ip        String?

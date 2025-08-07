@@ -50,7 +50,6 @@ const basicBlogSelect = {
   images: true,
   status: true,
   publishedAt: true,
-  views: true,
   likeCount: true,
   createdTime: true,
   updatedTime: true
@@ -75,7 +74,7 @@ const blogWithRelationsSelect = {
   _count: {
     select: {
       likes: true,
-      viewsDetail: true
+      view: true
     }
   }
 };
@@ -113,7 +112,6 @@ export const createBlogPost = async (data: BlogCreateData, tagNames?: string[]) 
     status: data.status || 'draft',
     publishedAt: data.publishedAt || null,
     categoryId: data.categoryId || null,
-    views: 0,
     likeCount: 0
   };
 
@@ -365,7 +363,24 @@ export const getAdminBlogPosts = async (params: AdminBlogParams) => {
     prisma.post.count({ where: whereCondition })
   ]);
 
-  return { posts, totalCount };
+  // Get actual view counts for each post
+  const postsWithViews = await Promise.all(
+    posts.map(async (post: any) => {
+      const viewCount = await prisma.postView.count({
+        where: { postId: post.uid }
+      });
+      
+      return {
+        ...post,
+        _count: {
+          ...post._count,
+          view: viewCount
+        }
+      };
+    })
+  );
+
+  return { posts: postsWithViews, totalCount };
 };
 
 // ================================
@@ -409,10 +424,8 @@ export const getBlogStats = async () => {
       where: { status: 'draft' }
     }),
     
-    // Total views
-    prisma.post.aggregate({
-      _sum: { views: true }
-    }),
+    // Total views (count PostView records)
+    prisma.postView.count(),
     
     // Total likes
     prisma.post.aggregate({
@@ -474,7 +487,7 @@ export const getBlogStats = async () => {
     published: publishedPosts,
     draft: draftPosts,
     publishRate,
-    totalViews: totalViews._sum.views || 0,
+    totalViews: totalViews || 0, // totalViews는 이제 PostView 개수
     totalLikes: totalLikes._sum.likeCount || 0,
     todayViews,
     todayLikes,

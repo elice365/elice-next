@@ -3,9 +3,9 @@
 import React from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
-import { RouterCreateModal } from "@/components/ui/modal/RouterCreate";
-import { RouterEditModal } from "@/components/ui/modal/RouterEdit";
-import { DeleteModal } from "@/components/ui/modal/DeleteModal";
+import { RouterCreateModal } from "@/components/ui/modal/router/RouterCreate";
+import { RouterEditModal } from "@/components/ui/modal/router/RouterEdit";
+import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { WebRouter } from "@/types/admin";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
 import { useAdminPage, useAdminModals, useRoles, formatRolesForFilter } from "@/hooks/admin";

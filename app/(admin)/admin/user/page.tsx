@@ -4,7 +4,7 @@ import React from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { UserRoleManager } from "@/components/features/admin/UserRoleManager";
-import { UserModal } from "@/components/ui/modal/User";
+import { UserModal } from "@/components/ui/modal/user/User";
 import { User } from "@/types/user";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
 import { useAdminPage } from "@/hooks/admin";

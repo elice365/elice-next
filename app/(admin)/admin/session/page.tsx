@@ -4,7 +4,7 @@ import React from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { Session } from "@/types/session";
-import { BaseModal } from "@/components/ui/modal/BaseModal";
+import { BaseModal } from "@/components/ui/modal/common/BaseModal";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
 import { useAdminPage } from "@/hooks/admin";
 import { api } from "@/lib/fetch";

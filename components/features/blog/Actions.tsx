@@ -22,7 +22,6 @@ export const Actions = memo(function Actions({
   onLike,
   onBookmark,
   onShare,
-  variant = 'desktop'
 }: BlogPostActionsProps) {
   
   const handleLikeWithConfetti = () => {
@@ -40,19 +39,16 @@ export const Actions = memo(function Actions({
     }
   };
 
-  const buttonClass = variant === 'desktop' 
-    ? "w-12 h-12 flex items-center justify-center p-3 rounded-lg transition-all duration-300"
-    : "flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300";
-
   return (
-    <div className={`flex ${variant === 'desktop' ? 'flex-col gap-3' : 'items-center justify-around'}`}>
+    <div className='flex gap-1 m-3'>
       {/* Like Button */}
+      {/* Like Button  */}
       <motion.button
         onClick={handleLikeWithConfetti}
-        className={`${buttonClass} ${
+        className={`flex px-4 py-2 rounded-lg transition-all duration-300 ${
           isLiked 
             ? 'bg-red-50 dark:bg-red-900/20 text-red-600' 
-            : 'bg-[var(--hover)] hover:bg-[var(--card-hover)] text-[var(--text-color)]'
+            : 'hover:bg-[var(--card-hover)] text-[var(--text-color)]'
         }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -72,9 +68,7 @@ export const Actions = memo(function Actions({
               fill={isLiked ? 'currentColor' : 'none'}
               className={isLiked ? 'animate-pulse' : ''}
             />
-            {variant === 'mobile' && (
-              <span className="font-medium">{likeCount.toLocaleString()}</span>
-            )}
+            <span className="font-medium">{likeCount.toLocaleString()}</span>
           </motion.div>
         </AnimatePresence>
       </motion.button>
@@ -82,10 +76,10 @@ export const Actions = memo(function Actions({
       {/* Bookmark Button */}
       <motion.button
         onClick={onBookmark}
-        className={`${buttonClass} ${
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 ${
           isBookmarked 
             ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600' 
-            : 'bg-[var(--hover)] hover:bg-[var(--card-hover)] text-[var(--text-color)]'
+            : 'hover:bg-[var(--card-hover)] text-[var(--text-color)]'
         }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -104,7 +98,7 @@ export const Actions = memo(function Actions({
               size={20} 
               fill={isBookmarked ? 'currentColor' : 'none'}
             />
-            {variant === 'mobile' && <span>북마크</span>}
+            <span>북마크</span>
           </motion.div>
         </AnimatePresence>
       </motion.button>
@@ -112,13 +106,13 @@ export const Actions = memo(function Actions({
       {/* Share Button */}
       <motion.button
         onClick={onShare}
-        className={`${buttonClass} bg-[var(--hover)] hover:bg-[var(--card-hover)] text-[var(--text-color)]`}
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 hover:bg-[var(--card-hover)] text-[var(--text-color)]`}
         whileHover={{ scale: 1.1, rotate: 15 }}
         whileTap={{ scale: 0.9 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         <Share2 size={20} />
-        {variant === 'mobile' && <span>공유</span>}
+         <span>공유</span>
       </motion.button>
     </div>
   );

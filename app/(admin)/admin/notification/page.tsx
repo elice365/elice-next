@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
 import { useAdminPage } from "@/hooks/admin";
-import { NotificationCreateModal } from "@/components/ui/modal/NotificationCreate";
-import { NotificationViewModal } from "@/components/ui/modal/NotificationView";
-import { DeleteModal } from "@/components/ui/modal/DeleteModal";
+import { NotificationCreateModal } from "@/components/ui/modal/notification/NotificationCreate";
+import { NotificationViewModal } from "@/components/ui/modal/notification/NotificationView";
+import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 

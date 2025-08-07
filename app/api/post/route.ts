@@ -3,6 +3,8 @@ import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import { prisma } from '@/lib/db/prisma';
 import { safeBody } from '@/utils/parse/body';
+import { trackPostView } from '@/lib/db/views';
+import { requestInfo } from '@/lib/server/info';
 
 // Types for blog post API
 interface PostListRequest {
@@ -135,6 +137,7 @@ async function handlePostRequest(
 ): Promise<APIResult<PostListResponse | PostDetailResponse | NoticeListResponse>> {
   try {
     const body = await safeBody(request);
+    console.log('📝 POST /api/post request body:', body);
     const { type } = body;
 
     switch (type) {
@@ -142,7 +145,7 @@ async function handlePostRequest(
         return handlePostList(body as PostListRequest, context);
       
       case 'post':
-        return handlePostDetail(body as PostDetailRequest, context);
+        return handlePostDetail(body as PostDetailRequest, context, request);
       
       case 'notice':
         return handleNoticeList(body as NoticeListRequest, context);
@@ -154,10 +157,10 @@ async function handlePostRequest(
         };
     }
   } catch (error) {
-    // POST /api/post error
+    console.error('❌ POST /api/post error:', error);
     return {
       success: false,
-      message: 'Failed to process request',
+      message: error instanceof Error ? error.message : 'Failed to process request',
     };
   }
 }
@@ -174,6 +177,7 @@ async function handlePostList(
   // Build where clause
   const where: any = {
     type: { not: 'notice' }, // Exclude notices
+    status: 'published', // Only show published posts to users
   };
 
   if (body.category) {
@@ -197,15 +201,14 @@ async function handlePostList(
     ];
   }
 
-  // Build orderBy
+  // Build orderBy (views 컬럼 제거로 인해 views 정렬 비활성화)
   let orderBy: any = { createdTime: 'desc' }; // Default to latest
   if (body.sortBy === 'popular') {
     orderBy = { likeCount: 'desc' };
-  } else if (body.sortBy === 'views') {
-    orderBy = { views: 'desc' };
   }
+  // views 정렬은 컬럼 제거로 비활성화 - createdTime 사용
 
-  // Fetch posts with pagination
+  // Fetch posts with pagination (views calculated from PostView relationship)
   const [posts, totalCount] = await Promise.all([
     prisma.post.findMany({
       where,
@@ -232,16 +235,23 @@ async function handlePostList(
             uid: true,
           },
         } : false,
+        _count: {
+          select: {
+            view: true, // PostView 관계에서 자동 계산
+          },
+        },
       },
     }),
     prisma.post.count({ where }),
   ]);
 
-  // Transform posts to include isLiked flag
+  // Transform posts to include isLiked flag and calculated views
   const transformedPosts = posts.map((post: any) => ({
     ...post,
+    views: post._count.view, // PostView 관계에서 계산된 조회수
     isLiked: context.userId ? (post.likes as any[]).length > 0 : false,
     likes: undefined, // Remove likes array from response
+    _count: undefined, // Remove _count from response
   }));
 
   const totalPages = Math.ceil(totalCount / limit);
@@ -265,11 +275,12 @@ async function handlePostList(
 // Handle post detail request
 async function handlePostDetail(
   body: PostDetailRequest,
-  context: AuthInfo
+  context: AuthInfo,
+  request: NextRequest
 ): Promise<APIResult<PostDetailResponse>> {
   const { uid, language = 'ko' } = body;
 
-  // Fetch post details
+  // Fetch post details (with calculated views)
   const post = await prisma.post.findUnique({
     where: { uid },
     include: {
@@ -292,6 +303,11 @@ async function handlePostDetail(
           uid: true,
         },
       } : false,
+      _count: {
+        select: {
+          view: true, // PostView 관계에서 자동 계산
+        },
+      },
     },
   });
 
@@ -302,36 +318,49 @@ async function handlePostDetail(
     };
   }
 
-  // Increment view count asynchronously
-  prisma.post.update({
-    where: { uid },
-    data: { views: { increment: 1 } },
-  }).catch((error: any) => {
-    // Failed to increment view count
-  });
+  // Check if post is published (only admins/editors can view drafts)
+  if (post.status !== 'published' && !context.isAdmin && !context.isEditor) {
+    return {
+      success: false,
+      message: 'Post not found',
+    };
+  }
 
-  // Track detailed view if user is logged in
-  if (context.userId) {
-    prisma.postView.create({
-      data: {
+  // Track view with duplicate checking using real client info from cookie
+  const deviceInfoCookie = request.cookies.get('deviceInfo');
+  console.log('🍪 Device info cookie:', deviceInfoCookie?.value);
+  
+  if (deviceInfoCookie) {
+    try {
+      const { ipAddress, userAgent } = JSON.parse(deviceInfoCookie.value);
+      console.log('📱 Parsed device info:', { ipAddress, userAgent, userId: context.userId });
+      
+      // Track view asynchronously (includes duplicate check and view increment)
+      const trackResult = await trackPostView({
         postId: uid,
-        userId: context.userId,
-        ip: context.deviceInfo.ipAddress,
-        userAgent: context.deviceInfo.userAgent,
-      },
-    }).catch((error: any) => {
-      // Failed to track post view
-    });
+        userId: context.userId || null,
+        ip: ipAddress,
+        userAgent: userAgent,
+      });
+      
+      console.log('📊 Track result:', trackResult ? 'View counted' : 'Duplicate view');
+    } catch (error) {
+      console.error('Failed to parse device info cookie:', error);
+    }
+  } else {
+    console.log('❌ No device info cookie found');
   }
 
   // Fetch content from CDN
   const content = await fetchCDNContent(uid, language);
 
-  // Transform post to include isLiked flag
+  // Transform post to include isLiked flag and calculated views
   const transformedPost = {
     ...post,
+    views: post._count.view, // PostView 관계에서 계산된 조회수
     isLiked: context.userId ? (post.likes as any[]).length > 0 : false,
     likes: undefined, // Remove likes array from response
+    _count: undefined, // Remove _count from response
   };
 
   return {

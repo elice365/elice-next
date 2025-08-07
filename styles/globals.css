@@ -77,8 +77,23 @@ html.light {
   --color-badge: #f5f5f5;
   --color-card:#FAFAFD;
   
-  /* Blog accent color */
-    --blog-accent: #5c5049;
+  /* Blog Design System - Light Mode */
+  --blog-accent: #5c5049;
+  --blog-accent-hover: #4a3f39;
+  --blog-secondary: #6b5b52;
+  --blog-gradient-start: #5c5049;
+  --blog-gradient-end: #6b5b52;
+  --blog-surface: #fafafa;
+  --blog-surface-hover: #f5f5f5;
+  --blog-text-primary: #2c2c2c;
+  --blog-text-secondary: #666666;
+  --blog-border: #e3e1e1;
+  --blog-shadow-sm: 0 1px 3px 0 rgb(92 80 73 / 0.08);
+  --blog-shadow-md: 0 4px 8px -1px rgb(92 80 73 / 0.12);
+  --blog-shadow-lg: 0 12px 20px -3px rgb(92 80 73 / 0.15);
+  --blog-radius-sm: 0.5rem;
+  --blog-radius-md: 0.75rem;
+  --blog-radius-lg: 1rem;
   --card-hover: #ebebeb;
   
   /* Modal specific */
@@ -118,8 +133,23 @@ html.dark {
   --color-badge: #3d3d3d;
   --color-card:#2f2f2f;
   
-  /* Blog accent color */
-   --blog-accent: #444444;
+  /* Blog Design System - Dark Mode */
+  --blog-accent: #6b7280;
+  --blog-accent-hover: #9ca3af;
+  --blog-secondary: #4b5563;
+  --blog-gradient-start: #6b7280;
+  --blog-gradient-end: #4b5563;
+  --blog-surface: #1f1f1f;
+  --blog-surface-hover: #2a2a2a;
+  --blog-text-primary: #e5e5e5;
+  --blog-text-secondary: #a1a1aa;
+  --blog-border: #404040;
+  --blog-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+  --blog-shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.4);
+  --blog-shadow-lg: 0 12px 20px -3px rgb(0 0 0 / 0.5);
+  --blog-radius-sm: 0.5rem;
+  --blog-radius-md: 0.75rem;
+  --blog-radius-lg: 1rem;
   --card-hover: #404040;
   
   /* Modal specific */
@@ -158,8 +188,23 @@ html.deepblue {
   --color-badge: #34405a;
   --color-card:#2a313d;
   
-  /* Blog accent color */
-  --blog-accent: #4a6c93;
+  /* Blog Design System - Deep Blue Mode */
+  --blog-accent: #4a90e2;
+  --blog-accent-hover: #357abd;
+  --blog-secondary: #5b9bd5;
+  --blog-gradient-start: #4a90e2;
+  --blog-gradient-end: #5b9bd5;
+  --blog-surface: #2a3441;
+  --blog-surface-hover: #34405a;
+  --blog-text-primary: #e2e8f0;
+  --blog-text-secondary: #cbd5e1;
+  --blog-border: #475569;
+  --blog-shadow-sm: 0 1px 3px 0 rgb(30 37 48 / 0.3);
+  --blog-shadow-md: 0 4px 8px -1px rgb(30 37 48 / 0.4);
+  --blog-shadow-lg: 0 12px 20px -3px rgb(30 37 48 / 0.5);
+  --blog-radius-sm: 0.5rem;
+  --blog-radius-md: 0.75rem;
+  --blog-radius-lg: 1rem;
   --card-hover: #3e4a5f;
   
   /* Modal specific */
@@ -316,64 +361,6 @@ body {
   }
 }
 
-/* Tailwind v4 Custom Utilities */
-@utility hover-shimmer {
-  position: relative;
-  overflow: hidden;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      105deg,
-      transparent 40%,
-      rgba(255, 255, 255, 0.7) 50%,
-      transparent 60%
-    );
-    transform: translateX(-100%);
-    transition: transform 1s ease-out;
-    pointer-events: none;
-    z-index: 1;
-  }
-  
-  &:hover::after {
-    animation: shimmer 1.5s ease-out;
-  }
-}
-
-/* Enhanced shimmer for blog posts */
-@utility blog-shimmer {
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      105deg,
-      transparent 30%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 70%
-    );
-    transform: translateX(-100%);
-    transition: all 0.6s ease-out;
-    pointer-events: none;
-    z-index: 5;
-  }
-  
-  &:hover::before {
-    transform: translateX(100%);
-  }
-}
-
 @utility animate-fade-in {
   animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -385,53 +372,3 @@ body {
 @utility animate-scale-in {
   animation: scaleIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-/* Custom transition timings */
-@utility transition-smooth {
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@utility transition-bounce {
-  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@utility ease-soft-out {
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@utility ease-bounce-subtle {
-  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Enhanced hover states for admin tables */
-@layer components {
-  .admin-table-row {
-    @apply transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)];
-    
-    &:hover {
-      background: var(--hover);
-      transform: translateX(2px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-  }
-  
-  .admin-card {
-    @apply transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)];
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-    }
-  }
-  
-  /* Blog list enhanced styles */
-  .blog-list-item {
-    @apply transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)];
-    
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-  }
-}
-

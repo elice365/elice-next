@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { Post } from '@/types/post';
+import { PostType } from '@/types/post';
 
-export const useBlogActions = (post: Post) => {
+export const useBlogActions = (post: PostType) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likeCount || 0);

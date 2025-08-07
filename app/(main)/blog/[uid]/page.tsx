@@ -3,12 +3,13 @@ import { notFound } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 import { ImageMeta } from "@/types/image";
 import { metaImage } from "@/utils/parse/metaImage";
-import { PostDetail } from "@/components/features/blog/PostDetail";
+import { Post } from "@/components/features/blog/Post";
 import { PostDetailResponse, PostContent } from "@/types/post";
+import { api } from "@/lib/fetch";
 
 export const dynamic = 'force-dynamic';
 
-interface BlogDetailPageProps {
+interface BlogPageProps {
   params: Promise<{
     uid: string;
   }>;
@@ -17,33 +18,35 @@ interface BlogDetailPageProps {
 // Fetch post data for metadata and content
 async function fetchPostData(uid: string, language: string = 'ko') {
   try {
-    // Fetch post metadata from API
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/post`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        type: 'post',
-        uid,
-        language,
-      }),
-      next: { revalidate: 3600 }, // Cache for 1 hour
+    // Get cookies from server context
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    const deviceInfoCookie = cookieStore.get('deviceInfo');
+    
+    // Prepare headers with cookies for internal API call
+    const headers: Record<string, string> = {};
+    if (deviceInfoCookie) {
+      // Encode cookie value to prevent truncation
+      headers['Cookie'] = `deviceInfo=${encodeURIComponent(deviceInfoCookie.value)}`;
+    }
+
+    // Fetch post metadata from API using api.post
+    const { data } = await api.post<{ success: boolean; data: PostDetailResponse }>('/api/post', {
+      type: 'post',
+      uid,
+      language,
+    }, {
+      headers
     });
 
-    if (!response.ok) {
+    if (!data.success || !data.data.post) {
       return null;
     }
 
-    const result = await response.json();
-    
-    if (!result.success || !result.data.post) {
-      return null;
-    }
-
-    return result.data as PostDetailResponse;
+    return data.data as PostDetailResponse;
   } catch (error) {
     // Failed to fetch post data
+    console.error('Failed to fetch post data:', error);
     return null;
   }
 }
@@ -70,7 +73,7 @@ async function fetchPostContent(uid: string, language: string = 'ko'): Promise<P
   }
 }
 
-export async function generateMetadata({ params }: BlogDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
   const locale = await getLocale();
   const t = await getTranslations("metaData");
   const resolvedParams = await params;
@@ -153,7 +156,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
   };
 }
 
-export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
+export default async function BlogDetailPage({ params }: BlogPageProps) {
   const locale = await getLocale();
   const blogT = await getTranslations("router");
   const resolvedParams = await params;
@@ -174,16 +177,16 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
   return (
     <>
-      <div className="min-h-screen bg-[var(--color-panel)] transition-colors duration-300">
+      <div className="w-full min-h-screen bg-[var(--color-panel)] transition-colors duration-300">
         {/* Breadcrumb */}
-        <div className="bg-[var(--background)] border-b border-[var(--border-color)] shadow-sm">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="bg-header border-b border-[var(--border-color)] shadow-sm">
+          <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <nav className="flex" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-2 text-sm">
                 <li>
                   <a 
                     href="/blog" 
-                    className="text-[var(--text-color)] hover:text-[var(--hover-primary)] transition-colors duration-300 hover-shimmer overflow-hidden px-1 py-0.5 rounded"
+                    className="text-[var(--text-color)] hover:text-[var(--hover-primary)] transition-colors duration-300  overflow-hidden px-1 py-0.5 rounded"
                   >
                     {blogT("blog")}
                   </a>
@@ -214,8 +217,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <PostDetail post={post} content={postContent} />
+        <div className="w-full max-w-full">
+          <Post post={post} content={postContent} />
         </div>
       </div>
 

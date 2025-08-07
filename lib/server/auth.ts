@@ -9,7 +9,7 @@ interface InitialAuthData {
 }
 
 // cache() 함수로 래핑하여 동일한 렌더링 사이클에서 중복 호출 방지
-export const UserInfo = cache(async (): Promise<InitialAuthData | null> => {
+export async function UserInfo(): Promise<InitialAuthData | null> {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get('token')?.value;
   const fingerprint = cookieStore.get('fp')?.value;
@@ -59,4 +59,4 @@ export const UserInfo = cache(async (): Promise<InitialAuthData | null> => {
     console.error("Error fetching user info:", error);
     return null;
   }
-});
+};

@@ -3,7 +3,6 @@ import React, { useState, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { SocialButtons } from "@/components/features/auth/SocialButtons";

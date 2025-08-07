@@ -35,7 +35,7 @@ export default async function BlogNotFound() {
         <div className="space-y-3">
           <Link
             href="/blog"
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[var(--hover-primary)] to-[var(--hover-primary)]/80 text-white rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-300 hover-shimmer overflow-hidden"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[var(--hover-primary)] to-[var(--hover-primary)]/80 text-white rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-300  overflow-hidden"
           >
             <Icon name="ArrowLeft" size={18} />
             <span>블로그 목록으로 돌아가기</span>
@@ -43,7 +43,7 @@ export default async function BlogNotFound() {
           
           <Link
             href="/"
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[var(--border-color)] text-[var(--text-color)] bg-[var(--background)] rounded-lg font-medium hover:bg-[var(--hover)] transition-all duration-300 hover-shimmer overflow-hidden"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[var(--border-color)] text-[var(--text-color)] bg-[var(--background)] rounded-lg font-medium hover:bg-[var(--hover)] transition-all duration-300  overflow-hidden"
           >
             <Icon name="Home" size={18} />
             <span>홈으로 이동</span>
@@ -58,19 +58,19 @@ export default async function BlogNotFound() {
           <div className="flex flex-wrap justify-center gap-4 text-sm">
             <Link 
               href="/blog?sortBy=popular" 
-              className="text-[var(--hover-primary)] hover:text-[var(--hover-info)] transition-colors duration-300 hover-shimmer overflow-hidden px-2 py-1 rounded"
+              className="text-[var(--hover-primary)] hover:text-[var(--hover-info)] transition-colors duration-300  overflow-hidden px-2 py-1 rounded"
             >
               인기 글
             </Link>
             <Link 
               href="/blog?sortBy=latest" 
-              className="text-[var(--hover-primary)] hover:text-[var(--hover-info)] transition-colors duration-300 hover-shimmer overflow-hidden px-2 py-1 rounded"
+              className="text-[var(--hover-primary)] hover:text-[var(--hover-info)] transition-colors duration-300  overflow-hidden px-2 py-1 rounded"
             >
               최신 글
             </Link>
             <Link 
               href="/product" 
-              className="text-[var(--hover-primary)] hover:text-[var(--hover-info)] transition-colors duration-300 hover-shimmer overflow-hidden px-2 py-1 rounded"
+              className="text-[var(--hover-primary)] hover:text-[var(--hover-info)] transition-colors duration-300  overflow-hidden px-2 py-1 rounded"
             >
               제품 소개
             </Link>

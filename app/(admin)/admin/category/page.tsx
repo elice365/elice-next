@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
 import { useAdminPage } from "@/hooks/admin";
-import { CategoryCreateModal } from "@/components/ui/modal/CategoryCreate";
-import { CategoryEditModal } from "@/components/ui/modal/CategoryEdit";
-import { DeleteModal } from "@/components/ui/modal/DeleteModal";
+import { CategoryCreateModal } from "@/components/ui/modal/category/CategoryCreate";
+import { CategoryEditModal } from "@/components/ui/modal/category/CategoryEdit";
+import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import Image from "next/image";
@@ -32,11 +32,11 @@ interface CategoryData {
 }
 
 // Default placeholder images
-const DEFAULT_CATEGORY_IMAGE = "https://via.placeholder.com/100/f3f4f6/9ca3af?text=Category";
+const DEFAULT_CATEGORY_IMAGE = "https://placehold.co/100x100.png?text=Category&w=1080&q=75";
 const DEFAULT_IMAGES = [
-  "https://via.placeholder.com/100/f3f4f6/9ca3af?text=1",
-  "https://via.placeholder.com/100/f3f4f6/9ca3af?text=2",
-  "https://via.placeholder.com/100/f3f4f6/9ca3af?text=3"
+  "https://placehold.co/100x100.png?text=1&w=1080&q=75",
+  "https://placehold.co/100x100.png?text=2&w=1080&q=75",
+  "https://placehold.co/100x100.png?text=3&w=1080&q=75"
 ];
 
 // Category management page main component
@@ -510,7 +510,7 @@ export default function AdminCategoryPage() {
         }
 
         /* Shimmer effect */
-        .hover-shimmer {
+        . {
           background: linear-gradient(
             105deg,
             transparent 40%,

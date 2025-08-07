@@ -5,11 +5,38 @@ import { createResponse } from './lib/server/response';
 import { setMessage } from './lib/response';
 import { authConfig } from './constants/auth/client';
 import { country } from './utils/type/country';
+import { requestInfo } from './lib/server/info';
 
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const response = NextResponse.next();
+
+  // === 실제 클라이언트 정보 쿠키 저장 (조회수 추적용) ===
+  const deviceInfoCookie = request.cookies.get('deviceInfo');
+  console.log('🛣️ Middleware - pathname:', pathname);
+  console.log('🍪 Existing deviceInfo cookie:', deviceInfoCookie?.value);
+  
+  if (!deviceInfoCookie) {
+    const { ipAddress, userAgent } = requestInfo(request);
+    console.log('📱 Middleware - requestInfo:', { ipAddress, userAgent });
+    
+    // 실제 클라이언트인지 확인 (axios가 아닌 브라우저)
+    if (ipAddress && userAgent && !userAgent.includes('axios')) {
+      const deviceInfo = JSON.stringify({ ipAddress, userAgent });
+      console.log('✅ Setting deviceInfo cookie:', deviceInfo);
+      response.cookies.set('deviceInfo', deviceInfo, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 86400 // 24시간
+      });
+    } else {
+      console.log('❌ Not setting cookie - axios or invalid info');
+    }
+  } else {
+    console.log('✅ deviceInfo cookie already exists');
+  }
 
   // === 기본 보안 헤더 설정 ===
   response.headers.set('X-Content-Type-Options', 'nosniff');
@@ -39,7 +66,7 @@ export async function middleware(request: NextRequest) {
       if (pathname.startsWith('/api/')) {
          return createResponse(await setMessage('Unauthorized', null ,401));
       }
-      return NextResponse.redirect(new URL('/auth/login', request.nextUrl.origin));
+      return NextResponse.redirect(new URL('/login', request.nextUrl.origin));
     }
   }
     

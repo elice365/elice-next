@@ -5,7 +5,7 @@ import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { UserModalProps } from "@/types/user";
 import { Input } from "@/components/ui/Input";
-import { BaseModal } from "./BaseModal";
+import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
 import { useModalForm } from "@/hooks/modal";
 

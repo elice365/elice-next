@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 import { BaseModal } from "./BaseModal";
-import { FormField } from "../form/FormField";
+import { FormField } from "../../form/FormField";
 import { Icon } from "@/components/ui/Icon";
 
 import { api } from "@/lib/fetch";
