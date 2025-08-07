@@ -524,14 +524,17 @@ export const incrementPostView = async (
     }
   });
 
-  // Increment view count
-  return prisma.post.update({
+  // Return post with view count
+  const post = await prisma.post.findUnique({
     where: { uid: postId },
-    data: {
-      views: { increment: 1 }
-    },
-    select: { views: true }
+    include: {
+      _count: {
+        select: { view: true }
+      }
+    }
   });
+
+  return post;
 };
 
 /**

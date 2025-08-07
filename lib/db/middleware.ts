@@ -38,7 +38,9 @@ prisma.$use(async (params, next) => {
         // 캐시 크기 제한
         if (queryCache.size > 100) {
           const firstKey = queryCache.keys().next().value;
-          queryCache.delete(firstKey);
+          if (firstKey) {
+            queryCache.delete(firstKey);
+          }
         }
       }
     }

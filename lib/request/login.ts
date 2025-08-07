@@ -1,13 +1,14 @@
 import { APIResult } from "@/types/api";
 import { NextRequest } from "next/server";
-import { findUser } from "@/lib/db/user"; // 변경: prisma 대신 findUser 임포트
-import { createSession } from "@/lib/db/session"; // 변경: prisma 대신 createSession 임포트
+import { findUser } from "@/lib/db/user";
+import { createSession } from "@/lib/db/session";
 import { requestInfo } from "@/lib/server/info";
 import { randomUUID } from "crypto";
 import { tokenServer } from "@/lib/services/token/server";
 import * as argon2 from 'argon2';
 import { setMessage } from "../response";
-import { authRegex } from "@/utils/regex/auth";
+import { loginSchema, validateApiRequest } from "@/lib/validation/schemas";
+import { logger } from "@/utils/logger";
 import { history } from "@/lib/db/history";
 // 로그인
 export const login = async (request: NextRequest): Promise<APIResult> => {
@@ -16,13 +17,15 @@ export const login = async (request: NextRequest): Promise<APIResult> => {
     if (request.method !== 'POST') {
       return await setMessage('InvalidType', null, 405);
     }
-    const { email, password, fingerprint } = await request.json();
 
-    const validation = await authRegex(email, password);
-
-    if (!validation.isValid) {
-      return await setMessage('InvalidField', null, 401);
+    // Validate request body using Zod schema
+    const validation = await validateApiRequest(loginSchema, request);
+    if (!validation.success) {
+      logger.auth.warn('Login validation failed', validation.errors);
+      return await setMessage('InvalidField', validation.errors, 400);
     }
+
+    const { email, password, fingerprint } = validation.data!;
 
 
 
@@ -103,10 +106,7 @@ export const login = async (request: NextRequest): Promise<APIResult> => {
       fingerprint
     },200);
   } catch (error) {
-    // Log error details for server monitoring
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Login error:', error);
-    }
+    logger.auth.error('Login failed', { error });
     return await setMessage('UnknownError', null, 500);
   }
 };

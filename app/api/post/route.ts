@@ -319,7 +319,8 @@ async function handlePostDetail(
   }
 
   // Check if post is published (only admins/editors can view drafts)
-  if (post.status !== 'published' && !context.isAdmin && !context.isEditor) {
+  const hasAdminRole = context.roles?.includes('admin') || context.roles?.includes('editor');
+  if (post.status !== 'published' && !hasAdminRole) {
     return {
       success: false,
       message: 'Post not found',

@@ -1,5 +1,8 @@
 // Blog post related types
 
+// Alias for backward compatibility 
+export type Post = PostType;
+
 export interface PostType {
   uid: string;
   type: string;

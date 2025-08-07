@@ -65,6 +65,7 @@ const getBlogPosts = async (
     return setRequest(result);
 
   } catch (error) {
+    console.error('[API] Get blog posts failed:', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -121,6 +122,7 @@ const createBlogPost = async (
     return setRequest(result);
 
   } catch (error) {
+    console.error('[API] Get blog posts failed:', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -175,6 +177,7 @@ const updateBlogPost = async (
     return setRequest(result);
 
   } catch (error) {
+    console.error('[API] Get blog posts failed:', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -207,6 +210,7 @@ const deleteBlogPosts = async (
     return setRequest(result);
 
   } catch (error) {
+    console.error('[API] Get blog posts failed:', error);
     return setMessage('NetworkError', null, 500);
   }
 };

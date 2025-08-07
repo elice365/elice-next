@@ -127,7 +127,7 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
             {t('error_loading_posts')}
           </h3>
           <p className="text-[var(--text-color)] opacity-60 mb-4">
-            {typeof error === 'string' ? error : error?.message || 'An error occurred'}
+            {typeof error === 'string' ? error : (error as Error)?.message || 'An error occurred'}
           </p>
           <button
             type="button"

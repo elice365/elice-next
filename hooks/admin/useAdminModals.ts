@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback } from "react";
+import { useModalStates } from "@/hooks/modal/useModalStates";
 
+/**
+ * @deprecated Use useModalStates from '@/hooks/modal/useModalStates' instead
+ * This hook is maintained for backward compatibility
+ */
 export interface AdminModalsState<T> {
   isCreateModalOpen: boolean;
   isEditModalOpen: boolean;
@@ -17,52 +22,43 @@ export interface AdminModalsActions<T> {
   setSelectedRecord: (record: T | null) => void;
 }
 
+/**
+ * @deprecated Use useModalStates instead for better performance and consistency
+ * This hook is maintained for backward compatibility but should be migrated
+ */
 export function useAdminModals<T>(): [AdminModalsState<T>, AdminModalsActions<T>] {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<T | null>(null);
+  const modalStates = useModalStates<T>({
+    modalNames: ['create', 'edit', 'delete']
+  });
 
-  const openCreateModal = () => {
-    setIsCreateModalOpen(true);
-  };
-
-  const openEditModal = (record: T, e?: React.MouseEvent | Event) => {
+  const openEditModal = useCallback((record: T, e?: React.MouseEvent | Event) => {
     if (e && typeof e.stopPropagation === 'function') {
       e.stopPropagation();
     }
-    setSelectedRecord(record);
-    setIsEditModalOpen(true);
-  };
+    modalStates.openModal('edit', record);
+  }, [modalStates]);
 
-  const openDeleteModal = (record: T, e?: React.MouseEvent | Event) => {
+  const openDeleteModal = useCallback((record: T, e?: React.MouseEvent | Event) => {
     if (e && typeof e.stopPropagation === 'function') {
       e.stopPropagation();
     }
-    setSelectedRecord(record);
-    setIsDeleteModalOpen(true);
-  };
+    modalStates.openModal('delete', record);
+  }, [modalStates]);
 
-  const closeModals = () => {
-    setIsCreateModalOpen(false);
-    setIsEditModalOpen(false);
-    setIsDeleteModalOpen(false);
-    setSelectedRecord(null);
-  };
-
+  // Compatibility layer - map new API to old API
   const state: AdminModalsState<T> = {
-    isCreateModalOpen,
-    isEditModalOpen,
-    isDeleteModalOpen,
-    selectedRecord
+    isCreateModalOpen: modalStates.modalStates.create || false,
+    isEditModalOpen: modalStates.modalStates.edit || false,
+    isDeleteModalOpen: modalStates.modalStates.delete || false,
+    selectedRecord: modalStates.selectedItem
   };
 
   const actions: AdminModalsActions<T> = {
-    openCreateModal,
+    openCreateModal: modalStates.openCreate,
     openEditModal,
     openDeleteModal,
-    closeModals,
-    setSelectedRecord
+    closeModals: modalStates.closeAllModals,
+    setSelectedRecord: modalStates.setSelectedItem
   };
 
   return [state, actions];

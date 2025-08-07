@@ -12,7 +12,6 @@ function PostHogProvider({ children }: { children: React.ReactNode }) {
       
       // 개발 환경에서는 PostHog를 완전히 비활성화
       if (process.env.NODE_ENV === 'development') {
-        console.log('PostHog disabled in development mode');
         return;
       }
       
@@ -35,7 +34,10 @@ function PostHogProvider({ children }: { children: React.ReactNode }) {
           });
         }
       } catch (error) {
-        console.warn('PostHog initialization failed:', error);
+        // PostHog initialization errors are not critical
+        if (typeof window !== 'undefined') {
+          console.warn('PostHog initialization failed:', error);
+        }
       }
     };
 

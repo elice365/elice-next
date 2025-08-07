@@ -6,6 +6,7 @@ import { setMessage } from './lib/response';
 import { authConfig } from './constants/auth/client';
 import { country } from './utils/type/country';
 import { requestInfo } from './lib/server/info';
+import { logger } from './utils/logger';
 
 
 export async function middleware(request: NextRequest) {
@@ -14,17 +15,22 @@ export async function middleware(request: NextRequest) {
 
   // === 실제 클라이언트 정보 쿠키 저장 (조회수 추적용) ===
   const deviceInfoCookie = request.cookies.get('deviceInfo');
-  console.log('🛣️ Middleware - pathname:', pathname);
-  console.log('🍪 Existing deviceInfo cookie:', deviceInfoCookie?.value);
+  logger.debug('Processing middleware request', 'API', { pathname });
   
   if (!deviceInfoCookie) {
     const { ipAddress, userAgent } = requestInfo(request);
-    console.log('📱 Middleware - requestInfo:', { ipAddress, userAgent });
+    logger.debug('Extracting client info for device tracking', 'API', { 
+      ipAddress: ipAddress?.substring(0, 8) + '***', // Mask IP for privacy
+      userAgent: userAgent?.substring(0, 50) + '...' 
+    });
     
     // 실제 클라이언트인지 확인 (axios가 아닌 브라우저)
     if (ipAddress && userAgent && !userAgent.includes('axios')) {
       const deviceInfo = JSON.stringify({ ipAddress, userAgent });
-      console.log('✅ Setting deviceInfo cookie:', deviceInfo);
+      logger.info('Setting device tracking cookie for real client', 'API', {
+        hasValidInfo: true,
+        isAxiosRequest: false
+      });
       response.cookies.set('deviceInfo', deviceInfo, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -32,10 +38,14 @@ export async function middleware(request: NextRequest) {
         maxAge: 86400 // 24시간
       });
     } else {
-      console.log('❌ Not setting cookie - axios or invalid info');
+      logger.debug('Skipping cookie - axios request or invalid client info', 'API', {
+        hasIpAddress: !!ipAddress,
+        hasUserAgent: !!userAgent,
+        isAxiosRequest: userAgent?.includes('axios') || false
+      });
     }
   } else {
-    console.log('✅ deviceInfo cookie already exists');
+    logger.debug('Device tracking cookie already exists', 'API');
   }
 
   // === 기본 보안 헤더 설정 ===

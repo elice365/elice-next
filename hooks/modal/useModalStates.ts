@@ -129,3 +129,55 @@ export function useAdminModals<T = any>() {
     modalNames: ['create', 'edit', 'delete', 'view', 'manage']
   });
 }
+
+// Enhanced hook with loading and error state for better UX
+export interface UseModalStateOptions {
+  modalNames: string[];
+  fetchData?: (item?: any) => Promise<any>;
+  onSuccess?: (result: any) => void;
+  onError?: (error: any) => void;
+}
+
+export function useModalState<T = any>({ 
+  modalNames, 
+  fetchData,
+  onSuccess,
+  onError 
+}: UseModalStateOptions) {
+  const modalStates = useModalStates<T>({ modalNames });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const openModalWithData = useCallback(async (modalName: string, item?: T) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      if (fetchData && item) {
+        const result = await fetchData(item);
+        onSuccess?.(result);
+      }
+      
+      modalStates.openModal(modalName, item);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMsg);
+      onError?.(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData, modalStates, onSuccess, onError]);
+
+  const closeModal = useCallback((modalName: string) => {
+    modalStates.closeModal(modalName);
+    setError(null);
+  }, [modalStates]);
+
+  return {
+    ...modalStates,
+    loading,
+    error,
+    openModalWithData,
+    closeModal
+  };
+}

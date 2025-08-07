@@ -30,8 +30,7 @@ interface LikeDetailResponse {
 
 async function handleGetPostLikes(
   request: NextRequest,
-  context: AuthInfo,
-  params: { uid: string }
+  context: AuthInfo & Record<string, any>
 ): Promise<APIResult<LikeDetailResponse>> {
   try {
     // Next.js 15에서는 URL에서 직접 파라미터 추출
@@ -43,8 +42,7 @@ async function handleGetPostLikes(
     if (!uid) {
       return {
         success: false,
-        message: 'Post ID is required',
-        data: null
+        message: 'Post ID is required'
       };
     }
     
@@ -148,5 +146,5 @@ async function handleGetPostLikes(
 
 export const GET = handler(handleGetPostLikes, {
   auth: true,
-  role: ['admin', 'editor']
+  roles: ['admin', 'editor']
 });

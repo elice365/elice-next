@@ -96,21 +96,34 @@ export const createAPI = (config: ApiClientConfig) => {
         headers: response.headers as Record<string, string>
       };
     } catch (error: unknown) {
-      // Extract and preserve error message
+      // Enhanced error handling with better message extraction
+      let errorMessage = 'Network request failed';
+      
       if (error && typeof error === 'object' && 'response' in error) {
-        const response = (error as { response?: { data: any; message: string } }).response;
+        const response = (error as any).response;
         
-        // Create enhanced error with server message
-        if (response?.message) {
-          const enhancedError = new Error(response.message);
-          (enhancedError as any).originalError = error;
-          (enhancedError as any).response = response;
-          throw enhancedError;
+        // Try multiple paths for error message
+        if (response?.data?.message) {
+          errorMessage = response.data.message;
+        } else if (response?.data?.error) {
+          errorMessage = response.data.error;
+        } else if (response?.message) {
+          errorMessage = response.message;
+        } else if (response?.statusText) {
+          errorMessage = `${response.status} ${response.statusText}`;
         }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
       }
       
-      // Re-throw original error if no message extraction needed
-      throw error instanceof Error ? error : new Error(String(error));
+      // Create enhanced error with original context
+      const enhancedError = new Error(errorMessage);
+      (enhancedError as any).originalError = error;
+      (enhancedError as any).isApiError = true;
+      
+      throw enhancedError;
     }
   };
 
