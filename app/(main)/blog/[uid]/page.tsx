@@ -251,9 +251,9 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             "dateModified": post.updatedTime || post.createdTime,
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": `${process.env.NEXT_PUBLIC_URLNEXT_PUBLIC_URL}/blog/${resolvedParams.uid}`
+              "@id": `${process.env.NEXT_PUBLIC_URL}/blog/${resolvedParams.uid}`
             },
-            "url": `${process.env.NEXT_PUBLIC_URLNEXT_PUBLIC_URL}/blog/${resolvedParams.uid}`,
+            "url": `${process.env.NEXT_PUBLIC_URL}/blog/${resolvedParams.uid}`,
             "wordCount": postContent?.data?.content?.length || 0,
             "genre": post.category?.name || "Technology",
             "keywords": post.tags.map(tag => tag.name).join(", "),

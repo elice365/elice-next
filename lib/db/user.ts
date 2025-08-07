@@ -1,5 +1,6 @@
 import { prisma } from './prisma';
 import { Prisma } from '@prisma/client';
+import { withRetry } from './connection-manager';
 
 // ================================
 // TypeScript Interfaces
@@ -106,26 +107,29 @@ export const findUserById = async (id: string) => {
 
 /**
  * 이메일로 사용자를 찾고 인증 정보를 포함합니다. (N+1 최적화)
+ * 재시도 로직 포함하여 연결 풀 문제 해결
  * @param email - 찾을 사용자의 이메일.
  * @returns 찾은 사용자 및 인증 정보 또는 null.
  */
 export const findUser = async (email: string) => {
-  return prisma.user.findUnique({
-    where: { email },
-    select: {
-      ...basicUserSelect,
-      auth: {
-        select: {
-          id: true,
-          passwordHash: true,
-          emailVerified: true,
-          emailVerificationToken: true,
-          emailVerificationExpires: true
-        }
-      },
-      userRoles: userRoleSelect
-    }
-  });
+  return withRetry(() => 
+    prisma.user.findUnique({
+      where: { email },
+      select: {
+        ...basicUserSelect,
+        auth: {
+          select: {
+            id: true,
+            passwordHash: true,
+            emailVerified: true,
+            emailVerificationToken: true,
+            emailVerificationExpires: true
+          }
+        },
+        userRoles: userRoleSelect
+      }
+    })
+  );
 };
 
 // ================================

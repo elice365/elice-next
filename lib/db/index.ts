@@ -11,6 +11,17 @@ export * as Notification from './notification';
 // Core Prisma client export
 export { prisma } from './prisma';
 
+// Connection management utilities
+export { 
+  getConnectionStatus,
+  withRetry,
+  batchQuery,
+  cleanupConnections 
+} from './connection-manager';
+
+// Query cache utilities
+export { clearQueryCache } from './middleware';
+
 // ================================
 // Type Exports
 // ================================

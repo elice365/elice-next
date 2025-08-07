@@ -1,8 +1,9 @@
 import { prisma } from './prisma';
-import { Prisma } from '@prisma/client'; // Prisma 임포트 추가
+import { Prisma } from '@prisma/client';
+import { withRetry } from './connection-manager';
 
-export const createSession = async (data: Prisma.SessionCreateInput) => { // 타입 변경
-  return prisma.session.create({ data });
+export const createSession = async (data: Prisma.SessionCreateInput) => {
+  return withRetry(() => prisma.session.create({ data }));
 };
 
 
@@ -50,7 +51,7 @@ export const searchSession = async (refreshToken: string, userId: string) => {
     currentTime: new Date().toISOString()
   });
   
-  const result = await prisma.session.findFirst({
+  const result = await withRetry(() => prisma.session.findFirst({
     where: {
       refreshToken,
       userId, // Prisma가 자동으로 uid로 변환
@@ -92,7 +93,7 @@ export const searchSession = async (refreshToken: string, userId: string) => {
         }
       },
     },
-  });
+  }));
   
   console.log('[DB] searchSession - Result:', result ? 'Session found' : 'No session found');
   

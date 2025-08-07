@@ -175,6 +175,63 @@ html.deepblue {
   --hover-info: #38bdf8;
 }
 
+html.brown {
+  --background: #fffbf7;
+  --foreground: #3d2914;
+  --hover: #f5e6d3;
+  --hover-text: #5c3d1f;
+  --button: #8b6331;
+  --button-text: #ffffff;
+  --selecter: #faf4ed;
+  --selected: #f5e6d3;
+  --line: #e8dfd6;
+  --title: #3d2914;
+  --text-color: #6b5444;
+  --border-color: #e8dfd6;
+  --color-header: rgba(255, 251, 247, .9);
+  --color-text-header: #3d2914;
+  --color-auth:#faf8f5;
+  --color-modal: #fefcfa;
+  --color-panel: #fffbf7;
+  --text-panel: #3d2914;
+  --color-footer: #f5e6d3;
+  --color-text-footer: #3d2914;
+  --color-badge: #faf4ed;
+  --color-card:#fffefb;
+  
+  /* Blog Design System - Light Mode (Brown Theme) */
+  --blog-accent: #8b6331;
+  --blog-accent-hover: #7a5429;
+  --blog-secondary: #a67c52;
+  --blog-gradient-start: #8b6331;
+  --blog-gradient-end: #a67c52;
+  --blog-surface: #fffefb;
+  --blog-surface-hover: #faf8f5;
+  --blog-text-primary: #3d2914;
+  --blog-text-secondary: #6b5444;
+  --blog-border: #e8dfd6;
+  --blog-shadow-sm: 0 1px 3px 0 rgb(139 99 49 / 0.08);
+  --blog-shadow-md: 0 4px 8px -1px rgb(139 99 49 / 0.12);
+  --blog-shadow-lg: 0 12px 20px -3px rgb(139 99 49 / 0.15);
+  --blog-radius-sm: 0.5rem;
+  --blog-radius-md: 0.75rem;
+  --blog-radius-lg: 1rem;
+  --card-hover: #f5e6d3;
+  
+  /* Modal specific */
+  --modal-header-bg: #f9fafb;
+  --modal-footer-bg: #f9fafb;
+  --modal-border: #e5e7eb;
+  
+  /* Hover states */
+  --hover-primary: #7a5429;
+  --hover-success: #15803d;
+  --hover-warning: #c2410c;
+  --hover-danger: #b91c1c;
+  --hover-info: #0e7490;
+}
+
+
 body {
   background: var(--background);
   color: var(--foreground);

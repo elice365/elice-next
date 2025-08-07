@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { APIResult } from '@/types/api';
 import { api } from '@/lib/fetch';
 import { logger } from '@/lib/services/logger';
-
+import { useTokenRefresh } from '@/hooks/auth/useTokenRefresh';
 /**
  * Type definition for authentication data
  * Represents the resolved user information and tokens from server-side authentication
@@ -31,6 +31,7 @@ const AuthContext = createContext<AuthData>(null);
  * }
  * ```
  */
+
 export const useAuthData = () => useContext(AuthContext);
 
 /**
@@ -73,6 +74,12 @@ interface AuthProps {
 export function Auth({ AuthData, children }: AuthProps) {
   const dispatch = useDispatch();
   const initialized = useRef(false);
+  useTokenRefresh({
+    enabled: !!AuthData?.user, // Only enable for authenticated users
+    debounceTime: 30 * 1000, // 30 seconds after activity - more responsive
+    refreshBeforeExpiry: 5 * 60 * 1000, // 5 minutes before token expires - safer margin
+    enableVisibilityRefresh: true, // Refresh when tab becomes visible
+  });
 
   /**
    * Initialize authentication state on component mount
@@ -101,7 +108,7 @@ export function Auth({ AuthData, children }: AuthProps) {
 
           // 2. Set access token for API requests
           tokenClient.set(AuthData.accessToken);
-          
+
           // 3. Refresh session to maintain authentication
           try {
             await api.post<APIResult>('/api/auth/refresh', { type: 'refresh' });
