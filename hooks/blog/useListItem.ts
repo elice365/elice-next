@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { PostType } from '@/types/post';
+import { PostType } from '@/types/blog/post';
 import { useAppDispatch, useAppSelector } from '@/stores/hook';
 import { togglePostLike } from '@/stores/slice/blog';
 

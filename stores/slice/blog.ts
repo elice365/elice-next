@@ -16,7 +16,7 @@ import {
   LikeRequest,
   LikeResponse,
   PaginationInfo 
-} from '@/types/post';
+} from '@/types/blog/post';
 
 // Layout types
 export type BlogLayout = 'card' | 'list';

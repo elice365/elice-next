@@ -4,7 +4,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { ImageMeta } from "@/types/image";
 import { metaImage } from "@/utils/parse/metaImage";
 import { Post } from "@/components/features/blog/Post";
-import { PostDetailResponse, PostContent } from "@/types/post";
+import { PostDetailResponse, PostContent } from "@/types/blog/post";
 import { api } from "@/lib/fetch";
 
 export const dynamic = 'force-dynamic';

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { PostType } from '@/types/post';
+import { PostType } from '@/types/blog/post';
 
 export const useBlogActions = (post: PostType) => {
   const [isLiked, setIsLiked] = useState(false);

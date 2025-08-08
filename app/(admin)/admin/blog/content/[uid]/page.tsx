@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-import { Post } from "@/types/post";
+import { Post } from "@/types/blog/post";
 import { BlogContent, BlogImage, ProductItem, ContentSection } from '@/types/adminBlog';
 import { getLanguageName } from '@/utils/admin/blog/utils';
 

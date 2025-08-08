@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { PostType } from '@/types/post';
+import { PostType } from '@/types/blog/post';
 import { Icon } from '@/components/ui/Icon';
 import { format } from 'date-fns';
 import { ko, enUS, ja, ru } from 'date-fns/locale';

@@ -1,7 +1,7 @@
 // Blog System Type Definitions
 // Comprehensive type definitions for the blog system
 
-import { Post, PostContent } from './blog/post';
+import { Post, PostContent } from './post';
 import { User } from '@prisma/client';
 
 // ==========================================

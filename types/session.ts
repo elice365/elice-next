@@ -1,4 +1,4 @@
-// Session types for admin management
+// Unified Session types for both auth and admin management
 
 export interface Session {
   sessionId: string;
@@ -12,6 +12,8 @@ export interface Session {
   expiresTime: Date;
   createdTime: Date;
   updateTime?: Date;
+  
+  // User information (when needed)
   user: {
     id: string;
     email: string;

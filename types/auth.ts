@@ -1,7 +1,9 @@
-//Form
+// Authentication Types
 
 import { JwtPayload } from "jsonwebtoken";
 import { APIResult } from "./api";
+import { User } from './user';
+import { Session } from './session';
 
 export type AuthType = 'login' | 'register' | 'logout' | 'verify' | 'me' | 'refresh' | 'resend' | 'social' | 'kakao' | 'google' | 'naver' | 'apple';
 export type FormType = "login" | "register" | "kyc";
@@ -29,31 +31,8 @@ export interface AuthFormProps {
   showSocialLogin?: boolean;
 }
 
-//참조
-
-
-export interface User {
-  id: string;
-  email: string;
-  profile?: {
-    name?: string | null;
-    nickname?: string;
-    imageUrl?: string;
-  };
-  // 이메일 인증 상태 추가
-  emailVerified?: boolean;
-  // SNS 로그인 지원을 위한 필드 추가
-  authProvider?: 'email' | 'kakao' | 'google' | 'naver' | 'apple';
-  socialAccounts?: {
-    provider: string;
-    providerId: string;
-    email?: string;
-    name?: string;
-    profileImage?: string;
-  }[];
-  createdAt?: string;
-  updatedAt?: string;
-}
+// Re-exported for backward compatibility
+export type { User };
 
 export interface Role {
   id: string;
@@ -83,12 +62,8 @@ export interface AuthResponse extends APIResult {
 
 
 
-export interface Session {
-  sessionId: string;
-  lastActivityTime: Date;
-  deviceInfo: string;
-  ipAddress: string;
-}
+// Re-exported for backward compatibility
+export type { Session };
 
 export interface AuthDetails {
   emailVerified: boolean;

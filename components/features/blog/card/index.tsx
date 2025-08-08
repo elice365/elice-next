@@ -3,7 +3,7 @@
 import { memo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { PostType } from '@/types/post';
+import { PostType } from '@/types/blog/post';
 import { useCardState } from './useCardState';
 import { CardImage } from './CardImage';
 import { CardContent } from './CardContent';

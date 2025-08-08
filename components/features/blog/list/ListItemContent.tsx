@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Icon } from '@/components/ui/Icon';
 import { motion } from 'framer-motion';
-import { PostType } from '@/types/post';
+import { PostType } from '@/types/blog/post';
 
 interface ListItemContentProps {
   readonly post: PostType;

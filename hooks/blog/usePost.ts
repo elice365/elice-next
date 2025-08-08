@@ -10,7 +10,7 @@ import {
   LikeResponse,
   Category,
   Tag
-} from '@/types/post';
+} from '@/types/blog/post';
 
 export const usePost = () => {
   const [loading, setLoading] = useState(false);

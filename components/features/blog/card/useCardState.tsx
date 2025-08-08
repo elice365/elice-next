@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAppSelector, useAppDispatch } from '@/stores/hook';
 import { togglePostLike } from '@/stores/slice/blog';
-import { PostType } from '@/types/post';
+import { PostType } from '@/types/blog/post';
 
 export const useCardState = (post: PostType) => {
   const dispatch = useAppDispatch();

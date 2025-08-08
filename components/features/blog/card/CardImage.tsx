@@ -2,7 +2,7 @@ import { memo } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Icon } from '@/components/ui/Icon';
-import { PostType } from '@/types/post';
+import { PostType } from '@/types/blog/post';
 
 interface CardImageProps {
   post: PostType;

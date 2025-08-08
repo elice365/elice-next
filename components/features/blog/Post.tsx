@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useRef } from 'react';
-import { PostType, PostContent } from '@/types/post';
+import { PostType, PostContent } from '@/types/blog/post';
 import { useAppSelector } from '@/stores/hook';
 import { Header } from './Header';
 import { Gallery } from './Gallery';

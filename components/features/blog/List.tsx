@@ -3,7 +3,7 @@
 import { memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { PostType } from '@/types/post';
+import { PostType } from '@/types/blog/post';
 import { useAppSelector } from '@/stores/hook';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '@/components/ui/Icon';

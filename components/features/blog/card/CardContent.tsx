@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '@/components/ui/Icon';
-import { PostType } from '@/types/post';
+import { PostType } from '@/types/blog/post';
 
 interface CardContentProps {
   post: PostType;

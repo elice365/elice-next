@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Card } from "./Card";
 import { ListItem } from "./List";
-import { Tag } from "@/types/post";
+import { Tag } from "@/types/blog/post";
 import "@/styles/blog-display.css";
 
 interface BlogPost {

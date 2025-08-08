@@ -1,29 +1,9 @@
-import { PostContent } from '@/types/post';
+import { PostContent } from '@/types/blog/post';
 import { logger } from '@/lib/services/logger';
+import { ProductItem, AuthorInfo, ContentSection, BlogContent } from '@/types/blog/content';
 
-export interface ProductItem {
-  url: string;
-  tag: string[];
-  title: string;
-  description: string;
-}
-
-export interface AuthorInfo {
-  name: string;
-  description: string;
-  profileImage: string;
-}
-
-export interface ContentSection {
-  title: string;
-  context: string;
-}
-
-export interface BlogContent {
-  product: ProductItem[];
-  author: AuthorInfo;
-  content: ContentSection[];
-}
+// Re-export types for backward compatibility
+export type { ProductItem, AuthorInfo, ContentSection, BlogContent };
 
 export function parseContent(content?: PostContent | null): BlogContent | null {
   if (!content?.data) return null;

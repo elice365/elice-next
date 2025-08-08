@@ -13,7 +13,7 @@ import { BlogLikeStatsModal } from "@/components/ui/modal/blog/BlogLikeStats";
 import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-import { Post } from "@/types/post";
+import { Post } from "@/types/blog/post";
 
 // Admin blog data interface
 interface BlogData extends Post {

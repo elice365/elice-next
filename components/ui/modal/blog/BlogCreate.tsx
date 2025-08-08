@@ -5,7 +5,7 @@ import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-import { Category } from "@/types/post";
+import { Category } from "@/types/blog/post";
 
 interface BlogCreateModalProps {
   readonly isOpen: boolean;
