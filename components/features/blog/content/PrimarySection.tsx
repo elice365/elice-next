@@ -5,10 +5,10 @@ import { motion } from 'framer-motion';
 import { ContentSection } from '@/utils/blog/contentParser';
 
 interface PrimarySectionProps {
-  section: ContentSection;
-  mobile: boolean;
-  tablet: boolean;
-  isInView: boolean;
+  section: ContentSection; // Used in JSX for title and context
+  mobile: boolean; // Used in getTitleSize and getTextSize functions
+  tablet: boolean; // Used in getTitleSize and getTextSize functions
+  isInView: boolean; // Used for animation state control
 }
 
 const fadeInVariants = {
@@ -36,6 +36,7 @@ function getTextSize(mobile: boolean, tablet: boolean): string {
 }
 
 export const PrimarySection = memo(forwardRef<HTMLElement, PrimarySectionProps>(
+  // eslint-disable-next-line react/no-unused-prop-types
   function PrimarySection({ section, mobile, tablet, isInView }, ref) {
     // Explicit usage to avoid SonarCloud false positives
     const titleSize = getTitleSize(mobile, tablet);
