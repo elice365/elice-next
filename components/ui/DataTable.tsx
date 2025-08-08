@@ -137,14 +137,13 @@ export function DataTable<T extends Record<string, any>>({
                   </div>
                 </td>
               </tr>
+            ) : data.length === 0 ? (
+              <tr>
+                <td colSpan={columns.length + (rowSelection ? 1 : 0)} className="px-4 py-8 text-center text-gray-500">
+                  {emptyText}
+                </td>
+              </tr>
             ) : (
-              data.length === 0 ? (
-                <tr>
-                  <td colSpan={columns.length + (rowSelection ? 1 : 0)} className="px-4 py-8 text-center text-gray-500">
-                    {emptyText}
-                  </td>
-                </tr>
-              ) : (
                 data.map((record, index) => {
                 const key = getRowKey(record, index);
                 const isSelected = rowSelection?.selectedRowKeys?.includes(key);
@@ -169,10 +168,7 @@ export function DataTable<T extends Record<string, any>>({
                     {columns.map((column, colIndex) => (
                       <td
                         key={`${String(column.key)}-${colIndex}`}
-                        className={`px-4 py-3 ${
-                          column.align === 'center' ? 'text-center' :
-                          column.align === 'right' ? 'text-right' : 'text-left'
-                        }`}
+                        className={`px-4 py-3 ${getAlignmentClass(column.align)}`}
                       >
                         {column.render
                           ? column.render(getValue(record, column.key), record, index)

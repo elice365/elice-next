@@ -14,6 +14,13 @@ interface CardImageProps {
 
 const DEFAULT_POST_IMAGE = "https://placehold.co/350x200.png";
 
+// Get image height class based on device
+const getImageHeightClass = (mobile: boolean, tablet: boolean): string => {
+  if (mobile) return "h-[180px]";
+  if (tablet) return "h-[200px]";
+  return "h-[220px]";
+};
+
 // Get the main image with fallback
 const getImageSrc = (images: string[] | any): string => {
   // Handle new array format
@@ -41,7 +48,7 @@ export const CardImage = memo(function CardImage({
   onImageError 
 }: CardImageProps) {
   const mainImage = imageError ? DEFAULT_POST_IMAGE : getImageSrc(post.images);
-  const imageHeight = mobile ? "h-[180px]" : tablet ? "h-[200px]" : "h-[220px]";
+  const imageHeight = getImageHeightClass(mobile, tablet);
 
   return (
     <div className={`${imageHeight} relative overflow-hidden bg-gray-100`}>
