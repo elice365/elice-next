@@ -226,7 +226,6 @@ export function BaseModal({
       />
       <dialog
         open
-        role="dialog"
         aria-modal="true"
         className={`bg-[var(--color-modal)] rounded-xl shadow-xl w-full ${getModalSizeClass()} max-h-[95vh] sm:max-h-[90vh] overflow-hidden transform transition-all duration-200 scale-100 ${className} border-0 p-0 m-0 relative z-10 flex flex-col`}
         aria-labelledby="modal-title"

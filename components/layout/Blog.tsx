@@ -33,7 +33,7 @@ const getGridColumns = ({ mobile, tablet }: { mobile: boolean; tablet: boolean }
 
 export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayoutProps) {
   const dispatch = useAppDispatch();
-  const { mobile, tablet, desktop } = useAppSelector((state) => state.device);
+  const { mobile, tablet } = useAppSelector((state) => state.device);
   const t = useTranslations("common");
   
   // Blog state

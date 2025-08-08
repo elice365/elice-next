@@ -195,10 +195,19 @@ const PostImageArea = memo(({ post, mobile, tablet, postImages, mainImage, image
         {postImages.length > 1 && !mobile && (
           <div
             ref={toggleBtnRef}
-            className={`z-30 absolute border rounded-full border-[var(--border-color)] bottom-1 right-1 w-8 h-8 bg-black/80 text-white flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 hover:bg-white hover:text-black`}
+            className={`z-30 absolute border rounded-full border-[var(--border-color)] bottom-1 right-1 w-8 h-8 bg-black/80 text-white flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-white`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={handleInteraction}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleInteraction();
+              }
+            }}
+            tabIndex={0}
+            role="button"
+            aria-label="이미지 갤러리 토글"
           >
             <Icon name="Plus" size={12} />
           </div>

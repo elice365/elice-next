@@ -11,6 +11,7 @@ import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import Image from "next/image";
+import "@/styles/admin-category.css";
 
 // Category data interface
 interface CategoryData {
@@ -475,96 +476,6 @@ export default function AdminCategoryPage() {
           </div>
         )}
       </DeleteModal>
-
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-
-        /* Enhanced responsive table styles */
-        @media (max-width: 768px) {
-          .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-          }
-          
-          .table-responsive table {
-            min-width: 600px;
-          }
-          
-          /* Hide sequential images on mobile */
-          .sequential-images {
-            display: none;
-          }
-        }
-
-        /* Shimmer effect */
-        . {
-          background: linear-gradient(
-            105deg,
-            transparent 40%,
-            rgba(255, 255, 255, 0.7) 50%,
-            transparent 60%
-          );
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes shimmer {
-          0% {
-            background-position: -100% 0;
-          }
-          100% {
-            background-position: 100% 0;
-          }
-        }
-
-        /* Smooth hover transitions with Tailwind v4 */
-        * {
-          transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        
-        /* Custom animations using CSS variables */
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes bounceSubtle {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-2px);
-          }
-        }
-        
-        /* Tailwind v4 animation utilities */
-        .animate-slide-in {
-          animation: slideIn 0.5s ease-out;
-        }
-        
-        .animate-bounce-subtle {
-          animation: bounceSubtle 1s ease-in-out infinite;
-        }
-      `}</style>
     </>
   );
 }

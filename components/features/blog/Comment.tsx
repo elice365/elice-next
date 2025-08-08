@@ -50,7 +50,6 @@ export const Comment = memo(function Comment({
   postId,
   className = ''
 }: CommentSectionProps) {
-  const { mobile } = useAppSelector((state) => state.device);
   const user = useAppSelector((state) => state.auth.user);
   
   const [comments, setComments] = useState<Comment[]>([]);

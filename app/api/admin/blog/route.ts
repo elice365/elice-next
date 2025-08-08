@@ -88,8 +88,7 @@ const createBlogPost = async (
       categoryId,
       tags = [],
       images,
-      status = 'draft',
-      language = 'ko'
+      status = 'draft'
     } = body;
 
     // Validate required fields
@@ -101,7 +100,7 @@ const createBlogPost = async (
     const url = title
       .toLowerCase()
       .replace(/[^a-z0-9가-힣]+/g, '-')
-      .replace(/^(-+)|(-+)$/g, '');
+      .replace(/(^(-+)|(-+)$)/g, '');
 
     // Create blog post
     const newPost = await BlogDB.createBlogPost({
@@ -151,8 +150,7 @@ const updateBlogPost = async (
       categoryId,
       tags,
       images,
-      status,
-      language
+      status
     } = body;
 
     // Update blog post

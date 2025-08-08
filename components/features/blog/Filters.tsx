@@ -19,7 +19,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export const Filters = memo(function Filters() {
   const dispatch = useAppDispatch();
-  const { mobile, tablet, desktop } = useAppSelector((state) => state.device);
+  const { mobile } = useAppSelector((state) => state.device);
   
   // Blog state
   const filters = useAppSelector(selectBlogFilters);

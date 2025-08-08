@@ -226,10 +226,10 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
     >
       <form id="blog-create-form" onSubmit={handleSubmit} className="p-6 space-y-6">
         {/* Type selection */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-color)]">
+        <fieldset className="space-y-2">
+          <legend className="block text-sm font-medium text-[var(--text-color)]">
             글 유형
-          </label>
+          </legend>
           <div className="flex gap-3">
             <label className="flex items-center gap-2">
               <input
@@ -254,7 +254,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
               <span className="text-[var(--text-color)]">📢 공지사항</span>
             </label>
           </div>
-        </div>
+        </fieldset>
 
         {/* Title */}
         <div className="space-y-2">
@@ -485,10 +485,10 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
         </div>
 
         {/* Status */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-color)]">
+        <fieldset className="space-y-2">
+          <legend className="block text-sm font-medium text-[var(--text-color)]">
             상태
-          </label>
+          </legend>
           <div className="flex gap-3">
             <label className="flex items-center gap-2">
               <input
@@ -513,7 +513,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
               <span className="text-[var(--text-color)]">✅ 게시</span>
             </label>
           </div>
-        </div>
+        </fieldset>
 
         {/* Notice */}
         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">

@@ -252,10 +252,10 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
         </div>
 
         {/* Type selection */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-color)]">
+        <fieldset className="space-y-2">
+          <legend className="block text-sm font-medium text-[var(--text-color)]">
             글 유형
-          </label>
+          </legend>
           <div className="flex gap-3">
             <label className="flex items-center gap-2">
               <input
@@ -280,7 +280,7 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
               <span className="text-[var(--text-color)]">📢 공지사항</span>
             </label>
           </div>
-        </div>
+        </fieldset>
 
         {/* Title */}
         <div className="space-y-2">
