@@ -1,6 +1,7 @@
 import { Redis } from "@upstash/redis";
 import { NotificationData, NotificationResponse } from "@/types/notifications";
 import * as NotificationDB from "@/lib/db/notification";
+import { logger } from '@/lib/services/logger';
 
 // Redis 인스턴스
 const redis = new Redis({
@@ -34,7 +35,7 @@ class NotificationService {
 
       return result;
     } catch (error) {
-      console.error('알림 조회 오류:', error);
+      logger.error('알림 조회 오류', 'NOTIFICATION', error);
       throw new Error('알림을 가져올 수 없습니다');
     }
   }
@@ -62,7 +63,7 @@ class NotificationService {
         await redis.del(key);
       }
     } catch (error) {
-      console.error('알림 추가 오류:', error);
+      logger.error('알림 추가 오류', 'NOTIFICATION', error);
       throw new Error('알림을 추가할 수 없습니다');
     }
   }
@@ -86,7 +87,7 @@ class NotificationService {
 
       return true;
     } catch (error) {
-      console.error('알림 읽음 처리 오류:', error);
+      logger.error('알림 읽음 처리 오류', 'NOTIFICATION', error);
       return false;
     }
   }
@@ -129,7 +130,7 @@ class NotificationService {
         notices: noticeData,
       };
     } catch (error) {
-      console.error('DB 조회 오류:', error);
+      logger.error('DB 조회 오류', 'NOTIFICATION', error);
       return {
         success: false,
         notifications: [],

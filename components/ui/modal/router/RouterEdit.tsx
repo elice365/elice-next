@@ -6,6 +6,7 @@ import { APIResult } from "@/types/api";
 import { Icon } from "@/components/ui/Icon";
 import { ICON_CATEGORIES, IconCategory } from "@/constants/modal/iconCategories";
 import { useRoles, formatRolesForRouter } from "@/hooks/admin";
+import { logger } from "@/lib/services/logger";
 
 interface WebRouter {
   uid: string;
@@ -238,7 +239,7 @@ export function RouterEditModal({ router, isOpen, onClose, onUpdate }: RouterEdi
         setErrors({ general: '라우터 수정에 실패했습니다.' });
       }
     } catch (error) {
-      console.error('[RouterEditModal] Router update failed:', error);
+      logger.error('[RouterEditModal] Router update failed', 'ROUTER', error);
       setErrors({ general: '네트워크 오류가 발생했습니다.' });
     } finally {
       setLoading(false);

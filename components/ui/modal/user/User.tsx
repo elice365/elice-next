@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/Input";
 import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
 import { useModalForm } from "@/hooks/modal";
+import { logger } from '@/lib/services/logger';
 
 export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -53,7 +54,7 @@ export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose, onU
         setError(data.message || '사용자 정보 수정에 실패했습니다.');
       }
     } catch (error) {
-      console.error('[UserModal] User update failed:', error);
+      logger.error('[UserModal] User update failed', 'UI', error);
       setError('네트워크 오류가 발생했습니다.');
     } finally {
       setLoading(false);

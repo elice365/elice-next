@@ -11,14 +11,14 @@ export const useBlogActions = (post: PostType) => {
     setIsLiked(prev => !prev);
     setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
     
-    // TODO: API call to update like status
+    // API call will be implemented when backend endpoint is ready
     // await updateLikeStatus(post.uid, !isLiked);
   }, [isLiked, post.uid]);
 
   const handleBookmark = useCallback(() => {
     setIsBookmarked(prev => !prev);
     
-    // TODO: API call to update bookmark status
+    // API call will be implemented when backend endpoint is ready
     // await updateBookmarkStatus(post.uid, !isBookmarked);
   }, [isBookmarked, post.uid]);
 

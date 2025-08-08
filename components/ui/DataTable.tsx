@@ -144,7 +144,7 @@ export function DataTable<T extends Record<string, any>>({
                 </td>
               </tr>
             ) : (
-                data.map((record, index) => {
+              data.map((record, index) => {
                 const key = getRowKey(record, index);
                 const isSelected = rowSelection?.selectedRowKeys?.includes(key);
                 
@@ -177,8 +177,7 @@ export function DataTable<T extends Record<string, any>>({
                     ))}
                   </tr>
                 );
-                })
-              )
+              })
             )}
           </tbody>
         </table>

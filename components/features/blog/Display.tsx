@@ -60,7 +60,7 @@ export function Display({
         {viewType === "card" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="animate-pulse">
+              <div key={`card-skeleton-${i}`} className="animate-pulse">
                 <div className="bg-gray-200 rounded-xl h-64 mb-4"></div>
                 <div className="px-5 space-y-3">
                   <div className="h-6 bg-gray-200 rounded"></div>
@@ -73,7 +73,7 @@ export function Display({
         ) : (
           <div className="space-y-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="animate-pulse flex gap-6 p-6 bg-gray-100 rounded-xl">
+              <div key={`list-skeleton-${i}`} className="animate-pulse flex gap-6 p-6 bg-gray-100 rounded-xl">
                 <div className="w-48 h-36 bg-gray-200 rounded-lg flex-shrink-0"></div>
                 <div className="flex-1 space-y-3">
                   <div className="h-6 bg-gray-200 rounded"></div>

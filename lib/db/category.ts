@@ -199,64 +199,50 @@ export const createCategory = async (data: CategoryCreateData) => {
   });
 };
 
-/**
- * Update a category.
- * @param categoryId - Category ID
- * @param data - Update data
- * @returns Updated category
- */
-export const updateCategory = async (categoryId: string, data: CategoryUpdateData) => {
-  const currentCategory = await prisma.category.findUnique({
-    where: { uid: categoryId }
+// Helper functions to reduce complexity
+const validateCategoryCode = async (code: string, categoryId: string) => {
+  const existingCode = await prisma.category.findFirst({
+    where: { 
+      code: code,
+      uid: { not: categoryId }
+    }
   });
 
-  if (!currentCategory) {
-    throw new Error('Category not found');
+  if (existingCode) {
+    throw new Error('Category code already exists');
+  }
+};
+
+const validateParentCategory = async (
+  parentId: string | null, 
+  categoryId: string, 
+  currentPath: string
+) => {
+  if (!parentId) return;
+  
+  if (parentId === categoryId) {
+    throw new Error('Category cannot be its own parent');
   }
 
-  // Check if code is being changed
-  if (data.code && data.code !== currentCategory.code) {
-    const existingCode = await prisma.category.findFirst({
-      where: { 
-        code: data.code,
-        uid: { not: categoryId }
-      }
-    });
+  const parentExists = await prisma.category.findUnique({
+    where: { uid: parentId },
+    select: { path: true }
+  });
 
-    if (existingCode) {
-      throw new Error('Category code already exists');
-    }
+  if (!parentExists) {
+    throw new Error('Parent category not found');
   }
 
-  // Handle parent change
-  if (data.parentId !== undefined) {
-    if (data.parentId === categoryId) {
-      throw new Error('Category cannot be its own parent');
-    }
-
-    if (data.parentId) {
-      const parentExists = await prisma.category.findUnique({
-        where: { uid: data.parentId }
-      });
-
-      if (!parentExists) {
-        throw new Error('Parent category not found');
-      }
-
-      // Check if the new parent is not a descendant of current category
-      const potentialParent = await prisma.category.findUnique({
-        where: { uid: data.parentId },
-        select: { path: true }
-      });
-
-      if (potentialParent && potentialParent.path.startsWith(currentCategory.path + '/')) {
-        throw new Error('Cannot set descendant as parent');
-      }
-    }
+  if (parentExists.path.startsWith(currentPath + '/')) {
+    throw new Error('Cannot set descendant as parent');
   }
+};
 
-  // Prepare update data
-  const updateData: any = {};
+const prepareUpdateData = (
+  data: CategoryUpdateData,
+  currentCategory: { slug: string; parentId: string | null }
+) => {
+  const updateData: Record<string, unknown> = {};
   let needsPathUpdate = false;
   let needsLevelUpdate = false;
 
@@ -274,14 +260,23 @@ export const updateCategory = async (categoryId: string, data: CategoryUpdateDat
     needsLevelUpdate = true;
   }
 
-  // Update path and level if needed
+  return { updateData, needsPathUpdate, needsLevelUpdate };
+};
+
+const updatePathAndLevel = async (
+  data: CategoryUpdateData,
+  currentCategory: { slug: string; parentId: string | null; path: string },
+  categoryId: string,
+  updateData: Record<string, unknown>,
+  needsPathUpdate: boolean,
+  needsLevelUpdate: boolean
+) => {
   if (needsPathUpdate) {
     const newSlug = data.slug || currentCategory.slug;
     const newParentId = data.parentId !== undefined ? data.parentId : currentCategory.parentId;
     
     const newPath = await generatePath(newParentId, newSlug);
     
-    // Check if new path already exists (excluding current category and its descendants)
     const existingPath = await prisma.category.findFirst({
       where: { 
         path: newPath,
@@ -301,11 +296,55 @@ export const updateCategory = async (categoryId: string, data: CategoryUpdateDat
     updateData.level = await calculateLevel(newParentId);
   }
 
+  return updateData;
+};
+
+/**
+ * Update a category.
+ * @param categoryId - Category ID
+ * @param data - Update data
+ * @returns Updated category
+ */
+export const updateCategory = async (categoryId: string, data: CategoryUpdateData) => {
+  const currentCategory = await prisma.category.findUnique({
+    where: { uid: categoryId }
+  });
+
+  if (!currentCategory) {
+    throw new Error('Category not found');
+  }
+
+  // Validate code change
+  if (data.code && data.code !== currentCategory.code) {
+    await validateCategoryCode(data.code, categoryId);
+  }
+
+  // Validate parent change
+  if (data.parentId !== undefined) {
+    await validateParentCategory(data.parentId, categoryId, currentCategory.path);
+  }
+
+  // Prepare update data
+  const { updateData, needsPathUpdate, needsLevelUpdate } = prepareUpdateData(
+    data,
+    currentCategory
+  );
+
+  // Update path and level if needed
+  const finalUpdateData = await updatePathAndLevel(
+    data,
+    currentCategory,
+    categoryId,
+    updateData,
+    needsPathUpdate,
+    needsLevelUpdate
+  );
+
   // Update category in transaction
   return await prisma.$transaction(async (tx) => {
     const category = await tx.category.update({
       where: { uid: categoryId },
-      data: updateData,
+      data: finalUpdateData,
       select: categoryWithRelationsSelect
     });
 
@@ -481,7 +520,7 @@ export const getAdminCategories = async (params: AdminCategoryParams) => {
   const skip = (page - 1) * limit;
 
   // Build where conditions
-  const whereCondition: any = {};
+  const whereCondition: Record<string, any> = {};
 
   if (search) {
     whereCondition.OR = [

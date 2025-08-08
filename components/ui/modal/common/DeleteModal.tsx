@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { BaseModalProps } from "@/types/admin";
+import { logger } from "@/lib/services/logger";
 
 interface DeleteModalProps extends BaseModalProps {
   readonly title: string;
@@ -111,7 +112,7 @@ export function DeleteModal({
         setError(data.message || '삭제 중 오류가 발생했습니다.');
       }
     } catch (error) {
-      console.error('[DeleteModal] Delete operation failed:', error);
+      logger.error('[DeleteModal] Delete operation failed', 'MODAL', error);
       setError('네트워크 오류가 발생했습니다.');
     } finally {
       setLoading(false);

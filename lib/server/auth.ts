@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { cache } from 'react';
 import { tokenServer } from '@/lib/services/token/server';
 import { TokenPayload } from '@/lib/services/token/types';
+import { logger } from '@/lib/services/logger';
 
 interface InitialAuthData {
   user: TokenPayload;
@@ -56,7 +57,7 @@ export async function UserInfo(): Promise<InitialAuthData | null> {
     };
 
   } catch (error) {
-    console.error("Error fetching user info:", error);
+    logger.error("Error fetching user info", 'AUTH', error);
     return null;
   }
 };

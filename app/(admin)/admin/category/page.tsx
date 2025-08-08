@@ -216,7 +216,7 @@ export default function AdminCategoryPage() {
                 >
                   {categoryImages.slice(1, 4).map((img, index) => (
                     <div
-                      key={index}
+                      key={`category-img-${img}-${index}`}
                       className={`relative w-12 h-12 md:w-14 md:h-14 overflow-hidden rounded-lg transition-all duration-500 ${showSequential ? 'scale-100' : 'scale-0'}`}
                       style={{
                         transitionDelay: `${index * 100}ms`

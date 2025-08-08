@@ -1,6 +1,7 @@
 import { prisma } from './prisma';
 import { Prisma } from '@prisma/client';
 import { withRetry } from './connection-manager';
+import { logger } from '@/lib/services/logger';
 
 export const createSession = async (data: Prisma.SessionCreateInput) => {
   return withRetry(() => prisma.session.create({ data }));
@@ -45,7 +46,7 @@ export const deactivateSession = async (refreshToken: string) => {
 
 
 export const searchSession = async (refreshToken: string, userId: string) => {
-  console.log('[DB] searchSession - Input:', {
+  logger.info('[DB] searchSession - Input', 'DB', {
     userId,
     refreshTokenPrefix: refreshToken.substring(0, 20),
     currentTime: new Date().toISOString()
@@ -95,7 +96,7 @@ export const searchSession = async (refreshToken: string, userId: string) => {
     },
   }));
   
-  console.log('[DB] searchSession - Result:', result ? 'Session found' : 'No session found');
+  logger.info('[DB] searchSession - Result', 'DB', result ? 'Session found' : 'No session found');
   
   // 세션을 찾지 못한 경우 추가 디버깅
   if (!result) {
@@ -110,7 +111,7 @@ export const searchSession = async (refreshToken: string, userId: string) => {
     });
     
     if (debugSession) {
-      console.log('[DB] searchSession - Debug info:', {
+      logger.info('[DB] searchSession - Debug info', 'DB', {
         hasUserSession: true,
         isActive: debugSession.active,
         isExpired: new Date(debugSession.expiresTime) < new Date(),
@@ -118,7 +119,7 @@ export const searchSession = async (refreshToken: string, userId: string) => {
         expiresAt: debugSession.expiresTime
       });
     } else {
-      console.log('[DB] searchSession - No sessions found for userId:', userId);
+      logger.info('[DB] searchSession - No sessions found for userId', 'DB', userId);
     }
   }
   
@@ -159,7 +160,7 @@ export const getAdminSessions = async (params: AdminSessionParams) => {
   const skip = (page - 1) * limit;
 
   // 검색 조건 구성
-  const whereCondition: any = {};
+  const whereCondition: Record<string, any> = {};
 
   if (search) {
     whereCondition.OR = [
@@ -330,7 +331,7 @@ export const getSessionStats = async () => {
       }, {} as Record<string, number>)
     };
   } catch (error) {
-    console.error('Database connection error in getSessionStats:', error);
+    logger.error('Database connection error in getSessionStats', 'DB', error);
     // 데이터베이스 연결 실패 시 기본값 반환
     return {
       totalSessions: 0,

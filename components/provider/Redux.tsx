@@ -3,6 +3,7 @@
 import { store } from "@/stores";
 import { Provider } from "react-redux";
 import { useEffect } from "react";
+import { logger } from '@/lib/services/logger';
 
 // PostHog를 동적으로 로드하는 컴포넌트
 function PostHogProvider({ children }: { children: React.ReactNode }) {
@@ -36,7 +37,7 @@ function PostHogProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         // PostHog initialization errors are not critical
         if (typeof window !== 'undefined') {
-          console.warn('PostHog initialization failed:', error);
+          logger.warn('PostHog initialization failed', 'POSTHOG', error);
         }
       }
     };

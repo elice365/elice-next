@@ -4,6 +4,7 @@ import { memo, useState, useCallback, useRef, useEffect } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { useAppSelector } from '@/stores/hook';
 import { motion, AnimatePresence } from 'framer-motion';
+import { logger } from '@/lib/services/logger';
 
 interface CommentSectionProps {
   postId: string;
@@ -19,6 +20,30 @@ interface Comment {
   likes: number;
   isLiked?: boolean;
   replies?: Comment[];
+}
+
+// Helper functions to reduce nesting complexity
+function updateRepliesLikes(replies: Comment[] | undefined, commentId: string): Comment[] | undefined {
+  if (!replies) return replies;
+  return replies.map(reply => {
+    if (reply.id === commentId) {
+      return {
+        ...reply,
+        likes: reply.isLiked ? reply.likes - 1 : reply.likes + 1,
+        isLiked: !reply.isLiked
+      };
+    }
+    return reply;
+  });
+}
+
+function addReplyToComment(comments: Comment[], commentId: string, reply: Comment): Comment[] {
+  return comments.map(c => {
+    if (c.id === commentId) {
+      return { ...c, replies: [...(c.replies || []), reply] };
+    }
+    return c;
+  });
 }
 
 export const Comment = memo(function Comment({
@@ -78,7 +103,7 @@ export const Comment = memo(function Comment({
       setComments(prev => [comment, ...prev]);
       setNewComment('');
     } catch (error) {
-      // Failed to submit comment
+      logger.error('Failed to submit comment', 'COMMENT', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -99,16 +124,20 @@ export const Comment = memo(function Comment({
         isLiked: false
       };
 
-      setComments(prev => prev.map(comment => 
-        comment.id === commentId 
-          ? { ...comment, replies: [...(comment.replies || []), reply] }
-          : comment
-      ));
+      setComments(prev => {
+        const updatedComments = prev.map(comment => {
+          if (comment.id === commentId) {
+            return { ...comment, replies: [...(comment.replies || []), reply] };
+          }
+          return comment;
+        });
+        return updatedComments;
+      });
       
       setReplyContent('');
       setReplyingTo(null);
     } catch (error) {
-      // Failed to submit reply
+      logger.error('Failed to submit reply', 'COMMENT', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -117,29 +146,26 @@ export const Comment = memo(function Comment({
   const handleLikeComment = useCallback((commentId: string, isReply: boolean = false, parentId?: string) => {
     if (!user) return;
     
-    setComments(prev => prev.map(comment => {
-      if (!isReply && comment.id === commentId) {
-        return {
-          ...comment,
-          likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
-          isLiked: !comment.isLiked
-        };
-      } else if (isReply && parentId && comment.id === parentId) {
-        return {
-          ...comment,
-          replies: comment.replies?.map(reply => 
-            reply.id === commentId 
-              ? { 
-                  ...reply, 
-                  likes: reply.isLiked ? reply.likes - 1 : reply.likes + 1,
-                  isLiked: !reply.isLiked 
-                }
-              : reply
-          )
-        };
-      }
-      return comment;
-    }));
+    setComments(prev => {
+      const updatedComments = prev.map(comment => {
+        if (!isReply && comment.id === commentId) {
+          const newLikes = comment.isLiked ? comment.likes - 1 : comment.likes + 1;
+          return {
+            ...comment,
+            likes: newLikes,
+            isLiked: !comment.isLiked
+          };
+        }
+        if (isReply && parentId && comment.id === parentId) {
+          return {
+            ...comment,
+            replies: updateRepliesLikes(comment.replies, commentId)
+          };
+        }
+        return comment;
+      });
+      return updatedComments;
+    });
   }, [user]);
 
   const formatDate = useCallback((date: Date) => {
@@ -190,16 +216,12 @@ export const Comment = memo(function Comment({
         isLiked: false
       };
 
-      setComments(prev => prev.map(c => 
-        c.id === comment.id 
-          ? { ...c, replies: [...(c.replies || []), reply] }
-          : c
-      ));
+      setComments(prev => addReplyToComment(prev, comment.id, reply));
       
       setLocalReplyContent('');
       setReplyingTo(null);
     } catch (error) {
-      // Failed to submit reply
+      logger.error('Failed to submit reply', 'COMMENT', error);
     } finally {
       setIsSubmitting(false);
     }

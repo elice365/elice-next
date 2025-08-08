@@ -3,6 +3,7 @@ import { setMessage, setRequest } from '@/lib/response';
 import { getAdminRouters, createRouter, getRouterStats, checkRouterNameExists, checkRouterPathExists } from '@/lib/db/router';
 import { getAllRoles } from '@/lib/db/roles';
 import { handler } from '@/lib/request';
+import { logger } from '@/lib/services/logger';
 import { APIResult, AuthInfo } from '@/types/api';
 import { Redis } from "@upstash/redis";
 
@@ -28,9 +29,9 @@ const invalidateRouterCache = async (roles?: string[]) => {
       keysToInvalidate.map(key => redis.del(key))
     );
     
-    console.log(`[Cache] Invalidated router cache: ${keysToInvalidate.join(', ')}`);
+    logger.info(`[Cache] Invalidated router cache: ${keysToInvalidate.join(', ')}`, 'CACHE');
   } catch (error) {
-    console.error('[Cache] Failed to invalidate router cache:', error);
+    logger.error('[Cache] Failed to invalidate router cache', 'CACHE', error);
     // 캐시 무효화 실패는 시스템을 중단시키지 않음
   }
 };
@@ -47,8 +48,8 @@ const getRouters = async (
     const { searchParams } = new URL(request.url);
 
     // 쿼리 파라미터 파싱
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
     const search = searchParams.get('search') || '';
     const role = searchParams.get('role') || '';
     const includeStats = searchParams.get('includeStats') === 'true';
@@ -70,14 +71,14 @@ const getRouters = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] /admin/router GET error:', error);
+    logger.error('[API] /admin/router GET error', 'API', error);
     return await setMessage('NetworkError', null, 500);
   }
 };
 
 // 라우터 데이터 유효성 검사
-const validateRouterData = async (data: any): Promise<APIResult | null> => {
-  const { name, path, icon, role } = data;
+const validateRouterData = async (data: unknown): Promise<APIResult | null> => {
+  const { name, path, icon, role } = data as { name: unknown; path: unknown; icon: unknown; role: unknown };
 
   if (!name || typeof name !== 'string' || name.trim().length === 0) {
     return await setMessage('InvalidField', { field: 'name', message: '라우터명은 필수입니다.' }, 400);
@@ -108,7 +109,7 @@ const validateRouterData = async (data: any): Promise<APIResult | null> => {
       }, 400);
     }
   } catch (error) {
-    console.error('역할 검증 중 오류:', error);
+    logger.error('역할 검증 중 오류', 'API', error);
     return await setMessage('NetworkError', null, 500);
   }
 
@@ -192,7 +193,7 @@ const createNewRouter = async (
     return setRequest(newRouter);
 
   } catch (error: any) {
-    console.error('[API] /admin/router POST error:', error);
+    logger.error('[API] /admin/router POST error', 'API', error);
     return await handlePrismaError(error);
   }
 };

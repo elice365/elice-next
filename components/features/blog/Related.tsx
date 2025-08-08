@@ -8,6 +8,7 @@ import { usePost } from '@/hooks/blog';
 import { Badge } from '@/components/ui/Badge';
 import { Icon } from '@/components/ui/Icon';
 import { useAppSelector } from '@/stores/hook';
+import { logger } from '@/lib/services/logger';
 import { motion } from 'framer-motion';
 
 interface RelatedPostsProps {
@@ -15,6 +16,25 @@ interface RelatedPostsProps {
   category?: string;
   tags?: string[];
   className?: string;
+}
+
+// Helper functions to avoid nested ternary operators
+function getMaxPosts(mobile: boolean, tablet: boolean): number {
+  if (mobile) return 3;
+  if (tablet) return 4;
+  return 6;
+}
+
+function getGridCols(mobile: boolean, tablet: boolean): string {
+  if (mobile) return 'grid-cols-1';
+  if (tablet) return 'grid-cols-2';
+  return 'grid-cols-3';
+}
+
+function getImageSizes(mobile: boolean, tablet: boolean): string {
+  if (mobile) return '100vw';
+  if (tablet) return '50vw';
+  return '33vw';
 }
 
 export const Related = memo(function Related({
@@ -76,10 +96,10 @@ export const Related = memo(function Related({
         }
 
         // Limit to 3-6 posts depending on screen size
-        const maxPosts = mobile ? 3 : tablet ? 4 : 6;
+        const maxPosts = getMaxPosts(mobile, tablet);
         setRelatedPosts(posts.slice(0, maxPosts));
       } catch (error) {
-        // Failed to load related posts
+        logger.error('Failed to load related posts', 'UI', error);
       }
     };
 
@@ -100,11 +120,9 @@ export const Related = memo(function Related({
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
           관련 글
         </h2>
-        <div className={`grid gap-6 ${
-          mobile ? 'grid-cols-1' : tablet ? 'grid-cols-2' : 'grid-cols-3'
-        }`}>
-          {[...Array(mobile ? 3 : tablet ? 4 : 6)].map((_, index) => (
-            <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden animate-pulse">
+        <div className={`grid gap-6 ${getGridCols(mobile, tablet)}`}>
+          {[...Array(getMaxPosts(mobile, tablet))].map((_, index) => (
+            <div key={`skeleton-${index}`} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden animate-pulse">
               <div className="aspect-video bg-gray-200 dark:bg-gray-700" />
               <div className="p-4 space-y-3">
                 <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
@@ -130,9 +148,7 @@ export const Related = memo(function Related({
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
         관련 글
       </h2>
-      <div className={`grid gap-6 ${
-        mobile ? 'grid-cols-1' : tablet ? 'grid-cols-2' : 'grid-cols-3'
-      }`}>
+      <div className={`grid gap-6 ${getGridCols(mobile, tablet)}`}>
         {relatedPosts.map((post, index) => {
           // Get main image with fallback - updated for array-based images
           const getMainImage = (images: string[] | any): string => {
@@ -169,7 +185,7 @@ export const Related = memo(function Related({
                       src={mainImage}
                       alt={post.title}
                       fill
-                      sizes={mobile ? '100vw' : tablet ? '50vw' : '33vw'}
+                      sizes={getImageSizes(mobile, tablet)}
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {post.category && (

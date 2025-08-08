@@ -8,6 +8,7 @@ import { RouterEditModal } from "@/components/ui/modal/router/RouterEdit";
 import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { WebRouter } from "@/types/admin";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
+import { logger } from "@/lib/services/logger";
 import { useAdminPage, useAdminModals, useRoles, formatRolesForFilter } from "@/hooks/admin";
 import { getBadgeStyle, getBadgeText } from "@/utils/admin/badges";
 import { api } from "@/lib/fetch";
@@ -186,7 +187,7 @@ export default function AdminRouterPageOptimized() {
       pageActions.refresh();
       alert(`${pageState.selectedIds.length}개의 라우터가 삭제되었습니다.`);
     } catch (error) {
-      console.error('Failed to bulk delete routers:', error);
+      logger.error('Failed to bulk delete routers', 'ROUTER', error);
       alert('일부 라우터 삭제에 실패했습니다.');
     } finally {
       pageActions.setBulkActionLoading(false);

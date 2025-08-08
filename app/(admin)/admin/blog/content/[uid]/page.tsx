@@ -6,38 +6,9 @@ import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { Post } from "@/types/post";
+import { BlogContent, BlogImage, ProductItem, ContentSection, AuthorInfo } from '@/types/adminBlog';
+import { getLanguageName, DEFAULT_BLOG_CONTENT } from '@/utils/admin/blog/utils';
 
-interface ProductItem {
-  url: string;
-  tag: string[];
-  title: string;
-  description: string;
-}
-
-interface ContentSection {
-  title: string;
-  context: string;
-}
-
-interface BlogImage {
-  id: string;
-  url: string;
-  filename: string;
-  size: number;
-  uploadedAt: string;
-}
-
-interface AuthorInfo {
-  name: string;
-  description: string;
-  profileImage: string;
-}
-
-interface BlogContent {
-  product: ProductItem[];
-  author: AuthorInfo;
-  content: ContentSection[];
-}
 
 export default function BlogContentEditorPage() {
   const params = useParams();
@@ -518,7 +489,7 @@ export default function BlogContentEditorPage() {
               </div>
             </div>
             <div className="text-xs text-[var(--text-color)] opacity-60">
-              현재 편집 중: <span className="font-semibold">{language === 'ko' ? '한국어' : language === 'en' ? 'English' : language === 'ja' ? '日本語' : 'Русский'}</span>
+              현재 편집 중: <span className="font-semibold">{getLanguageName(language)}</span>
             </div>
           </div>
         </div>
@@ -544,7 +515,7 @@ export default function BlogContentEditorPage() {
           
           <div className="space-y-4">
             {blogContent.product.map((product, index) => (
-              <div key={index} className="p-4 border border-[var(--border-color)] rounded-lg space-y-3">
+              <div key={`product-${product.url || ''}-${index}`} className="p-4 border border-[var(--border-color)] rounded-lg space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium text-[var(--text-color)]">제품 {index + 1}</h3>
                   <button
@@ -759,7 +730,7 @@ export default function BlogContentEditorPage() {
           
           <div className="space-y-4">
             {blogContent.content.map((section, index) => (
-              <div key={index} className="p-4 border border-[var(--border-color)] rounded-lg space-y-3">
+              <div key={`section-${section.title?.substring(0, 20) || ''}-${index}`} className="p-4 border border-[var(--border-color)] rounded-lg space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium text-[var(--text-color)]">섹션 {index + 1}</h3>
                   <button

@@ -20,13 +20,22 @@ interface BlogPostGalleryProps {
 
 // Responsive utility functions
 const getResponsiveClasses = {
-  title: (mobile: boolean, tablet: boolean) =>
-    mobile ? 'text-xl' : tablet ? 'text-xl mb-4' : 'text-2xl mb-6',
+  title: (mobile: boolean, tablet: boolean) => {
+    if (mobile) return 'text-xl';
+    if (tablet) return 'text-xl mb-4';
+    return 'text-2xl mb-6';
+  },
   padding: (mobile: boolean) => mobile ? 'p-4' : 'p-6 lg:p-8',
   text: (mobile: boolean) => mobile ? 'text-sm' : 'text-base lg:text-lg',
   button: (mobile: boolean) => mobile ? 'px-3 py-2 text-sm' : 'px-4 py-2 text-base',
   tag: (mobile: boolean) => mobile ? 'px-2 py-1 text-xs' : 'px-3 py-1 text-sm'
 };
+
+function getMaxWidth(mobile: boolean, tablet: boolean): string {
+  if (mobile) return '100vw';
+  if (tablet) return '100vw';
+  return 'calc(100vw - 270px)';
+}
 
 export const Gallery = memo(function Gallery({
   products,
@@ -38,7 +47,7 @@ export const Gallery = memo(function Gallery({
     <motion.section
       className="mb-8 w-full overflow-hidden max-w-screen"
       style={{ 
-        maxWidth: mobile ? '100vw' : tablet ? '100vw' : 'calc(100vw - 270px)',
+        maxWidth: getMaxWidth(mobile, tablet),
         width: '100%',
         position: 'relative'
       }}
@@ -51,7 +60,7 @@ export const Gallery = memo(function Gallery({
         className="relative overflow-hidden" 
         style={{ 
           width: '100%',
-          maxWidth: mobile ? '99vw' : tablet ? '100vw' : 'calc(100vw - 270px)'
+          maxWidth: getMaxWidth(mobile, tablet)
         }}
       >
         <Swiper
@@ -67,7 +76,7 @@ export const Gallery = memo(function Gallery({
           className="w-full"
           style={{
             width: '100%',
-            maxWidth: mobile ? '99vw' : tablet ? '100vw' : 'calc(100vw - 270px)',
+            maxWidth: getMaxWidth(mobile, tablet),
             height: 'auto',
             overflow: 'hidden',
             position: 'relative'
@@ -79,7 +88,7 @@ export const Gallery = memo(function Gallery({
           grabCursor={true}
         >
           {products.map((product, index) => (
-            <SwiperSlide key={index} style={{ width: '100%' }}>
+            <SwiperSlide key={`product-${index}`} style={{ width: '100%' }}>
               <div className={`relative w-full aspect-square sm:aspect-[4/2] lg:aspect-[4/1]
                 }`}>
                 {/* Background layer with parallax */}

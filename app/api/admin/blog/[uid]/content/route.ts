@@ -4,6 +4,7 @@ import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
 import { uploadJsonToR2, getFromR2, deleteFromR2 } from '@/lib/services/cloudflare/r2';
+import { logger } from '@/lib/services/logger';
 
 interface RouteParams {
   params: Promise<{
@@ -145,7 +146,7 @@ const saveContent = async (
       return setRequest(result);
       
     } catch (error) {
-      console.error('Failed to upload to R2:', error);
+      logger.error('Failed to upload to R2', 'R2', error);
       return setMessage('NetworkError', 'Failed to upload content to CDN', 500);
     }
 
@@ -197,7 +198,7 @@ const deleteContent = async (
         return setRequest(result);
       }
       
-      console.error('Failed to delete from R2:', error);
+      logger.error('Failed to delete from R2', 'R2', error);
       return setMessage('NetworkError', 'Failed to delete content from CDN', 500);
     }
 

@@ -1,6 +1,7 @@
 import { prisma } from './prisma';
 import { Prisma } from '@prisma/client';
 import { withRetry } from './connection-manager';
+import { logger } from '@/utils/logger';
 
 // ================================
 // TypeScript Interfaces
@@ -259,7 +260,7 @@ export const getAdminUsers = async (params: AdminUserParams) => {
   const skip = (page - 1) * limit;
 
   // 검색 조건 구성
-  const whereCondition: any = {};
+  const whereCondition: Record<string, any> = {};
 
   if (search) {
     whereCondition.OR = [
@@ -432,7 +433,7 @@ export const getUserStats = async () => {
       verificationStats
     };
   } catch (error) {
-    console.error('Database connection error in getUserStats:', error);
+    logger.error('Database connection error in getUserStats', 'DB', error);
     return {
       totalUsers: 0,
       activeUsers: 0,

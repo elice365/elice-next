@@ -1,4 +1,5 @@
 import { PostContent } from '@/types/post';
+import { logger } from '@/lib/services/logger';
 
 export interface ProductItem {
   url: string;
@@ -30,18 +31,19 @@ export function parseContent(content?: PostContent | null): BlogContent | null {
   try {
     return content.data as unknown as BlogContent;
   } catch (error) {
-    console.error('Failed to parse blog content:', error);
+    logger.error('Failed to parse blog content', 'BLOG', error);
     return null;
   }
 }
 
-export function getMainImage(images: string[] | any): string {
+export function getMainImage(images: string[] | unknown): string {
   if (Array.isArray(images) && images.length > 0) {
     return images[0];
   }
   if (images && typeof images === 'object') {
-    if (images.main) return images.main;
-    if (images.thumbnail) return images.thumbnail;
+    const imageObj = images as any;
+    if (imageObj.main) return imageObj.main;
+    if (imageObj.thumbnail) return imageObj.thumbnail;
   }
   if (typeof images === 'string') return images;
   

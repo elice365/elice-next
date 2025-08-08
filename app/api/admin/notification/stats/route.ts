@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as NotificationDB from '@/lib/db/notification';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/notification/stats
@@ -18,7 +19,7 @@ const getNotificationStats = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] /admin/notification/stats GET error:', error);
+    logger.error('[API] /admin/notification/stats GET error', 'API', error);
     
     // 오류 발생 시 기본값 반환
     const fallbackStats = {

@@ -16,8 +16,8 @@ const getCategories = async (
     const { searchParams } = new URL(request.url);
     
     // Parse query parameters
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '20', 10);
     const search = searchParams.get('search') || '';
     const level = searchParams.get('level');
     const parent = searchParams.get('parent') || '';
@@ -27,7 +27,7 @@ const getCategories = async (
       page,
       limit,
       search,
-      level: level !== null && level !== '' ? parseInt(level) : undefined,
+      level: level !== null && level !== '' ? parseInt(level, 10) : undefined,
       parent
     });
 

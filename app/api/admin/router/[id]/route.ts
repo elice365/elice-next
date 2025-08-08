@@ -4,6 +4,7 @@ import { getRouterById, updateRouter, deleteRouter, checkRouterNameExists, check
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import { Redis } from "@upstash/redis";
+import { logger } from '@/lib/services/logger';
 
 // Redis 인스턴스
 const redis = new Redis({
@@ -25,9 +26,9 @@ const invalidateRouterCache = async (oldRoles?: string[], newRoles?: string[]) =
       keysToInvalidate.map(key => redis.del(key))
     );
     
-    console.log(`[Cache] Invalidated router cache: ${keysToInvalidate.join(', ')}`);
+    logger.info(`[Cache] Invalidated router cache: ${keysToInvalidate.join(', ')}`, 'CACHE');
   } catch (error) {
-    console.error('[Cache] Failed to invalidate router cache:', error);
+    logger.error('[Cache] Failed to invalidate router cache', 'CACHE', error);
     // 캐시 무효화 실패는 시스템을 중단시키지 않음
   }
 };
@@ -57,15 +58,15 @@ const getRouterDetail = async (
     return setRequest(routerData);
 
   } catch (error) {
-    console.error('[API] /admin/router/[id] GET error:', error);
+    logger.error('[API] /admin/router/[id] GET error', 'API', error);
     return await setMessage('NetworkError', null, 500);
   }
 };
 
 // 라우터 업데이트 데이터 검증
-const validateUpdateData = (body: any) => {
-  const { name, path, icon, role } = body;
-  const updateData: any = {};
+const validateUpdateData = (body: unknown) => {
+  const { name, path, icon, role } = body as { name?: unknown; path?: unknown; icon?: unknown; role?: unknown };
+  const updateData: Record<string, any> = {};
   
   if (name !== undefined) {
     if (typeof name !== 'string' || name.trim().length === 0) {
@@ -197,7 +198,7 @@ const updateRouterInfo = async (
     return setRequest(updatedRouter);
 
   } catch (error: any) {
-    console.error('[API] /admin/router/[id] PATCH error:', error);
+    logger.error('[API] /admin/router/[id] PATCH error', 'API', error);
     return await handlePrismaError(error);
   }
 };
@@ -236,7 +237,7 @@ const deleteRouterById = async (
     });
 
   } catch (error: any) {
-    console.error('[API] /admin/router/[id] DELETE error:', error);
+    logger.error('[API] /admin/router/[id] DELETE error', 'API', error);
     
     // Prisma foreign key constraint 에러 처리
     if (error.code === 'P2003') {

@@ -4,6 +4,7 @@ import { getAdminSessions } from '@/lib/db/session';
 import { Prisma } from '@prisma/client';
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/session
@@ -18,8 +19,8 @@ const getSessions = async (
     const { searchParams } = new URL(request.url);
 
     // 쿼리 파라미터 파싱
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || '';
     const loginType = searchParams.get('loginType') || '';
@@ -97,7 +98,7 @@ const getSessions = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] /admin/session GET error:', error);
+    logger.error('[API] /admin/session GET error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };

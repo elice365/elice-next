@@ -1,225 +1,421 @@
-/**
- * Blog Module Types
- * Type definitions for blog components and features
- */
+// Blog System Type Definitions
+// Comprehensive type definitions for the blog system
 
-import { Post, Tag, PostContent } from './post';
-import { BlogContent, AuthorInfo, ProductItem, ContentSection } from '@/utils/blog/contentParser';
+import { Post, PostContent } from './post';
+import { User } from '@prisma/client';
 
-// Component Props Types
-export interface BlogCardProps {
-  post: Post;
-  className?: string;
+// ==========================================
+// Core Blog Types
+// ==========================================
+
+export interface BlogPost extends Post {
+  author?: User;
+  category?: BlogCategory;
+  tags?: BlogTag[];
+  content?: PostContent;
+  _count?: {
+    comments: number;
+    likes: number;
+  };
 }
 
-export interface BlogListProps {
-  posts: Post[];
-  className?: string;
-}
-
-export interface BlogListItemProps {
-  post: Post;
-  index: number;
-}
-
-export interface BlogFiltersProps {
-  className?: string;
-  onFilterChange?: (filters: BlogFilterState) => void;
-}
-
-export interface BlogDisplayProps {
-  posts: Post[];
-  isLoading?: boolean;
-  locale?: string;
-  defaultView?: 'card' | 'list';
-}
-
-export interface CommentSectionProps {
-  postId: string;
-  comments?: Comment[];
-  isLoading?: boolean;
-  className?: string;
-}
-
-export interface RelatedPostsProps {
-  currentPostId: string;
-  tags: Tag[];
-  category?: string;
-  limit?: number;
-}
-
-// Detail Component Props
-export interface PostDetailProps {
-  post: Post;
-  content?: PostContent | null;
-  isLoading?: boolean;
-}
-
-export interface PostHeaderProps {
-  post: Post;
-  mobile: boolean;
-  tablet: boolean;
-}
-
-export interface PostContentProps {
-  sections: ContentSection[];
-  mobile: boolean;
-  tablet: boolean;
-}
-
-export interface PostGalleryProps {
-  products: ProductItem[];
-  author?: AuthorInfo;
-  mobile: boolean;
-  tablet: boolean;
-}
-
-export interface PostActionsProps {
-  isLiked: boolean;
-  isBookmarked: boolean;
-  likeCount: number;
-  onLike: () => void;
-  onBookmark: () => void;
-  onShare: () => void;
-  variant?: 'desktop' | 'mobile';
-}
-
-export interface PostSidebarProps {
-  post: Post;
-  blogContent: BlogContent | null;
-  isLiked: boolean;
-  isBookmarked: boolean;
-  onLike: () => void;
-  onBookmark: () => void;
-  onShare: () => void;
-}
-
-export interface PostMobileActionsProps {
-  post: Post;
-  isLiked: boolean;
-  isBookmarked: boolean;
-  likeCount: number;
-  onLike: () => void;
-  onBookmark: () => void;
-  onShare: () => void;
-}
-
-export interface SellerInfoProps {
-  author: AuthorInfo;
-  variant?: 'desktop' | 'mobile';
-}
-
-// Filter and State Types
-export interface BlogFilterState {
-  category?: string;
-  tag?: string;
-  search?: string;
-  sortBy?: 'latest' | 'popular' | 'trending' | 'oldest';
-}
-
-export interface BlogPaginationState {
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-  hasNext: boolean;
-  hasPrev: boolean;
-}
-
-// Comment Types
-export interface Comment {
+export interface BlogCategory {
   id: string;
-  postId: string;
-  userId: string;
-  userName: string;
-  userImage?: string;
-  content: string;
-  createdAt: string;
-  updatedAt?: string;
-  likes: number;
-  replies?: Comment[];
-  isLiked?: boolean;
-}
-
-// Share Types
-export interface ShareOptions {
-  url: string;
-  title: string;
+  name: string;
+  slug: string;
   description?: string;
-  image?: string;
-  platform: 'facebook' | 'twitter' | 'linkedin' | 'kakao';
+  postCount?: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
+export interface BlogTag {
+  id: string;
+  name: string;
+  slug: string;
+  postCount?: number;
+}
+
+// ==========================================
 // API Response Types
+// ==========================================
+
 export interface BlogPostsResponse {
-  success: boolean;
-  data: {
-    posts: Post[];
-    pagination: BlogPaginationState;
-  };
-  error?: string;
+  posts: BlogPost[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
 }
 
-export interface BlogPostDetailResponse {
-  success: boolean;
-  data: {
-    post: Post;
-    content?: PostContent;
-  };
-  error?: string;
+export interface BlogPostResponse {
+  post: BlogPost;
+  relatedPosts?: BlogPost[];
 }
 
 export interface BlogActionResponse {
   success: boolean;
-  data?: {
-    likeCount?: number;
-    isLiked?: boolean;
-    isBookmarked?: boolean;
-  };
+  data?: any;
   error?: string;
+  message?: string;
 }
 
+export interface BlogStatsResponse {
+  totalPosts: number;
+  publishedPosts: number;
+  draftPosts: number;
+  totalViews: number;
+  totalLikes: number;
+  totalComments: number;
+  recentPosts: BlogPost[];
+  popularPosts: BlogPost[];
+  categories: BlogCategory[];
+}
+
+// ==========================================
+// Component Props Types
+// ==========================================
+
+export interface BlogCardProps {
+  post: BlogPost;
+  layout?: 'card' | 'list';
+  showActions?: boolean;
+  showAuthor?: boolean;
+  showCategory?: boolean;
+  showTags?: boolean;
+  onLike?: (postId: string) => void;
+  onShare?: (post: BlogPost) => void;
+  onBookmark?: (postId: string) => void;
+  className?: string;
+}
+
+export interface BlogListProps {
+  posts: BlogPost[];
+  loading?: boolean;
+  error?: string | null;
+  layout?: 'card' | 'list';
+  onLoadMore?: () => void;
+  hasMore?: boolean;
+  className?: string;
+}
+
+export interface BlogPostDetailProps {
+  post: BlogPost;
+  relatedPosts?: BlogPost[];
+  onLike?: (postId: string) => void;
+  onShare?: (post: BlogPost) => void;
+  onComment?: (comment: BlogComment) => void;
+  className?: string;
+}
+
+export interface BlogFiltersProps {
+  categories: BlogCategory[];
+  tags: BlogTag[];
+  selectedCategory?: string;
+  selectedTags?: string[];
+  sortBy?: BlogSortOption;
+  onCategoryChange?: (categoryId: string) => void;
+  onTagChange?: (tags: string[]) => void;
+  onSortChange?: (sort: BlogSortOption) => void;
+  onSearchChange?: (search: string) => void;
+  className?: string;
+}
+
+export interface BlogHeaderProps {
+  title?: string;
+  subtitle?: string;
+  showSearch?: boolean;
+  showFilters?: boolean;
+  onSearch?: (query: string) => void;
+  className?: string;
+}
+
+// ==========================================
+// Content Types
+// ==========================================
+
+export interface BlogContent {
+  product: ProductItem[];
+  author: AuthorInfo;
+  content: ContentSection[];
+}
+
+export interface ProductItem {
+  url: string;
+  tag: string[];
+  title: string;
+  description: string;
+}
+
+export interface AuthorInfo {
+  name: string;
+  description: string;
+  profileImage: string;
+}
+
+export interface ContentSection {
+  title: string;
+  context: string;
+}
+
+export interface BlogImage {
+  id: string;
+  url: string;
+  filename: string;
+  size: number;
+  uploadedAt: string;
+  postId?: string;
+}
+
+// ==========================================
+// Engagement Types
+// ==========================================
+
+export interface BlogComment {
+  id: string;
+  content: string;
+  author: User;
+  postId: string;
+  parentId?: string;
+  replies?: BlogComment[];
+  likes: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BlogLike {
+  id: string;
+  userId: string;
+  postId: string;
+  createdAt: Date;
+}
+
+export interface BlogView {
+  id: string;
+  postId: string;
+  userId?: string;
+  ipAddress?: string;
+  userAgent?: string;
+  viewedAt: Date;
+}
+
+export interface BlogBookmark {
+  id: string;
+  userId: string;
+  postId: string;
+  createdAt: Date;
+}
+
+// ==========================================
+// State Management Types
+// ==========================================
+
+export interface BlogState {
+  posts: BlogPost[];
+  currentPost: BlogPost | null;
+  relatedPosts: BlogPost[];
+  categories: BlogCategory[];
+  tags: BlogTag[];
+  filters: BlogFilterState;
+  pagination: BlogPaginationState;
+  layout: BlogLayoutOption;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface BlogFilterState {
+  category?: string;
+  tags?: string[];
+  search?: string;
+  sortBy?: BlogSortOption;
+  status?: BlogPostStatus;
+  dateRange?: {
+    start: Date;
+    end: Date;
+  };
+}
+
+export interface BlogPaginationState {
+  page: number;
+  limit: number;
+  total: number;
+  hasMore: boolean;
+}
+
+// ==========================================
+// Configuration Types
+// ==========================================
+
+export type BlogLayoutOption = 'card' | 'list';
+
+export type BlogSortOption = 
+  | 'latest' 
+  | 'popular' 
+  | 'trending' 
+  | 'mostLiked' 
+  | 'mostViewed' 
+  | 'alphabetical';
+
+export type BlogPostStatus = 'draft' | 'published' | 'archived' | 'scheduled';
+
+export type BlogSharePlatform = 
+  | 'facebook' 
+  | 'twitter' 
+  | 'linkedin' 
+  | 'kakao' 
+  | 'naver' 
+  | 'telegram' 
+  | 'whatsapp' 
+  | 'copy';
+
+export interface BlogShareOptions {
+  title: string;
+  text?: string;
+  url: string;
+  platform?: BlogSharePlatform;
+}
+
+// ==========================================
+// Admin Types
+// ==========================================
+
+export interface AdminBlogPost extends BlogPost {
+  isDraft: boolean;
+  scheduledAt?: Date;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
+  ogImage?: string;
+}
+
+export interface AdminBlogFilters extends BlogFilterState {
+  authorId?: string;
+  hasContent?: boolean;
+  hasImages?: boolean;
+  languages?: string[];
+}
+
+export interface AdminBlogBulkAction {
+  action: 'publish' | 'unpublish' | 'delete' | 'archive';
+  postIds: string[];
+  options?: {
+    scheduledAt?: Date;
+    notifySubscribers?: boolean;
+  };
+}
+
+// ==========================================
+// Form Types
+// ==========================================
+
+export interface BlogPostFormData {
+  title: string;
+  content: string;
+  excerpt?: string;
+  categoryId?: string;
+  tags?: string[];
+  images?: File[] | string[];
+  isDraft?: boolean;
+  scheduledAt?: Date;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
+}
+
+export interface BlogCommentFormData {
+  content: string;
+  parentId?: string;
+}
+
+export interface BlogCategoryFormData {
+  name: string;
+  slug?: string;
+  description?: string;
+}
+
+// ==========================================
 // Hook Return Types
-export interface UseBlogActionsReturn {
-  isLiked: boolean;
-  isBookmarked: boolean;
-  likeCount: number;
-  isLiking: boolean;
-  isBookmarking: boolean;
-  handleLike: () => void;
-  handleBookmark: () => void;
-  handleShare: () => void;
+// ==========================================
+
+export interface UseBlogPostReturn {
+  post: BlogPost | null;
+  loading: boolean;
+  error: string | null;
+  like: () => Promise<void>;
+  share: (platform: BlogSharePlatform) => void;
+  bookmark: () => Promise<void>;
+}
+
+export interface UseBlogListReturn {
+  posts: BlogPost[];
+  loading: boolean;
+  error: string | null;
+  hasMore: boolean;
+  loadMore: () => void;
+  refresh: () => void;
 }
 
 export interface UseBlogFiltersReturn {
   filters: BlogFilterState;
-  updateFilter: (key: keyof BlogFilterState, value: string | undefined) => void;
-  resetFilters: () => void;
-  activeFilterCount: number;
+  setCategory: (categoryId: string) => void;
+  setTags: (tags: string[]) => void;
+  setSearch: (search: string) => void;
+  setSortBy: (sort: BlogSortOption) => void;
+  reset: () => void;
 }
 
-// Animation Variants
-export interface BlogAnimationVariants {
-  hidden: any;
-  visible: any;
-  exit?: any;
+// ==========================================
+// Utility Types
+// ==========================================
+
+export type BlogPostWithRelations = BlogPost & {
+  author: User;
+  category: BlogCategory;
+  tags: BlogTag[];
+  comments: BlogComment[];
+  _count: {
+    comments: number;
+    likes: number;
+    views: number;
+  };
+};
+
+export type BlogPostPreview = Pick<BlogPost, 
+  | 'id' 
+  | 'title' 
+  | 'excerpt' 
+  | 'thumbnail' 
+  | 'slug' 
+  | 'createdAt'
+>;
+
+export type BlogPostCard = Pick<BlogPost, 
+  | 'id' 
+  | 'title' 
+  | 'excerpt' 
+  | 'thumbnail' 
+  | 'slug' 
+  | 'createdAt' 
+  | 'viewCount' 
+  | 'likeCount'
+> & {
+  author?: Pick<User, 'id' | 'name' | 'image'>;
+  category?: Pick<BlogCategory, 'id' | 'name' | 'slug'>;
+};
+
+// ==========================================
+// Error Types
+// ==========================================
+
+export interface BlogError {
+  code: string;
+  message: string;
+  details?: any;
 }
 
-// Metadata Types
-export interface BlogMetadata {
-  title: string;
-  description: string;
-  image?: string;
-  author?: string;
-  publishedTime?: string;
-  modifiedTime?: string;
-  tags?: string[];
-  category?: string;
-}
-
-// Content Section Types (from Detail Components)
-export interface ContentSectionItemProps {
-  section: ContentSection;
-  index: number;
-  mobile: boolean;
-  tablet: boolean;
-}
+export type BlogErrorCode = 
+  | 'POST_NOT_FOUND'
+  | 'CATEGORY_NOT_FOUND'
+  | 'UNAUTHORIZED'
+  | 'VALIDATION_ERROR'
+  | 'SERVER_ERROR';

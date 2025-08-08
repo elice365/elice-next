@@ -407,7 +407,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
               </div>
               <div className="flex flex-wrap gap-2">
                 {formData.images.map((imageUrl, index) => (
-                  <div key={index} className="relative group">
+                  <div key={`image-${imageUrl.substring(0, 30)}-${index}`} className="relative group">
                     <div className="w-20 h-20 rounded-lg overflow-hidden border border-[var(--border-color)] bg-[var(--hover)]">
                       <img
                         src={imageUrl}

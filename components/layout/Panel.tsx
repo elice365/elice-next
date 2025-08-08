@@ -3,6 +3,7 @@ import { api } from '@/lib/fetch';
 import { APIResult } from '@/types/api';
 import { PanelType } from '@/types/panel';
 import { getTranslations } from 'next-intl/server';
+import { logger } from '@/lib/services/logger';
 
 
 
@@ -10,7 +11,7 @@ export async function Panel({ type = 'user' }: PanelType) {
   try {
     const Navigator = dynamic(() => import('@/components/layout/Navigator'));
     const t = await getTranslations("router");
-    let apiRouter: any[] = [];
+    let apiRouter: Array<{name: string; path: string; icon?: string}> = [];
 
     try {
       // API에서 라우터 데이터 가져오기
@@ -20,13 +21,13 @@ export async function Panel({ type = 'user' }: PanelType) {
       }
 
       // API 데이터를 변환 (아이콘은 문자열로 전달)
-      apiRouter = (data?.success && Array.isArray(data?.data)) ? data.data.map((item: any) => ({
+      apiRouter = (data?.success && Array.isArray(data?.data)) ? data.data.map((item) => ({
         name: t(item.name),
         path: item.path,
         icon: item.icon || undefined
       })) : [];
     } catch (error) {
-      console.error('Panel API 호출 오류:', error);
+      logger.error('Panel API 호출 오류', 'PANEL', error);
       apiRouter = [];
     }
 
@@ -37,7 +38,7 @@ export async function Panel({ type = 'user' }: PanelType) {
       <Navigator router={router} />
     );
   } catch (error) {
-    console.error('Panel 컴포넌트 오류:', error);
+    logger.error('Panel 컴포넌트 오류', 'PANEL', error);
     return <div>Navigation loading...</div>;
   }
 };

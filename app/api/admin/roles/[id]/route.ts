@@ -4,6 +4,7 @@ import { getRoleById, getRoleWithUsers, updateRole, deleteRole } from '@/lib/db/
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import { Prisma } from '@prisma/client';
+import { logger } from '@/lib/services/logger';
 
 type RoleWithUsers = Prisma.RoleGetPayload<{
   include: {
@@ -71,14 +72,14 @@ const getRoleDetail = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] /admin/roles/[id] GET error:', error);
+    logger.error('[API] /admin/roles/[id] GET error', 'API', error);
     return await setMessage('NetworkError', null, 500);
   }
 };
 
 // Helper function to validate and build update data
-const buildUpdateData = (name: any, description: any) => {
-  const updateData: any = {};
+const buildUpdateData = (name: unknown, description: unknown) => {
+  const updateData: Record<string, any> = {};
 
   if (name !== undefined) {
     if (typeof name !== 'string' || name.trim().length === 0) {
@@ -88,7 +89,11 @@ const buildUpdateData = (name: any, description: any) => {
   }
 
   if (description !== undefined) {
-    updateData.description = description?.trim() || null;
+    if (typeof description === 'string') {
+      updateData.description = description.trim() || null;
+    } else {
+      updateData.description = null;
+    }
   }
 
   if (Object.keys(updateData).length === 0) {
@@ -127,7 +132,7 @@ const updateRoleInfo = async (
     return setRequest(updatedRole);
 
   } catch (error: any) {
-    console.error('[API] /admin/roles/[id] PATCH error:', error);
+    logger.error('[API] /admin/roles/[id] PATCH error', 'API', error);
 
     if (error.message === 'InvalidName' || error.message === 'NoUpdateData') {
       return await setMessage('InvalidField', null, 400);
@@ -180,7 +185,7 @@ const deleteRoleById = async (
     });
 
   } catch (error: any) {
-    console.error('[API] /admin/roles/[id] DELETE error:', error);
+    logger.error('[API] /admin/roles/[id] DELETE error', 'API', error);
 
     if (error.code === 'P2003') {
       return await setMessage('ConflictError', null, 409);

@@ -4,6 +4,7 @@
  */
 
 import { prisma } from './prisma';
+import { logger } from '@/lib/services/logger';
 
 // 연결 상태 추적
 let activeConnections = 0;
@@ -21,7 +22,7 @@ export const getConnectionStatus = async () => {
       max: MAX_CONNECTIONS,
     };
   } catch (error) {
-    console.error('Failed to get connection status:', error);
+    logger.error('Failed to get connection status', 'DB', error);
     return {
       active: activeConnections,
       max: MAX_CONNECTIONS,
@@ -34,44 +35,60 @@ export const getConnectionStatus = async () => {
  * 트랜잭션 래퍼 with 재시도 로직
  * Supabase 연결 풀 타임아웃 문제 해결
  */
+// Helper function to check if error is connection pool error
+const isConnectionPoolError = (error: unknown): boolean => {
+  const err = error as Error;
+  return !!err.message && (
+    err.message.includes('Timed out fetching a new connection') || 
+    err.message.includes('connection pool')
+  );
+};
+
+// Helper function to wait with exponential backoff
+const waitWithBackoff = async (retryNumber: number, baseDelay: number): Promise<void> => {
+  const waitTime = baseDelay * Math.pow(2, retryNumber);
+  await new Promise(resolve => setTimeout(resolve, waitTime));
+};
+
+// Helper function to reset database connection
+const resetConnection = async (): Promise<void> => {
+  try {
+    logger.info('Attempting to reset connection...', 'DB');
+    await prisma.$disconnect();
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await prisma.$connect();
+  } catch (reconnectError) {
+    logger.error('Failed to reconnect', 'DB', reconnectError);
+  }
+};
+
 export const withRetry = async <T>(
   fn: () => Promise<T>,
   maxRetries = 3,
   delay = 1000
 ): Promise<T> => {
-  let lastError: any;
+  let lastError: unknown;
   
   for (let i = 0; i < maxRetries; i++) {
     try {
       const result = await fn();
       return result;
-    } catch (error: any) {
+    } catch (error) {
       lastError = error;
       
-      // 연결 풀 타임아웃 에러 체크
-      if (error.message?.includes('Timed out fetching a new connection') || 
-          error.message?.includes('connection pool')) {
-        
-        console.warn(`Connection pool timeout, retry ${i + 1}/${maxRetries}`);
-        
-        // 재시도 전 대기 (지수 백오프)
-        const waitTime = delay * Math.pow(2, i);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-        
-        // 2번째 재시도 시 연결 재설정 시도
-        if (i === 1) {
-          try {
-            console.log('Attempting to reset connection...');
-            await prisma.$disconnect();
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await prisma.$connect();
-          } catch (reconnectError) {
-            console.error('Failed to reconnect:', reconnectError);
-          }
-        }
-      } else {
+      if (!isConnectionPoolError(error)) {
         // 다른 에러는 즉시 throw
         throw error;
+      }
+      
+      logger.warn(`Connection pool timeout, retry ${i + 1}/${maxRetries}`, 'DB');
+      
+      // 재시도 전 대기 (지수 백오프)
+      await waitWithBackoff(i, delay);
+      
+      // 2번째 재시도 시 연결 재설정 시도
+      if (i === 1) {
+        await resetConnection();
       }
     }
   }
@@ -87,7 +104,7 @@ export const batchQuery = async <T>(
   queries: Array<any>
 ): Promise<T[]> => {
   return withRetry(async () => {
-    return prisma.$transaction(queries);
+    return prisma.$transaction(queries) as Promise<T[]>;
   });
 };
 
@@ -100,9 +117,9 @@ export const cleanupConnections = async () => {
       await prisma.$disconnect();
       await prisma.$connect();
       activeConnections = 0;
-      console.log('Connections cleaned up');
+      logger.info('Connections cleaned up', 'DB');
     } catch (error) {
-      console.error('Failed to cleanup connections:', error);
+      logger.error('Failed to cleanup connections', 'DB', error);
     }
   }
 };
@@ -112,7 +129,7 @@ if (process.env.NODE_ENV === 'development') {
   // 5분마다 유휴 연결 정리
   setInterval(() => {
     if (activeConnections === 0) {
-      prisma.$disconnect().catch(console.error);
+      prisma.$disconnect().catch(error => logger.error('Failed to disconnect', 'DB', error));
     }
   }, 5 * 60 * 1000);
 }

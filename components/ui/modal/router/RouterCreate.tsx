@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/Icon";
 import { filterField } from "@/utils/regex/input";
 import { validateRouter } from "@/utils/regex/admin";
 import { FormErrors } from "@/types/admin";
+import { logger } from "@/lib/services/logger";
 import { ICON_CATEGORIES, IconCategory } from "@/constants/modal/iconCategories";
 import { useRoles, formatRolesForRouter } from "@/hooks/admin";
 import { useTranslations } from "next-intl";
@@ -217,7 +218,7 @@ export function RouterCreateModal({ isOpen, onClose, onUpdate }: RouterCreateMod
         handleApiError(data);
       }
     } catch (error) {
-      console.error('[RouterCreateModal] Router creation failed:', error);
+      logger.error('[RouterCreateModal] Router creation failed', 'ROUTER', error);
       setErrors({ general: '네트워크 오류가 발생했습니다.' });
     } finally {
       setLoading(false);

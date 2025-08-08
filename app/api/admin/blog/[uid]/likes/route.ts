@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import { prisma } from '@/lib/db/prisma';
+import { logger } from '@/lib/services/logger';
 
 interface LikeDetailResponse {
   postId: string;
@@ -136,7 +137,7 @@ async function handleGetPostLikes(
       }
     };
   } catch (error) {
-    console.error('Error fetching post likes:', error);
+    logger.error('Error fetching post likes', 'API', error);
     return {
       success: false,
       message: 'Failed to fetch post likes'

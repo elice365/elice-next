@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db/prisma';
 import { safeBody } from '@/utils/parse/body';
 import { trackPostView } from '@/lib/db/views';
 import { requestInfo } from '@/lib/server/info';
+import { logger } from '@/lib/services/logger';
 
 // Types for blog post API
 interface PostListRequest {
@@ -36,7 +37,7 @@ interface PostListResponse {
     title: string;
     description: string;
     url: string;
-    images: any;
+    images: string[] | Record<string, string> | string;
     views: number;
     likeCount: number;
     createdTime: Date;
@@ -66,7 +67,7 @@ interface PostDetailResponse {
     title: string;
     description: string;
     url: string;
-    images: any;
+    images: string[] | Record<string, string> | string;
     views: number;
     likeCount: number;
     createdTime: Date;
@@ -81,7 +82,7 @@ interface PostDetailResponse {
   };
   content?: {
     language: string;
-    data: any;
+    data: Record<string, unknown>;
   };
 }
 
@@ -137,7 +138,7 @@ async function handlePostRequest(
 ): Promise<APIResult<PostListResponse | PostDetailResponse | NoticeListResponse>> {
   try {
     const body = await safeBody(request);
-    console.log('📝 POST /api/post request body:', body);
+    logger.info('📝 POST /api/post request body', 'API', body);
     const { type } = body;
 
     switch (type) {
@@ -157,7 +158,7 @@ async function handlePostRequest(
         };
     }
   } catch (error) {
-    console.error('❌ POST /api/post error:', error);
+    logger.error('❌ POST /api/post error', 'API', error);
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Failed to process request',
@@ -175,7 +176,7 @@ async function handlePostList(
   const skip = (page - 1) * limit;
 
   // Build where clause
-  const where: any = {
+  const where: Record<string, unknown> = {
     type: { not: 'notice' }, // Exclude notices
     status: 'published', // Only show published posts to users
   };
@@ -202,7 +203,7 @@ async function handlePostList(
   }
 
   // Build orderBy (views 컬럼 제거로 인해 views 정렬 비활성화)
-  let orderBy: any = { createdTime: 'desc' }; // Default to latest
+  let orderBy: Record<string, 'asc' | 'desc'> = { createdTime: 'desc' }; // Default to latest
   if (body.sortBy === 'popular') {
     orderBy = { likeCount: 'desc' };
   }
@@ -246,10 +247,12 @@ async function handlePostList(
   ]);
 
   // Transform posts to include isLiked flag and calculated views
-  const transformedPosts = posts.map((post: any) => ({
+  const transformedPosts = posts.map((post) => ({
     ...post,
-    views: post._count.view, // PostView 관계에서 계산된 조회수
-    isLiked: context.userId ? (post.likes as any[]).length > 0 : false,
+    images: post.images as string | string[] | Record<string, string>,
+    category: post.category || undefined, // Convert null to undefined
+    views: (post as { _count: { view: number } })._count.view, // PostView 관계에서 계산된 조회수
+    isLiked: context.userId ? ((post as { likes?: Array<{ uid: string }> }).likes?.length ?? 0) > 0 : false,
     likes: undefined, // Remove likes array from response
     _count: undefined, // Remove _count from response
   }));
@@ -329,12 +332,12 @@ async function handlePostDetail(
 
   // Track view with duplicate checking using real client info from cookie
   const deviceInfoCookie = request.cookies.get('deviceInfo');
-  console.log('🍪 Device info cookie:', deviceInfoCookie?.value);
+  logger.info('🍪 Device info cookie', 'API', deviceInfoCookie?.value);
   
   if (deviceInfoCookie) {
     try {
       const { ipAddress, userAgent } = JSON.parse(deviceInfoCookie.value);
-      console.log('📱 Parsed device info:', { ipAddress, userAgent, userId: context.userId });
+      logger.info('📱 Parsed device info', 'API', { ipAddress, userAgent, userId: context.userId });
       
       // Track view asynchronously (includes duplicate check and view increment)
       const trackResult = await trackPostView({
@@ -344,12 +347,12 @@ async function handlePostDetail(
         userAgent: userAgent,
       });
       
-      console.log('📊 Track result:', trackResult ? 'View counted' : 'Duplicate view');
+      logger.info('📊 Track result', 'API', trackResult ? 'View counted' : 'Duplicate view');
     } catch (error) {
-      console.error('Failed to parse device info cookie:', error);
+      logger.error('Failed to parse device info cookie', 'API', error);
     }
   } else {
-    console.log('❌ No device info cookie found');
+    logger.info('❌ No device info cookie found', 'API');
   }
 
   // Fetch content from CDN
@@ -358,8 +361,10 @@ async function handlePostDetail(
   // Transform post to include isLiked flag and calculated views
   const transformedPost = {
     ...post,
+    images: post.images as string | string[] | Record<string, string>,
+    category: post.category || undefined, // Convert null to undefined
     views: post._count.view, // PostView 관계에서 계산된 조회수
-    isLiked: context.userId ? (post.likes as any[]).length > 0 : false,
+    isLiked: context.userId ? ((post.likes as Array<{ uid: string }> | false) !== false && post.likes.length > 0) : false,
     likes: undefined, // Remove likes array from response
     _count: undefined, // Remove _count from response
   };
@@ -367,10 +372,7 @@ async function handlePostDetail(
   return {
     success: true,
     data: {
-      post: {
-        ...transformedPost,
-        category: transformedPost.category || undefined
-      } as any,
+      post: transformedPost,
       content: content || undefined,
     },
   };
@@ -418,15 +420,15 @@ async function handleNoticeList(
   ]);
 
   // Transform notices to include isRead flag
-  const transformedNotices = notices.map((notice: any) => ({
+  const transformedNotices = notices.map((notice) => ({
     uid: notice.uid,
     title: notice.title,
     content: notice.content,
-    link: notice.link,
+    link: notice.link || undefined,
     startsTime: notice.startsTime!,
-    endsTime: notice.endsTime,
+    endsTime: notice.endsTime || undefined,
     createdTime: notice.createdTime!,
-    isRead: context.userId ? (notice.reads as any[]).length > 0 : false,
+    isRead: context.userId ? ((notice as { reads?: Array<{ readTime: Date }> }).reads?.length ?? 0) > 0 : false,
   }));
 
   const totalPages = Math.ceil(totalCount / limit);

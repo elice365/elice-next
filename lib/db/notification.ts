@@ -318,7 +318,7 @@ export const getAdminNotifications = async (params: AdminNotificationParams) => 
   const skip = (page - 1) * limit;
 
   // 검색 조건 구성
-  const whereCondition: any = {};
+  const whereCondition: Record<string, any> = {};
 
   if (search) {
     whereCondition.OR = [

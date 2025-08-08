@@ -72,7 +72,7 @@ export function PostSkeleton() {
         {/* Tags */}
         <div className="flex gap-2 mt-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-6 w-16 bg-[var(--hover)] rounded-full overflow-hidden relative">
+            <div key={`tag-skeleton-${i}`} className="h-6 w-16 bg-[var(--hover)] rounded-full overflow-hidden relative">
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                 variants={shimmer}
@@ -98,7 +98,7 @@ export function PostSkeleton() {
       {/* Content Skeleton */}
       <div className="space-y-4 mb-8">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="space-y-2">
+          <div key={`content-skeleton-${i}`} className="space-y-2">
             <div className="h-4 w-full bg-[var(--hover)] rounded overflow-hidden relative">
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"

@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
+import { logger } from '@/lib/services/logger';
 import { BaseModalProps, FormField as FormFieldType, ValidationRules, FormErrors } from "@/types/admin";
 
 interface FormModalProps extends BaseModalProps {
@@ -199,7 +200,7 @@ export function FormModal({
 
   // 에러 처리
   const handleError = (error: any) => {
-    console.error('[FormModal] Form submission failed:', error);
+    logger.error('[FormModal] Form submission failed', 'UI', error);
     setErrors({ general: '네트워크 오류가 발생했습니다.' });
   };
 

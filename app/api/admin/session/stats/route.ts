@@ -3,6 +3,7 @@ import { setMessage, setRequest } from '@/lib/response';
 import { getSessionStats } from '@/lib/db/session';
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/session/stats
@@ -23,7 +24,7 @@ const getStats = async (
     return setRequest(stats);
 
   } catch (error) {
-    console.error('[API] /admin/session/stats GET error:', error);
+    logger.error('[API] /admin/session/stats GET error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };

@@ -1,4 +1,5 @@
 import { prisma } from './prisma';
+import { logger } from '@/lib/services/logger';
 
 /**
  * Prisma 미들웨어: 쿼리 최적화 및 연결 관리
@@ -24,7 +25,7 @@ const getCachedData = (params: any) => {
   const cached = queryCache.get(cacheKey);
   
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    console.log(`[Cache Hit] ${params.model}.${params.action}`);
+    logger.info(`[Cache Hit] ${params.model}.${params.action}`, 'DB');
     return cached.data;
   }
   
@@ -51,9 +52,9 @@ const setCachedData = (params: any, result: any) => {
 // 쿼리 성능 로깅
 const logQueryPerformance = (params: any, duration: number, isError = false) => {
   if (isError) {
-    console.error(`[Query Error] ${params.model}.${params.action} failed after ${duration}ms`);
+    logger.error(`[Query Error] ${params.model}.${params.action} failed after ${duration}ms`, 'DB');
   } else if (duration > 1000) {
-    console.warn(`[Slow Query] ${params.model}.${params.action} took ${duration}ms`);
+    logger.warn(`[Slow Query] ${params.model}.${params.action} took ${duration}ms`, 'DB');
   }
 };
 

@@ -1,6 +1,7 @@
 import { requestInfo } from "@/lib/server/info";
 import { tokenServer } from "@/lib/services/token/server";
 import { authServerConfig } from "@/constants/auth/server";
+import { logger } from "@/lib/services/logger";
 import { 
   SocialProvider, 
   SocialUserInfo, 
@@ -238,13 +239,13 @@ async function handleExistingUserLinking(
   if (statusError) return statusError;
   
   await createSocialAccount({
-    userId: existingUser.id,
+    user: { connect: { id: existingUser.id } },
     email: userInfo.email || existingUser.email,
     social: provider,
     socialId: userInfo.id.toString(),
     profileData: createProfileData(userInfo),
     ...tokenData(providerTokens, provider)
-  });
+  } as any);
 
   return existingUser;
 }
@@ -330,7 +331,7 @@ async function updateTokens(
  * 소셜 토큰 데이터 구성
  */
 function tokenData(providerTokens: ProviderTokens, provider: SocialProvider) {
-  const data: any = {
+  const data: Record<string, unknown> = {
     accessToken: providerTokens.accessToken,
     refreshToken: providerTokens.refreshToken || null,
     scope: providerTokens.scope || null
@@ -556,7 +557,7 @@ function appleUserInfo(idToken: string): SocialUserInfo {
       provider: 'apple'
     };
   } catch (error) {
-    console.error('Failed to decode Apple ID token:', extractErrorMessage(error));
+    logger.error('Failed to decode Apple ID token', 'AUTH', error);
     throw new Error('Invalid Apple ID token');
   }
 }

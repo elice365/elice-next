@@ -3,14 +3,8 @@
 import { Icon } from "@/components/ui/Icon";
 import { WindowLink } from "@/components/ui/WindowLink";
 import { Translated } from "@/components/i18n/Translated";
-import { useEffect, useState } from "react";
-
 export const Footer = () => {
-  const [currentYear, setCurrentYear] = useState(2024);
-
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-  }, []);
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-footer text-[var(--text-color)] text-sm">

@@ -20,7 +20,7 @@ export interface BlogCreateData {
   title: string;
   description: string;
   url?: string;
-  images: any;
+  images: string[] | Record<string, string> | string;
   categoryId?: string;
   status?: 'draft' | 'published';
   publishedAt?: Date;
@@ -31,7 +31,7 @@ export interface BlogUpdateData {
   title?: string;
   description?: string;
   url?: string;
-  images?: any;
+  images?: string[] | Record<string, string> | string;
   categoryId?: string;
   status?: 'draft' | 'published';
   publishedAt?: Date;
@@ -271,7 +271,7 @@ export const findBlogPosts = async (params: {
   const skip = (page - 1) * limit;
 
   // Build where conditions
-  const where: any = {};
+  const where: Record<string, any> = {};
 
   if (category) {
     where.categoryId = category;
@@ -330,7 +330,7 @@ export const getAdminBlogPosts = async (params: AdminBlogParams) => {
   const skip = (page - 1) * limit;
 
   // Build where conditions
-  const whereCondition: any = {};
+  const whereCondition: Record<string, any> = {};
 
   if (search) {
     whereCondition.OR = [
@@ -365,7 +365,7 @@ export const getAdminBlogPosts = async (params: AdminBlogParams) => {
 
   // Get actual view counts for each post
   const postsWithViews = await Promise.all(
-    posts.map(async (post: any) => {
+    posts.map(async (post) => {
       const viewCount = await prisma.postView.count({
         where: { postId: post.uid }
       });

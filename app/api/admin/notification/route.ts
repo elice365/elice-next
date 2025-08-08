@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as NotificationDB from '@/lib/db/notification';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/notification
@@ -16,8 +17,8 @@ const getNotifications = async (
     const { searchParams } = new URL(request.url);
     
     // 쿼리 파라미터 파싱
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
     const status = searchParams.get('status') || '';
@@ -36,7 +37,7 @@ const getNotifications = async (
     });
 
     // 응답 데이터 포맷팅
-    const formattedNotifications = notifications.map((notif: any) => ({
+    const formattedNotifications = notifications.map((notif) => ({
       id: notif.uid,
       userId: notif.userId,
       user: notif.user,
@@ -66,7 +67,7 @@ const getNotifications = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] /admin/notification GET error:', error);
+    logger.error('[API] /admin/notification GET error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -144,7 +145,7 @@ const createNotification = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] /admin/notification POST error:', error);
+    logger.error('[API] /admin/notification POST error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -177,7 +178,7 @@ const deleteNotifications = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] /admin/notification DELETE error:', error);
+    logger.error('[API] /admin/notification DELETE error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };

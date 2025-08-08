@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/Badge';
 import { BaseModal } from '@/components/ui/modal/common/BaseModal';
 import { api } from '@/lib/fetch';
 import { APIResult } from '@/types/api';
+import { logger } from '@/lib/services/logger';
 
 interface LikeDetail {
   id: string;
@@ -63,7 +64,7 @@ export const BlogLikeStatsModal: React.FC<BlogLikeStatsModalProps> = ({
         alert('좋아요 통계를 불러오는데 실패했습니다.');
       }
     } catch (error) {
-      console.error('Failed to fetch like stats:', error);
+      logger.error('Failed to fetch like stats', 'UI', error);
       alert('좋아요 통계를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db/prisma';
+import { logger } from '@/lib/services/logger';
 
 interface ViewTrackingData {
   postId: string;
@@ -42,7 +43,7 @@ export async function checkViewExists(data: ViewTrackingData): Promise<boolean> 
 
     return !!existingView;
   } catch (error) {
-    console.error('Error checking view exists:', error);
+    logger.error('Error checking view exists', 'DB', error);
     return false; // 에러 시 중복이 아닌 것으로 처리
   }
 }
@@ -52,7 +53,7 @@ export async function checkViewExists(data: ViewTrackingData): Promise<boolean> 
  */
 export async function trackPostView(data: ViewTrackingData): Promise<boolean> {
   try {
-    console.log('🔍 Tracking view for:', data);
+    logger.info('🔍 Tracking view for', 'DB', data);
 
     // 트랜잭션 내에서 락을 걸고 순차 처리
     const result = await prisma.$transaction(async (tx) => {
@@ -84,11 +85,11 @@ export async function trackPostView(data: ViewTrackingData): Promise<boolean> {
       });
 
       if (existingView) {
-        console.log('⏭️ Duplicate view found, skipping');
+        logger.info('⏭️ Duplicate view found, skipping', 'DB');
         return false; // 이미 조회한 기록이 있음
       }
 
-      console.log('✅ New view, recording...');
+      logger.info('✅ New view, recording...', 'DB');
 
       // PostView 기록만 생성 (views는 관계형으로 자동 계산됨)
       const postView = await tx.postView.create({
@@ -99,17 +100,17 @@ export async function trackPostView(data: ViewTrackingData): Promise<boolean> {
           userAgent: data.userAgent,
         },
       });
-      console.log('📝 PostView created:', postView.id);
+      logger.info('📝 PostView created', 'DB', postView.id);
 
       return true; // 성공적으로 조회 기록 생성
     });
 
     if (result) {
-      console.log('🎉 View tracking completed successfully');
+      logger.info('🎉 View tracking completed successfully', 'DB');
     }
     return result;
   } catch (error) {
-    console.error('❌ Error tracking post view:', error);
+    logger.error('❌ Error tracking post view', 'DB', error);
     return false;
   }
 }
@@ -152,7 +153,7 @@ export async function getPostViewStats(postId: string) {
       uniqueUsers: uniqueUsers.length,
     };
   } catch (error) {
-    console.error('Error getting post view stats:', error);
+    logger.error('Error getting post view stats', 'DB', error);
     return {
       totalViews: 0,
       uniqueIps: 0,

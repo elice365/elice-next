@@ -40,10 +40,10 @@ export const useAuth = () => {
 
   // Actions
   const handleLogin = useCallback(async (credentials: Auth) => {
-    const result = await dispatch(login(credentials)).unwrap();
+    const result = await dispatch(login(credentials)).unwrap() as { user?: { id: string; email: string; name: string; roles: string[] } };
     
     // PostHog 사용자 식별 및 로그인 이벤트 추적
-    if (result.user) {
+    if (result?.user) {
       posthog.identify(result.user.id, {
         email: result.user.email,
         name: result.user.name,
@@ -63,10 +63,10 @@ export const useAuth = () => {
   }, [dispatch, posthog]);
 
   const handleRegister = useCallback(async (credentials: Auth) => {
-    const result = await dispatch(register(credentials)).unwrap();
+    const result = await dispatch(register(credentials)).unwrap() as { user?: { id: string; email: string; name: string } };
     
     // PostHog 회원가입 이벤트 추적
-    if (result.user) {
+    if (result?.user) {
       posthog.identify(result.user.id, {
         email: result.user.email,
         name: result.user.name,
@@ -85,10 +85,10 @@ export const useAuth = () => {
   }, [dispatch, posthog]);
 
   const handleSocialLogin = useCallback(async (credentials: { type: SocialProvider; code: string }) => {
-    const result = await dispatch(social(credentials)).unwrap();
+    const result = await dispatch(social(credentials)).unwrap() as { user?: { id: string; email: string; name: string; roles: string[] } };
     
     // PostHog 소셜 로그인 추적
-    if (result.user) {
+    if (result?.user) {
       posthog.identify(result.user.id, {
         email: result.user.email,
         name: result.user.name,
@@ -125,10 +125,10 @@ export const useAuth = () => {
   }, [dispatch, posthog, user]);
 
   const handleVerify = useCallback(async (token: string) => {
-    const result = await dispatch(verify(token)).unwrap();
+    const result = await dispatch(verify(token)).unwrap() as { user?: { id: string } };
     
     // PostHog 이메일 인증 완료 추적
-    if (result.user) {
+    if (result?.user) {
       posthog.capture('email_verified', {
         user_id: result.user.id,
         verification_method: 'email_token'

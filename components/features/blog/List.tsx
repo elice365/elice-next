@@ -4,10 +4,13 @@ import { memo, useState, useCallback, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PostType } from '@/types/post';
-import { Icon } from '@/components/ui/Icon';
 import { useAppSelector, useAppDispatch } from '@/stores/hook';
 import { togglePostLike } from '@/stores/slice/blog';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Icon } from '@/components/ui/Icon';
+import { ListItemContent } from './list/ListItemContent';
+import { ListItemMeta } from './list/ListItemMeta';
+import { ListItemImage } from './list/ListItemImage';
 
 interface BlogListItemProps {
   post: PostType;
@@ -20,6 +23,31 @@ const DEFAULT_POST_IMAGES = [
   "https://via.placeholder.com/400x300/e5e7eb/6b7280?text=Blog+Post+2",
   "https://via.placeholder.com/400x300/d1d5db/4b5563?text=Blog+Post+3"
 ];
+
+// Helper functions to avoid nested ternary operators
+function getListPadding(mobile: boolean, tablet: boolean): string {
+  if (mobile) return 'p-4';
+  if (tablet) return 'p-5';
+  return 'p-6';
+}
+
+function getTitleTextSize(mobile: boolean, tablet: boolean): string {
+  if (mobile) return 'text-base';
+  if (tablet) return 'text-lg';
+  return 'text-xl';
+}
+
+function getImageDimensions(mobile: boolean, tablet: boolean): string {
+  if (mobile) return 'w-full h-48';
+  if (tablet) return 'w-28 h-28';
+  return 'w-32 h-32';
+}
+
+function getMetaClassNames(mobile: boolean): string {
+  const gap = mobile ? 'gap-3 text-[11px]' : 'gap-4 text-xs';
+  const wrap = mobile ? 'flex-wrap' : '';
+  return `${gap} ${wrap}`;
+}
 
 export const ListItem = memo(function ListItem({ post, className = '' }: BlogListItemProps) {
   const dispatch = useAppDispatch();
@@ -123,7 +151,7 @@ export const ListItem = memo(function ListItem({ post, className = '' }: BlogLis
 
   return (
     <motion.article 
-      className={`bg-[var(--color-card)] border-b border-[var(--border-color)]/50 w-full ${mobile ? 'p-4' : tablet ? 'p-5' : 'p-6'} relative overflow-hidden group hover:border-[var(--blog-accent)]/40 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]`}
+      className={`bg-[var(--color-card)] border-b border-[var(--border-color)]/50 w-full ${getListPadding(mobile, tablet)} relative overflow-hidden group hover:border-[var(--blog-accent)]/40 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]`}
       whileHover={!mobile ? { x: 4 } : {}}
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -143,7 +171,7 @@ export const ListItem = memo(function ListItem({ post, className = '' }: BlogLis
         <div className={`${mobile ? 'w-full' : 'col-span-7 sm:col-span-8'} space-y-2 relative`}>
           {/* Title */}
           <Link href={`/blog/${post.uid}`}>
-            <h3 className={`${mobile ? 'text-base' : tablet ? 'text-lg' : 'text-xl'} font-bold text-[var(--title)] hover:text-[var(--hover-text)] transition-all duration-300 line-clamp-2 leading-snug tracking-tight group-hover:text-[var(--hover-text)]`}>
+            <h3 className={`${getTitleTextSize(mobile, tablet)} font-bold text-[var(--title)] hover:text-[var(--hover-text)] transition-all duration-300 line-clamp-2 leading-snug tracking-tight group-hover:text-[var(--hover-text)]`}>
               {post.title}
             </h3>
           </Link>
@@ -162,7 +190,7 @@ export const ListItem = memo(function ListItem({ post, className = '' }: BlogLis
             )}
             {post.tags.slice(0, mobile ? 1 : 2).map((tag, index) => (
               <motion.span 
-                key={index} 
+                key={`tag-${tag.uid || tag.name}-${index}`} 
                 className={`${mobile ? 'text-[11px]' : 'text-xs'} bg-[var(--selecter)] hover:bg-[#5c5049]/10 text-[var(--text-color)] px-2 py-1 rounded-full transition-all duration-300 flex items-center gap-1 border border-transparent hover:border-[#5c5049]/20`}
                 whileHover={!mobile ? { scale: 1.05 } : {}}
                 whileTap={{ scale: 0.95 }}
@@ -177,7 +205,7 @@ export const ListItem = memo(function ListItem({ post, className = '' }: BlogLis
           </div>
 
           {/* Meta info with better spacing */}
-          <div className={`flex ${mobile ? 'gap-3 text-[11px]' : 'gap-4 text-xs'} text-[var(--text-color)] opacity-60 pt-2 ${mobile ? 'flex-wrap' : ''}`}>
+          <div className={`flex ${getMetaClassNames(mobile)} text-[var(--text-color)] opacity-60 pt-2`}>
             <span className="flex gap-1 items-center hover:text-[#5c5049] transition-colors duration-300">
               <Icon name="Eye" size={mobile ? 12 : 14} className="opacity-70" />
               <span className="font-medium">{post.views.toLocaleString()}</span>
@@ -244,7 +272,7 @@ export const ListItem = memo(function ListItem({ post, className = '' }: BlogLis
 
         {/* Enhanced image area */}
         <div className={`${mobile ? 'w-full' : 'col-span-3 sm:col-span-2 my-auto'} relative `}>
-          <div className={`group/image relative ${mobile ? 'w-full h-48' : tablet ? 'w-28 h-28' : 'w-32 h-32'} ${!mobile && 'mx-auto'} `}>
+          <div className={`group/image relative ${getImageDimensions(mobile, tablet)} ${!mobile && 'mx-auto'} `}>
             {!mobile && <div className="absolute -inset-1 bg-gradient-to-r from-[#5c5049]/20 to-[#5c5049]/10 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>}
             <Image
               src={mainImage}
@@ -302,7 +330,7 @@ export const ListItem = memo(function ListItem({ post, className = '' }: BlogLis
               >
                 {postImages.slice(1, 4).map((imageSrc, index) => (
                   <motion.div
-                    key={index}
+                    key={`image-${imageSrc.substring(0, 20)}-${index}`}
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}

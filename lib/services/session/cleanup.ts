@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db/prisma';
-import { cleanup } from '@/lib/services/logger';
+import { cleanup, logger } from '@/lib/services/logger';
 
 /**
  * Cleans up expired sessions.
@@ -99,7 +99,7 @@ export async function cleanupDuplicateSessions(userId: string, maxSessions: numb
     };
 
   } catch (error) {
-    console.error('[CLEANUP] Error cleaning up duplicate sessions:', error);
+    logger.error('[CLEANUP] Error cleaning up duplicate sessions', 'SESSION', error);
     throw error;
   }
 }
@@ -154,7 +154,7 @@ export async function detectSuspiciousSessions() {
     }
 
     if (suspiciousSessionIds.length > 0) {
-      console.warn(`[CLEANUP] Found ${suspiciousSessionIds.length} suspicious sessions`);
+      logger.warn(`[CLEANUP] Found ${suspiciousSessionIds.length} suspicious sessions`, 'SESSION');
       
       // Deactivate suspicious sessions (deactivate first, don't delete)
       await prisma.session.updateMany({
@@ -176,7 +176,7 @@ export async function detectSuspiciousSessions() {
     };
 
   } catch (error) {
-    console.error('[CLEANUP] Error detecting suspicious sessions:', error);
+    logger.error('[CLEANUP] Error detecting suspicious sessions', 'SESSION', error);
     throw error;
   }
 }

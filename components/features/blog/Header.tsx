@@ -20,6 +20,19 @@ const localeMap = {
   ru: ru
 };
 
+// Helper functions to avoid nested ternary operators
+function getTitleTextSize(mobile: boolean, tablet: boolean): string {
+  if (mobile) return 'text-2xl';
+  if (tablet) return 'text-3xl';
+  return 'lg:text-4xl';
+}
+
+function getDescriptionTextSize(mobile: boolean, tablet: boolean): string {
+  if (mobile) return 'text-base';
+  if (tablet) return 'text-lg';
+  return 'text-xl';
+}
+
 export const Header = memo(function Header({
   post,
   mobile,
@@ -62,8 +75,7 @@ export const Header = memo(function Header({
 
       {/* Title */}
       <motion.h1
-        className={`font-bold text-[var(--blog-text-primary)] leading-tight ${mobile ? 'text-2xl' : tablet ? 'text-3xl' : 'lg:text-4xl'
-          }`}
+        className={`font-bold text-[var(--blog-text-primary)] leading-tight ${getTitleTextSize(mobile, tablet)}`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -128,8 +140,7 @@ export const Header = memo(function Header({
         transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
       >
         <motion.p
-          className={`text-[var(--blog-text-primary)] leading-relaxed ${mobile ? 'text-base' : tablet ? 'text-lg' : 'text-xl'
-            }`}
+          className={`text-[var(--blog-text-primary)] leading-relaxed ${getDescriptionTextSize(mobile, tablet)}`}
         >
           {post.description}
         </motion.p>

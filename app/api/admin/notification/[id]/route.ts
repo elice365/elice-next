@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as NotificationDB from '@/lib/db/notification';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * DELETE /api/admin/notification/[id]
@@ -38,7 +39,7 @@ const deleteNotification = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] /admin/notification/[id] DELETE error:', error);
+    logger.error('[API] /admin/notification/[id] DELETE error', 'API', error);
     return await setMessage('NetworkError', null, 500);
   }
 };

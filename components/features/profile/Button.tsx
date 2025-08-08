@@ -8,6 +8,7 @@ import { useMounted } from "@/hooks/utils";
 import { useDropdown } from '@/hooks/ui';
 import { Icon } from '@/components/ui/Icon';
 import { Avatar } from '@/components/ui/Avatar';
+import { logger } from '@/lib/services/logger';
 import { Translated } from "@/components/i18n/Translated";
 
 export default memo(function ProfileDropdown() {
@@ -24,7 +25,7 @@ export default memo(function ProfileDropdown() {
             await logout();
             router.push('/login');
         } catch (error) {
-            console.error('Logout failed:', error);
+            logger.error('Logout failed', 'AUTH', error);
         }
     }, [logout, router]);
 

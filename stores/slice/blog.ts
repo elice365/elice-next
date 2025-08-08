@@ -257,9 +257,10 @@ const blogSlice = createSlice({
       })
       .addCase(fetchBlogPosts.fulfilled, (state, action) => {
         state.isLoadingList = false;
-        state.posts = action.payload.posts;
-        state.postsPagination = action.payload.pagination;
-        state.currentPage = action.payload.pagination.currentPage;
+        const payload = action.payload as any;
+        state.posts = payload.posts;
+        state.postsPagination = payload.pagination;
+        state.currentPage = payload.pagination.currentPage;
       })
       .addCase(fetchBlogPosts.rejected, (state, action) => {
         state.isLoadingList = false;
@@ -274,8 +275,9 @@ const blogSlice = createSlice({
       })
       .addCase(fetchBlogPost.fulfilled, (state, action) => {
         state.isLoadingPost = false;
-        state.selectedPost = action.payload.post;
-        state.postContent = action.payload.content || null;
+        const payload = action.payload as any;
+        state.selectedPost = payload.post;
+        state.postContent = payload.content || null;
       })
       .addCase(fetchBlogPost.rejected, (state, action) => {
         state.isLoadingPost = false;
@@ -290,8 +292,9 @@ const blogSlice = createSlice({
       })
       .addCase(fetchNotices.fulfilled, (state, action) => {
         state.isLoadingNotices = false;
-        state.notices = action.payload.notices;
-        state.noticesPagination = action.payload.pagination;
+        const payload = action.payload as any;
+        state.notices = payload.notices;
+        state.noticesPagination = payload.pagination;
       })
       .addCase(fetchNotices.rejected, (state, action) => {
         state.isLoadingNotices = false;
@@ -305,7 +308,7 @@ const blogSlice = createSlice({
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.isLoadingMetadata = false;
-        state.categories = action.payload;
+        state.categories = action.payload as any;
       })
       .addCase(fetchCategories.rejected, (state) => {
         state.isLoadingMetadata = false;
@@ -318,7 +321,7 @@ const blogSlice = createSlice({
       })
       .addCase(fetchTags.fulfilled, (state, action) => {
         state.isLoadingMetadata = false;
-        state.tags = action.payload;
+        state.tags = action.payload as any;
       })
       .addCase(fetchTags.rejected, (state) => {
         state.isLoadingMetadata = false;
@@ -331,7 +334,7 @@ const blogSlice = createSlice({
       })
       .addCase(togglePostLike.fulfilled, (state, action) => {
         state.isLiking = false;
-        const { postId, liked, likeCount } = action.payload;
+        const { postId, liked, likeCount } = action.payload as any;
         
         // Update the post in the list
         const postIndex = state.posts.findIndex(p => p.uid === postId);

@@ -3,6 +3,7 @@ import { setMessage, setRequest } from '@/lib/response';
 import { deleteSessionById, terminateSessionById, getSessionWithUser } from '@/lib/db/session';
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/session/[sessionId]
@@ -53,7 +54,7 @@ const getSession = async (
     return setRequest(formattedSession);
 
   } catch (error) {
-    console.error('[API] /admin/session/[sessionId] GET error:', error);
+    logger.error('[API] /admin/session/[sessionId] GET error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -89,7 +90,7 @@ const deleteSession = async (
     });
 
   } catch (error) {
-    console.error('[API] /admin/session/[sessionId] DELETE error:', error);
+    logger.error('[API] /admin/session/[sessionId] DELETE error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -125,7 +126,7 @@ const terminateSession = async (
     });
 
   } catch (error) {
-    console.error('[API] /admin/session/[sessionId] PATCH error:', error);
+    logger.error('[API] /admin/session/[sessionId] PATCH error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };

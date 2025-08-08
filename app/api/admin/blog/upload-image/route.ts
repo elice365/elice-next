@@ -4,6 +4,7 @@ import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
 import { uploadImageToR2 } from '@/lib/services/cloudflare/r2';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * POST /api/admin/blog/upload-image
@@ -15,7 +16,7 @@ const uploadImage = async (request: NextRequest, _context: AuthInfo): Promise<AP
     const file = formData.get('file') as File;
     const postId = formData.get('postId') as string;
 
-    console.log('Upload request:', { 
+    logger.info('Upload request', 'UPLOAD', { 
       hasFile: !!file, 
       hasPostId: !!postId, 
       fileType: file?.type,
@@ -67,7 +68,7 @@ const uploadImage = async (request: NextRequest, _context: AuthInfo): Promise<AP
       imageUrl = uploadResponse.url;
     } else {
       // Fallback for development - return a placeholder URL
-      console.warn('R2 not configured, using placeholder URL');
+      logger.warn('R2 not configured, using placeholder URL', 'UPLOAD');
       imageUrl = `https://cdn.elice.pro/${imagePath}`;
     }
 
@@ -85,7 +86,7 @@ const uploadImage = async (request: NextRequest, _context: AuthInfo): Promise<AP
     return setRequest(result);
 
   } catch (error) {
-    console.error('Image upload error:', error);
+    logger.error('Image upload error', 'UPLOAD', error);
     return setMessage('NetworkError', 'Image upload failed', 500);
   }
 };

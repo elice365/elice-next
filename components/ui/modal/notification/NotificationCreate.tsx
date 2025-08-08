@@ -5,6 +5,7 @@ import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
+import { logger } from '@/lib/services/logger';
 
 interface NotificationCreateModalProps {
   readonly isOpen: boolean;
@@ -39,7 +40,7 @@ export function NotificationCreateModal({ isOpen, onClose, onSuccess }: Notifica
         })));
       }
     } catch (error) {
-      console.error('사용자 목록 로드 실패:', error);
+      logger.error('사용자 목록 로드 실패', 'UI', error);
     } finally {
       setLoadingUsers(false);
     }
@@ -88,7 +89,7 @@ export function NotificationCreateModal({ isOpen, onClose, onSuccess }: Notifica
 
   // 에러 처리
   const handleError = (error: any) => {
-    console.error('알림 생성 실패:', error);
+    logger.error('알림 생성 실패', 'UI', error);
     alert('알림 발송 중 오류가 발생했습니다.');
   };
 

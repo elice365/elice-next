@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/Icon";
 import { filterField } from "@/utils/regex/input";
 import { validateRole } from "@/utils/regex/admin";
 import { FormErrors } from "@/types/admin";
+import { logger } from '@/lib/services/logger';
 import { useTranslations } from "next-intl";
 
 interface RoleCreateModalProps {
@@ -70,7 +71,7 @@ export function RoleCreateModal({ isOpen, onClose, onUpdate }: RoleCreateModalPr
         setErrors({ general: '역할 생성에 실패했습니다.' });
       }
     } catch (error) {
-      console.error('[RoleCreateModal] Role creation failed:', error);
+      logger.error('[RoleCreateModal] Role creation failed', 'UI', error);
       setErrors({ general: '네트워크 오류가 발생했습니다.' });
     } finally {
       setLoading(false);

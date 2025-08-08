@@ -319,7 +319,7 @@ export const Filters = memo(function Filters() {
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
           <div className="flex gap-2">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
+              <div key={`filter-skeleton-${i}`} className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
             ))}
           </div>
         </div>
@@ -330,7 +330,7 @@ export const Filters = memo(function Filters() {
   return (
     <div className="space-y-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-700">
       {/* Search and Sort */}
-      <div className={`flex ${mobile ? 'flex-col' : 'flex-row'} items-${mobile ? 'stretch' : 'center'} gap-4`}>
+      <div className={`flex ${mobile ? 'flex-col items-stretch' : 'flex-row items-center'} gap-4`}>
         {renderSearchBar()}
         {renderSortOptions()}
       </div>

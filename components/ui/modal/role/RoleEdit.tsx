@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/Icon";
 import { filterField } from "@/utils/regex/input";
 import { validateRole } from "@/utils/regex/admin";
 import { Role, FormErrors } from "@/types/admin";
+import { logger } from '@/lib/services/logger';
 import { useTranslations } from "next-intl";
 
 interface RoleEditModalProps {
@@ -76,7 +77,7 @@ export function RoleEditModal({ role, isOpen, onClose, onUpdate }: RoleEditModal
         setErrors({ general: '역할 수정에 실패했습니다.' });
       }
     } catch (error) {
-      console.error('[RoleEditModal] Role update failed:', error);
+      logger.error('[RoleEditModal] Role update failed', 'UI', error);
       setErrors({ general: '네트워크 오류가 발생했습니다.' });
     } finally {
       setLoading(false);

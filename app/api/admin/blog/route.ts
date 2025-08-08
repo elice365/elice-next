@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/blog
@@ -16,8 +17,8 @@ const getBlogPosts = async (
     const { searchParams } = new URL(request.url);
     
     // Parse query parameters
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
     const status = searchParams.get('status') || '';
@@ -65,7 +66,7 @@ const getBlogPosts = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] Get blog posts failed:', error);
+    logger.error('[API] Get blog posts failed', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -122,7 +123,7 @@ const createBlogPost = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] Get blog posts failed:', error);
+    logger.error('[API] Get blog posts failed', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -177,7 +178,7 @@ const updateBlogPost = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] Get blog posts failed:', error);
+    logger.error('[API] Get blog posts failed', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -210,7 +211,7 @@ const deleteBlogPosts = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] Get blog posts failed:', error);
+    logger.error('[API] Get blog posts failed', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };

@@ -237,12 +237,12 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload as User;
         state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload || action.error.message || 'Login failed';
+        state.error = (action.payload as string) || action.error.message || 'Login failed';
       });
 
     // register
@@ -254,18 +254,19 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
         // 이메일 인증이 필요한 경우 사용자 정보를 설정하지 않음
-        if (action.payload && 'emailVerification' in action.payload) {
+        const payload = action.payload as any;
+        if (payload && 'emailVerification' in payload) {
           state.user = null;
           state.isAuthenticated = false;
           state.error = null;
         } else {
-          state.user = action.payload as User;
+          state.user = payload as User;
           state.isAuthenticated = true;
         }
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload || action.error.message || 'Registration failed';
+        state.error = (action.payload as string) || action.error.message || 'Registration failed';
       });
     // social
     builder
@@ -275,14 +276,14 @@ const authSlice = createSlice({
       })
       .addCase(social.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload as User;
         state.isAuthenticated = true;
       })
       .addCase(social.rejected, (state, action) => {
         state.isLoading = false;
-       state.error = action.payload?.message 
-       ?? action.error?.message
-       ?? 'Social Login failed';
+        state.error = (action.payload as any)?.message 
+        ?? action.error?.message
+        ?? 'Social Login failed';
       });
     // logout
     builder

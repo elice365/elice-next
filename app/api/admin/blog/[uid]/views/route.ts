@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import { prisma } from '@/lib/db/prisma';
+import { logger } from '@/lib/services/logger';
 
 interface ViewDetailResponse {
   postId: string;
@@ -138,7 +139,7 @@ async function handleGetPostViews(
       }
     };
   } catch (error) {
-    console.error('Error fetching post views:', error);
+    logger.error('Error fetching post views', 'API', error);
     return {
       success: false,
       message: 'Failed to fetch post views'

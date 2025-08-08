@@ -4,6 +4,7 @@ import { updateUser, getAdminUsers, getUserWithRelations } from '@/lib/db/user';
 import { Prisma } from '@prisma/client';
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/users
@@ -18,8 +19,8 @@ const getUsers = async (
     const { searchParams } = new URL(request.url);
 
     // 쿼리 파라미터 파싱
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || '';
     const role = searchParams.get('role') || '';
@@ -117,7 +118,7 @@ const getUsers = async (
     return setRequest(result);
 
   } catch (error) {
-    console.error('[API] /admin/users GET error:', error);
+    logger.error('[API] /admin/users GET error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -141,7 +142,7 @@ const updateUsers = async (
 
     // 허용된 필드만 업데이트
     const allowedFields = ['name', 'phoneNumber', 'status', 'marketing', 'terms'];
-    const updateData: any = {};
+    const updateData: Record<string, any> = {};
 
     for (const field of allowedFields) {
       if (field in updates) {
@@ -158,7 +159,7 @@ const updateUsers = async (
     return setRequest(userWithRelations);
 
   } catch (error) {
-    console.error('[API] /admin/users PATCH error:', error);
+    logger.error('[API] /admin/users PATCH error', 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
