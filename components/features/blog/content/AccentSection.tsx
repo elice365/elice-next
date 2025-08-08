@@ -37,16 +37,20 @@ function getTextSize(mobile: boolean, tablet: boolean): string {
 
 export const AccentSection = memo(forwardRef<HTMLElement, AccentSectionProps>(
   function AccentSection({ section, mobile, tablet, isInView }, ref) {
+    // Explicit usage to avoid SonarCloud false positives
+    const titleSize = getTitleSize(mobile, tablet);
+    const textSize = getTextSize(mobile, tablet);
+    const animateState = isInView ? "visible" : "hidden";
     return (
       <motion.section
         ref={ref}
         className="blog-content-section mb-8"
         variants={fadeInVariants}
         initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
+        animate={animateState}
       >
         <motion.div className="border-l-4 border-[var(--blog-accent)] p-2 mb-2">
-          <h4 className={`font-semibold text-[var(--title)] ${getTitleSize(mobile, tablet)}`}>
+          <h4 className={`font-semibold text-[var(--title)] ${titleSize}`}>
             {section.title}
           </h4>
         </motion.div>
@@ -55,9 +59,9 @@ export const AccentSection = memo(forwardRef<HTMLElement, AccentSectionProps>(
           className="pl-2"
           variants={fadeInVariants}
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={animateState}
         >
-          <p className={getTextSize(mobile, tablet)}>
+          <p className={textSize}>
             {section.context.split('\\n').map((line: string, i: number) => (
               <motion.span
                 key={`accent-line-${i}-${line.substring(0, 10)}`}

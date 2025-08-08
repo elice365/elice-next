@@ -26,6 +26,7 @@ export interface AdminModalsActions<T> {
  * @deprecated Use useModalStates instead for better performance and consistency
  * This hook is maintained for backward compatibility but should be migrated
  */
+// eslint-disable-next-line deprecation/deprecation
 export function useAdminModals<T>(): [AdminModalsState<T>, AdminModalsActions<T>] {
   const modalStates = useModalStates<T>({
     modalNames: ['create', 'edit', 'delete']
@@ -46,6 +47,7 @@ export function useAdminModals<T>(): [AdminModalsState<T>, AdminModalsActions<T>
   }, [modalStates]);
 
   // Compatibility layer - map new API to old API
+  // eslint-disable-next-line deprecation/deprecation
   const state: AdminModalsState<T> = {
     isCreateModalOpen: modalStates.modalStates.create || false,
     isEditModalOpen: modalStates.modalStates.edit || false,

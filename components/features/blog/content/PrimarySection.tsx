@@ -37,18 +37,22 @@ function getTextSize(mobile: boolean, tablet: boolean): string {
 
 export const PrimarySection = memo(forwardRef<HTMLElement, PrimarySectionProps>(
   function PrimarySection({ section, mobile, tablet, isInView }, ref) {
+    // Explicit usage to avoid SonarCloud false positives
+    const titleSize = getTitleSize(mobile, tablet);
+    const textSize = getTextSize(mobile, tablet);
+    const animateState = isInView ? "visible" : "hidden";
     return (
       <motion.section
         ref={ref}
         className="blog-content-section my-8"
         variants={fadeInVariants}
         initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
+        animate={animateState}
       >
-        <h3 className={`font-semibold text-[var(--title)] mb-3 ${getTitleSize(mobile, tablet)}`}>
+        <h3 className={`font-semibold text-[var(--title)] mb-3 ${titleSize}`}>
           {section.title}
         </h3>
-        <div className={`text-[var(--text-color)] opacity-80 ${getTextSize(mobile, tablet)}`}>
+        <div className={`text-[var(--text-color)] opacity-80 ${textSize}`}>
           {section.context.split('\\n').map((line: string, i: number) => (
             <p key={`primary-line-${i}-${line.substring(0, 10)}`} className="">
               {line}
