@@ -50,7 +50,7 @@ export const PrimarySection = memo(forwardRef<HTMLElement, PrimarySectionProps>(
         </h3>
         <div className={`text-[var(--text-color)] opacity-80 ${getTextSize(mobile, tablet)}`}>
           {section.context.split('\\n').map((line: string, i: number) => (
-            <p key={`primary-line-${i}`} className="">
+            <p key={`primary-line-${i}-${line.substring(0, 10)}`} className="">
               {line}
             </p>
           ))}

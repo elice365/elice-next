@@ -9,7 +9,7 @@ interface ListItemMetaProps {
   isLiked: boolean;
   createdTime: Date;
   mobile: boolean;
-  handleLike: (e: React.MouseEvent) => void;
+  handleLike: (e: React.MouseEvent | React.KeyboardEvent) => void;
   isLikeAnimating: boolean;
   formatDate: (date: Date) => string;
   getMetaClassNames: (mobile: boolean) => string;
@@ -26,6 +26,12 @@ export function ListItemMeta({
   formatDate,
   getMetaClassNames
 }: ListItemMetaProps) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleLike(e);
+    }
+  };
   return (
     <div className={`flex items-center ${getMetaClassNames(mobile)} text-[var(--text-color)] opacity-60`}>
       <time dateTime={createdTime.toString()} className="flex items-center gap-1">
@@ -40,12 +46,15 @@ export function ListItemMeta({
       
       <motion.button
         onClick={handleLike}
-        className={`flex items-center gap-1 hover:text-red-500 transition-colors ${isLiked ? 'text-red-500' : ''}`}
+        onKeyDown={handleKeyDown}
+        className={`flex items-center gap-1 hover:text-red-500 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded ${isLiked ? 'text-red-500' : ''}`}
         whileTap={!mobile ? { scale: 0.9 } : {}}
         animate={isLikeAnimating ? { scale: [1, 1.2, 1] } : {}}
+        aria-label={`${isLiked ? 'Unlike' : 'Like'} this post (${likeCount} likes)`}
+        type="button"
       >
         <Icon 
-          name={isLiked ? "Heart" : "Heart"} 
+          name="Heart" 
           size={mobile ? 12 : 14}
           className={isLiked ? "fill-current" : ""}
         />

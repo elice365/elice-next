@@ -31,10 +31,10 @@ export function useModalStates<T = any>({
 }: UseModalStatesOptions): UseModalStatesReturn<T> {
   
   // Initialize modal states
-  const initialStates = modalNames.reduce((acc, name) => {
+  const initialStates: ModalStates = modalNames.reduce((acc, name) => {
     acc[name] = false;
     return acc;
-  }, {} as ModalStates);
+  }, {});
 
   const [modalStates, setModalStates] = useState<ModalStates>(initialStates);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);

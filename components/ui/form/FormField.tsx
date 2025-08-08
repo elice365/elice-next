@@ -13,7 +13,12 @@ interface FormFieldProps {
 
 export function FormField({ field, value, onChange, error, disabled = false }: FormFieldProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const newValue = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
+    let newValue: string | boolean;
+    if ('type' in e.target && e.target.type === 'checkbox') {
+      newValue = (e.target as HTMLInputElement).checked;
+    } else {
+      newValue = e.target.value;
+    }
     onChange(field.name, newValue);
   };
 

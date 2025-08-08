@@ -4,8 +4,8 @@
 
 // Simple memoization with LRU cache
 class LRUCache<K, V> {
-  private maxSize: number;
-  private cache = new Map<K, V>();
+  private readonly maxSize: number;
+  private readonly cache = new Map<K, V>();
 
   constructor(maxSize: number = 100) {
     this.maxSize = maxSize;
@@ -145,7 +145,8 @@ export function memoizeAsync<T extends (...args: any[]) => Promise<any>>(
           if (cached.error) {
             throw cached.error;
           }
-          return cached.value!;
+          // At this point, cached.value is guaranteed to be defined since isResolved is true and there's no error
+          return cached.value as T;
         }
         return cached.promise;
       }

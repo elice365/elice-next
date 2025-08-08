@@ -36,16 +36,18 @@ export function parseContent(content?: PostContent | null): BlogContent | null {
   }
 }
 
-export function getMainImage(images: string[] | unknown): string {
+export function getMainImage(images: string[] | string | { main?: string; thumbnail?: string } | unknown): string {
+  if (typeof images === 'string') {
+    return images;
+  }
   if (Array.isArray(images) && images.length > 0) {
     return images[0];
   }
-  if (images && typeof images === 'object') {
-    const imageObj = images as any;
+  if (images && typeof images === 'object' && !Array.isArray(images)) {
+    const imageObj = images as { main?: string; thumbnail?: string };
     if (imageObj.main) return imageObj.main;
     if (imageObj.thumbnail) return imageObj.thumbnail;
   }
-  if (typeof images === 'string') return images;
   
   return "https://via.placeholder.com/800x400/f3f4f6/9ca3af?text=Blog+Post";
 }

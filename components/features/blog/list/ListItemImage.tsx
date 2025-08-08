@@ -47,11 +47,20 @@ export const ListItemImage = memo(function ListItemImage({
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onInteraction();
+    }
+  };
+
   return (
     <div 
       className={`${mobile ? 'w-full relative' : 'col-span-3 sm:col-span-2'} ${mobile ? 'h-48' : ''} relative overflow-hidden`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      role="region"
+      aria-label={`Image gallery for ${title}`}
     >
       {/* Main Image Container */}
       <div className={`relative ${getImageDimensions(mobile, tablet)} rounded-lg overflow-hidden bg-[var(--color-gray-50)] dark:bg-[var(--color-gray-800)]`}>
@@ -70,14 +79,17 @@ export const ListItemImage = memo(function ListItemImage({
         
         {/* Show carousel button only when multiple images exist */}
         {images.length > 1 && (
-          <div 
+          <button 
             ref={toggleBtnRef}
             onClick={onInteraction}
-            className={`absolute ${mobile ? 'bottom-2 right-2' : 'top-2 right-2'} bg-white/90 dark:bg-black/80 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1 cursor-pointer transition-all duration-300 hover:bg-white dark:hover:bg-black z-20`}
+            onKeyDown={handleKeyDown}
+            className={`absolute ${mobile ? 'bottom-2 right-2' : 'top-2 right-2'} bg-white/90 dark:bg-black/80 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1 cursor-pointer transition-all duration-300 hover:bg-white dark:hover:bg-black z-20 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            aria-label={`View image gallery (${images.length} images)`}
+            type="button"
           >
             <Icon name="Images" size={12} />
             <span className="text-xs font-medium">{images.length}</span>
-          </div>
+          </button>
         )}
       </div>
 
@@ -140,7 +152,7 @@ export const ListItemImage = memo(function ListItemImage({
                 <div className="p-2 flex gap-1 overflow-x-auto">
                   {images.map((img, idx) => (
                     <button
-                      key={`thumb-${idx}`}
+                      key={`thumb-${img}-${idx}`}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();

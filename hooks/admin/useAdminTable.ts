@@ -6,8 +6,6 @@ import { PaginationState } from "@/types/admin";
 interface UseAdminTableOptions<T> {
   endpoint: string;
   initialLimit?: number;
-  searchFields?: string[];
-  filterFields?: string[];
   includeStats?: boolean;
   statsEndpoint?: string;
 }
@@ -37,8 +35,6 @@ interface UseAdminTableReturn<T> {
 export function useAdminTable<T>({
   endpoint,
   initialLimit = 10,
-  searchFields = [],
-  filterFields = [],
   includeStats = false,
   statsEndpoint
 }: UseAdminTableOptions<T>): UseAdminTableReturn<T> {

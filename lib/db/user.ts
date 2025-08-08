@@ -422,14 +422,14 @@ export const getUserStats = async () => {
       totalUsers,
       activeUsers,
       inactiveUsers,
-      statusCounts: statusCounts.reduce((acc, item) => {
+      statusCounts: statusCounts.reduce<Record<string, number>>((acc, item) => {
         acc[item.status] = item._count.id;
         return acc;
-      }, {} as Record<string, number>),
-      roleCounts: roleStatsWithNames.reduce((acc, item) => {
+      }, {}),
+      roleCounts: roleStatsWithNames.reduce<Record<string, number>>((acc, item) => {
         acc[item.roleName] = item.count;
         return acc;
-      }, {} as Record<string, number>),
+      }, {}),
       verificationStats
     };
   } catch (error) {

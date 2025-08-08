@@ -8,7 +8,6 @@ import { usePost } from '@/hooks/blog';
 import { Badge } from '@/components/ui/Badge';
 import { Icon } from '@/components/ui/Icon';
 import { useAppSelector } from '@/stores/hook';
-import { logger } from '@/lib/services/logger';
 import { motion } from 'framer-motion';
 
 interface RelatedPostsProps {
@@ -35,6 +34,21 @@ function getImageSizes(mobile: boolean, tablet: boolean): string {
   if (mobile) return '100vw';
   if (tablet) return '50vw';
   return '33vw';
+}
+
+function filterUniquePostsExcludingCurrent(posts: any[], currentPostId: string, existingPosts: Post[] = []): Post[] {
+  return posts
+    .filter((post: Post) => post.uid !== currentPostId)
+    .filter((post: Post) => !existingPosts.some((p: Post) => p.uid === post.uid));
+}
+
+function processTagResults(tagResults: any[], currentPostId: string, existingPosts: Post[]): Post[] {
+  const tagPosts = tagResults.flatMap((result: any) => result.posts);
+  return filterUniquePostsExcludingCurrent(tagPosts, currentPostId, existingPosts);
+}
+
+function processLatestPosts(latestResult: any, currentPostId: string, existingPosts: Post[]): Post[] {
+  return filterUniquePostsExcludingCurrent(latestResult.posts, currentPostId, existingPosts);
 }
 
 export const Related = memo(function Related({
@@ -74,9 +88,7 @@ export const Related = memo(function Related({
             )
           );
           
-          const tagPosts = tagResults.flatMap((result: any) => result.posts)
-            .filter((post: Post) => post.uid !== currentPostId)
-            .filter((post: Post) => !posts.some((p: Post) => p.uid === post.uid));
+          const tagPosts = processTagResults(tagResults, currentPostId, posts);
           
           posts = [...posts, ...tagPosts];
         }
@@ -88,9 +100,7 @@ export const Related = memo(function Related({
             sortBy: 'latest'
           });
           
-          const latestPosts = latestResult.posts
-            .filter((post: Post) => post.uid !== currentPostId)
-            .filter((post: Post) => !posts.some((p: Post) => p.uid === post.uid));
+          const latestPosts = processLatestPosts(latestResult, currentPostId, posts);
           
           posts = [...posts, ...latestPosts];
         }

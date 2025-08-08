@@ -65,8 +65,7 @@ const updateBlogPost = async (
       categoryId,
       tags,
       images,
-      status,
-      language
+      status
     } = body;
 
     // Update blog post

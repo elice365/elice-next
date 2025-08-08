@@ -60,7 +60,7 @@ export const AccentSection = memo(forwardRef<HTMLElement, AccentSectionProps>(
           <p className={getTextSize(mobile, tablet)}>
             {section.context.split('\\n').map((line: string, i: number) => (
               <motion.span
-                key={`accent-line-${i}`}
+                key={`accent-line-${i}-${line.substring(0, 10)}`}
                 className="block"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}

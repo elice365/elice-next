@@ -16,8 +16,8 @@ interface LogEntry {
 }
 
 class Logger {
-  private isDevelopment = process.env.NODE_ENV === 'development';
-  private isProduction = process.env.NODE_ENV === 'production';
+  private readonly isDevelopment = process.env.NODE_ENV === 'development';
+  private readonly isProduction = process.env.NODE_ENV === 'production';
 
   private formatMessage(entry: LogEntry): string {
     const timestamp = entry.timestamp.toISOString();

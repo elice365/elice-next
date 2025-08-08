@@ -21,11 +21,16 @@ interface RouterCreateModalProps {
 
 
 export function RouterCreateModal({ isOpen, onClose, onUpdate }: RouterCreateModalProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    path: string;
+    icon: string;
+    role: string[];
+  }>({
     name: '',
     path: '',
     icon: '',
-    role: [] as string[]
+    role: []
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});

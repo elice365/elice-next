@@ -36,14 +36,16 @@ export function useModalForm<T extends Record<string, any>>({
   onClose,
   isOpen
 }: UseModalFormProps<T>): UseModalFormReturn<T> {
-  const [formData, setFormData] = useState<T>(initialData as T || {} as T);
+  const [formData, setFormData] = useState<T>(() => 
+    initialData ? (initialData as T) : ({} as T)
+  );
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
   // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
-      setFormData(initialData as T || {} as T);
+      setFormData(initialData ? (initialData as T) : ({} as T));
       setErrors({});
     }
   }, [isOpen, initialData]);
@@ -67,7 +69,7 @@ export function useModalForm<T extends Record<string, any>>({
 
   // Reset form
   const resetForm = useCallback(() => {
-    setFormData(initialData as T || {} as T);
+    setFormData(initialData ? (initialData as T) : ({} as T));
     setErrors({});
   }, [initialData]);
 
@@ -91,8 +93,20 @@ export function useModalForm<T extends Record<string, any>>({
     setErrors({});
 
     try {
-      const apiMethod = method.toLowerCase() as 'post' | 'patch' | 'put';
-      const { data } = await (api[apiMethod] as any)(endpoint, formData) as { data: APIResult };
+      const apiMethod = method.toLowerCase() as keyof typeof api;
+      let response: { data: APIResult };
+      
+      if (apiMethod === 'post') {
+        response = await api.post(endpoint, formData);
+      } else if (apiMethod === 'patch') {
+        response = await api.patch(endpoint, formData);
+      } else if (apiMethod === 'put') {
+        response = await api.put(endpoint, formData);
+      } else {
+        throw new Error(`Unsupported method: ${method}`);
+      }
+      
+      const { data } = response;
 
       if (data.success) {
         onSuccess?.(data.data);

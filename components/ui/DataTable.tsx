@@ -91,6 +91,66 @@ export function DataTable<T extends Record<string, any>>({
     large: 'text-base'
   };
 
+  const renderTableRows = () => {
+    if (loading) {
+      return (
+        <tr>
+          <td colSpan={columns.length + (rowSelection ? 1 : 0)} className="px-4 py-8 text-center">
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <span>Loading...</span>
+            </div>
+          </td>
+        </tr>
+      );
+    }
+
+    if (data.length === 0) {
+      return (
+        <tr>
+          <td colSpan={columns.length + (rowSelection ? 1 : 0)} className="px-4 py-8 text-center text-gray-500">
+            {emptyText}
+          </td>
+        </tr>
+      );
+    }
+
+    return data.map((record, index) => {
+      const key = getRowKey(record, index);
+      const isSelected = rowSelection?.selectedRowKeys?.includes(key);
+      
+      return (
+        <tr
+          key={key}
+          className={`hover:bg-gray-50 ${isSelected ? 'bg-blue-50' : ''}`}
+        >
+          {rowSelection && (
+            <td className="px-4 py-3 text-center">
+              <input
+                type="checkbox"
+                className="rounded border-gray-300"
+                checked={isSelected}
+                onChange={(e) => {
+                  rowSelection.onSelect?.(record, e.target.checked);
+                }}
+              />
+            </td>
+          )}
+          {columns.map((column, colIndex) => (
+            <td
+              key={`${String(column.key)}-${colIndex}`}
+              className={`px-4 py-3 ${getAlignmentClass(column.align)}`}
+            >
+              {column.render
+                ? column.render(getValue(record, column.key), record, index)
+                : (getValue(record, column.key) as React.ReactNode) || '-'}
+            </td>
+          ))}
+        </tr>
+      );
+    });
+  };
+
   return (
     <div className={`data-table ${className}`}>
       <div className="overflow-x-auto bg-white rounded-lg shadow">
@@ -128,57 +188,7 @@ export function DataTable<T extends Record<string, any>>({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {loading ? (
-              <tr>
-                <td colSpan={columns.length + (rowSelection ? 1 : 0)} className="px-4 py-8 text-center">
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                    <span>Loading...</span>
-                  </div>
-                </td>
-              </tr>
-            ) : data.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length + (rowSelection ? 1 : 0)} className="px-4 py-8 text-center text-gray-500">
-                  {emptyText}
-                </td>
-              </tr>
-            ) : (
-              data.map((record, index) => {
-                const key = getRowKey(record, index);
-                const isSelected = rowSelection?.selectedRowKeys?.includes(key);
-                
-                return (
-                  <tr
-                    key={key}
-                    className={`hover:bg-gray-50 ${isSelected ? 'bg-blue-50' : ''}`}
-                  >
-                    {rowSelection && (
-                      <td className="px-4 py-3 text-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300"
-                          checked={isSelected}
-                          onChange={(e) => {
-                            rowSelection.onSelect?.(record, e.target.checked);
-                          }}
-                        />
-                      </td>
-                    )}
-                    {columns.map((column, colIndex) => (
-                      <td
-                        key={`${String(column.key)}-${colIndex}`}
-                        className={`px-4 py-3 ${getAlignmentClass(column.align)}`}
-                      >
-                        {column.render
-                          ? column.render(getValue(record, column.key), record, index)
-                          : (getValue(record, column.key) as React.ReactNode) || '-'}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })
-            )}
+            {renderTableRows()}
           </tbody>
         </table>
       </div>

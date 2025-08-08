@@ -325,10 +325,10 @@ export const getSessionStats = async () => {
       totalSessions,
       activeSessions,
       expiredSessions,
-      loginTypeCounts: loginTypeCounts.reduce((acc, item) => {
+      loginTypeCounts: loginTypeCounts.reduce<Record<string, number>>((acc, item) => {
         acc[item.loginType] = item._count.sessionId;
         return acc;
-      }, {} as Record<string, number>)
+      }, {})
     };
   } catch (error) {
     logger.error('Database connection error in getSessionStats', 'DB', error);

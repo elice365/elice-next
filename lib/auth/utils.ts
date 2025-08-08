@@ -35,8 +35,8 @@ export const processAuthToken = (token: string) => {
   return {
     id: decoded.userId,
     email: decoded.email,
-    name: decoded.name ?? undefined,
-    imageUrl: decoded.imageUrl ?? undefined,
+    name: decoded.name,
+    imageUrl: decoded.imageUrl,
     roles: decoded.roles,
     tokenExpiry: decoded.exp
   };

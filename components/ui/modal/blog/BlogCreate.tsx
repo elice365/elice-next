@@ -414,7 +414,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
                         alt={`Image ${index + 1}`}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          const target = e.currentTarget as HTMLImageElement;
+                          const target = e.currentTarget;
                           const sibling = target.nextElementSibling as HTMLElement;
                           target.style.display = 'none';
                           if (sibling) sibling.style.display = 'flex';

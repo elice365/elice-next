@@ -154,6 +154,10 @@ export const usePostLike = (initialLiked: boolean = false, initialCount: number 
   const [loading, setLoading] = useState(false);
 
   const toggleLike = useCallback(async (postId: string) => {
+    // Store original values for potential revert
+    const originalLiked = liked;
+    const originalCount = likeCount;
+    
     // Optimistic update
     const newLiked = !liked;
     const newCount = newLiked ? likeCount + 1 : likeCount - 1;
@@ -172,9 +176,9 @@ export const usePostLike = (initialLiked: boolean = false, initialCount: number 
       setLiked(response.data.liked);
       setLikeCount(response.data.likeCount);
     } catch (error) {
-      // Revert on error
-      setLiked(!newLiked);
-      setLikeCount(likeCount);
+      // Revert to original values on error
+      setLiked(originalLiked);
+      setLikeCount(originalCount);
       throw error;
     } finally {
       setLoading(false);

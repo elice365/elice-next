@@ -363,6 +363,17 @@ export const BlogLikeStatsModal: React.FC<BlogLikeStatsModalProps> = ({
     );
   };
 
+  const renderErrorOrLoadingState = () => {
+    if (!loading) {
+      return (
+        <div className="flex items-center justify-center h-64 text-[var(--text-color)] opacity-60">
+          데이터를 불러올 수 없습니다.
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <BaseModal
       isOpen={isOpen}
@@ -405,11 +416,9 @@ export const BlogLikeStatsModal: React.FC<BlogLikeStatsModalProps> = ({
             {activeTab === 'details' && renderDetails()}
             {activeTab === 'charts' && renderCharts()}
           </>
-        ) : !loading ? (
-          <div className="flex items-center justify-center h-64 text-[var(--text-color)] opacity-60">
-            데이터를 불러올 수 없습니다.
-          </div>
-        ) : null}
+        ) : (
+          renderErrorOrLoadingState()
+        )}
       </div>
     </BaseModal>
   );

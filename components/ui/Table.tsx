@@ -54,8 +54,8 @@ export const Table = memo(function Table<T = any>({
         return String(record[rowKey] || index);
     };
 
-    const getValue = (record: T, key: string) => {
-        return key.split('.').reduce((obj, k) => obj?.[k], record as any);
+    const getValue = (record: T, key: string): any => {
+        return key.split('.').reduce((obj: any, k: string) => obj?.[k], record);
     };
 
     // Selection handlers

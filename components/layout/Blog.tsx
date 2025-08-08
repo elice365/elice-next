@@ -25,11 +25,10 @@ interface BlogLayoutProps {
 }
 
 // Helper function to determine grid columns based on device type
-const getGridColumns = ({ mobile, tablet, desktop }: { mobile: boolean; tablet: boolean; desktop: boolean }) => {
+const getGridColumns = ({ mobile, tablet }: { mobile: boolean; tablet: boolean }) => {
   if (mobile) return 'grid-cols-1';
   if (tablet) return 'grid-cols-2';
-  if (desktop) return 'grid-cols-3';
-  return 'grid-cols-3';
+  return 'grid-cols-3'; // Default for desktop
 };
 
 export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayoutProps) {
@@ -166,7 +165,7 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
         >
           {layout === 'card' ? (
             <div className={`grid gap-6 justify-items-center grid-cols-[repeat(auto-fit,minmax(280px,1fr))] ${
-              getGridColumns({ mobile, tablet, desktop })
+              getGridColumns({ mobile, tablet })
             }`}>
               {posts.map((post) => (
                 <Card key={post.uid} post={post} />
