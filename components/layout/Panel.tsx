@@ -7,7 +7,7 @@ import { logger } from '@/lib/services/logger';
 
 
 
-export async function Panel({ type = 'user' }: PanelType) {
+export async function Panel({ type = 'user' }: Readonly<PanelType>) {
   try {
     const Navigator = dynamic(() => import('@/components/layout/Navigator'));
     const t = await getTranslations("router");

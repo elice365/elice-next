@@ -106,7 +106,7 @@ export const ShareButton = memo(function ShareButton({
         textArea.setSelectionRange(0, textArea.value.length);
         
         // Use the newer Clipboard API write method as fallback
-        if (navigator.clipboard && navigator.clipboard.writeText) {
+        if (navigator.clipboard?.writeText) {
           await navigator.clipboard.writeText(url);
         } else {
           // Last resort: throw error if no clipboard support
@@ -116,6 +116,7 @@ export const ShareButton = memo(function ShareButton({
         document.body.removeChild(textArea);
         alert('링크가 클립보드에 복사되었습니다!');
       } catch (fallbackError) {
+        console.error('Fallback copy failed:', fallbackError);
         alert('클립보드 복사를 지원하지 않는 브라우저입니다. URL을 수동으로 복사해주세요: ' + url);
       }
     }

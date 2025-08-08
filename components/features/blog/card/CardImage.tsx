@@ -21,21 +21,34 @@ const getImageHeightClass = (mobile: boolean, tablet: boolean): string => {
   return "h-[220px]";
 };
 
+// Handle array format images
+const getImageFromArray = (images: string[]): string => {
+  return images.length > 0 ? images[0] : DEFAULT_POST_IMAGE;
+};
+
+// Handle object format images
+const getImageFromObject = (images: Record<string, string>): string => {
+  if (images.main) return images.main;
+  if (images.thumbnail) return images.thumbnail;
+  if (images.src) return images.src;
+  if (images.url) return images.url;
+  return DEFAULT_POST_IMAGE;
+};
+
 // Get the main image with fallback
 const getImageSrc = (images: string[] | Record<string, string> | string): string => {
   // Handle new array format
-  if (Array.isArray(images) && images.length > 0) {
-    return images[0];
+  if (Array.isArray(images)) {
+    return getImageFromArray(images);
   }
   // Handle legacy object format
-  if (images && typeof images === 'object' && !Array.isArray(images)) {
-    if ('main' in images && images.main) return images.main;
-    if ('thumbnail' in images && images.thumbnail) return images.thumbnail;
-    if ('src' in images && images.src) return images.src;
-    if ('url' in images && images.url) return images.url;
+  if (images && typeof images === 'object') {
+    return getImageFromObject(images);
   }
   // Handle string format
-  if (typeof images === 'string') return images;
+  if (typeof images === 'string') {
+    return images;
+  }
 
   return DEFAULT_POST_IMAGE;
 };
@@ -95,12 +108,19 @@ interface CategoryBadgeProps {
 }
 
 const CategoryBadge = memo(function CategoryBadge({ category, mobile }: CategoryBadgeProps) {
+  const positionClasses = mobile ? 'top-2 left-2' : 'top-3 left-3';
+  const animationProps = mobile 
+    ? {} 
+    : { 
+        initial: { opacity: 0, x: -20 },
+        animate: { opacity: 1, x: 0 },
+        transition: { delay: 0.1, duration: 0.4 }
+      };
+
   return (
     <motion.div 
-      className={`absolute ${mobile ? 'top-2 left-2' : 'top-3 left-3'} z-20`}
-      initial={!mobile ? { opacity: 0, x: -20 } : {}}
-      animate={!mobile ? { opacity: 1, x: 0 } : {}}
-      transition={!mobile ? { delay: 0.1, duration: 0.4 } : {}}
+      className={`absolute ${positionClasses} z-20`}
+      {...animationProps}
     >
       <span className={getCategoryBadgeClassName(mobile)}>
         {category.name}

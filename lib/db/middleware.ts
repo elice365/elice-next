@@ -50,10 +50,12 @@ const setCachedData = (params: any, result: any) => {
 };
 
 // 쿼리 성능 로깅
-const logQueryPerformance = (params: any, duration: number, isError = false) => {
+const logQueryPerformance = (params: any, duration: number, options: { isError?: boolean; isSlowQuery?: boolean } = {}) => {
+  const { isError = false, isSlowQuery = duration > 1000 } = options;
+  
   if (isError) {
     logger.error(`[Query Error] ${params.model}.${params.action} failed after ${duration}ms`, 'DB');
-  } else if (duration > 1000) {
+  } else if (isSlowQuery) {
     logger.warn(`[Slow Query] ${params.model}.${params.action} took ${duration}ms`, 'DB');
   }
 };
@@ -81,7 +83,7 @@ prisma.$use(async (params, next) => {
     return result;
   } catch (error) {
     const duration = Date.now() - startTime;
-    logQueryPerformance(params, duration, true);
+    logQueryPerformance(params, duration, { isError: true });
     throw error;
   }
 });

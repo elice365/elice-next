@@ -53,7 +53,8 @@ export function CategoryEditModal({ isOpen, onClose, onSuccess, category }: Cate
         setCategories(filteredCategories);
       }
     } catch (error) {
-      // Failed to load categories
+      console.error('Failed to load categories:', error instanceof Error ? error.message : 'Unknown error');
+      setCategories([]);
     } finally {
       setLoadingCategories(false);
     }
@@ -90,7 +91,7 @@ export function CategoryEditModal({ isOpen, onClose, onSuccess, category }: Cate
     }
 
     // Validate code format (alphanumeric and underscore only)
-    if (!/^[a-zA-Z0-9_]+$/.test(formData.code)) {
+    if (!/^\w+$/.test(formData.code)) {
       alert('카테고리 코드는 영문, 숫자, 언더스코어(_)만 사용할 수 있습니다.');
       return false;
     }

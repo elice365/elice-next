@@ -9,7 +9,7 @@ import {
   SocialError,
   RawSocialUserInfo
 } from '@/types/social';
-import { social, error as logError } from '@/lib/services/logger';
+import { error as logError } from '@/lib/services/logger';
 
 
 /**

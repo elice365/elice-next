@@ -254,12 +254,12 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
         // 이메일 인증이 필요한 경우 사용자 정보를 설정하지 않음
-        const payload = action.payload as any;
-        if (payload && 'emailVerification' in payload) {
+        const payload = action.payload;
+        if (payload && typeof payload === 'object' && 'emailVerification' in payload) {
           state.user = null;
           state.isAuthenticated = false;
           state.error = null;
-        } else {
+        } else if (payload && typeof payload === 'object' && 'id' in payload) {
           state.user = payload as User;
           state.isAuthenticated = true;
         }
@@ -281,7 +281,8 @@ const authSlice = createSlice({
       })
       .addCase(social.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = (action.payload as any)?.message 
+        const payload = action.payload;
+        state.error = (typeof payload === 'object' && payload && 'message' in payload ? payload.message as string : null)
         ?? action.error?.message
         ?? 'Social Login failed';
       });

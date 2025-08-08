@@ -1,5 +1,4 @@
 import { cookies } from 'next/headers';
-import { cache } from 'react';
 import { tokenServer } from '@/lib/services/token/server';
 import { TokenPayload } from '@/lib/services/token/types';
 import { logger } from '@/lib/services/logger';

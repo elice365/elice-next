@@ -7,7 +7,6 @@ import {
   PostListResponse,
   PostDetailResponse,
   NoticeListResponse,
-  LikeRequest,
   LikeResponse,
   Category,
   Tag

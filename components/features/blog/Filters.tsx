@@ -318,7 +318,7 @@ export const Filters = memo(function Filters() {
         <div className="space-y-2">
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
           <div className="flex gap-2">
-            {Array.from({ length: 4 }).map((_, i) => (
+            {Array.from({ length: 4 }, (_, i) => (
               <div key={`filter-skeleton-category-${i}`} className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
             ))}
           </div>

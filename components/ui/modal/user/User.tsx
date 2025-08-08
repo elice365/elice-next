@@ -7,7 +7,6 @@ import { UserModalProps } from "@/types/user";
 import { Input } from "@/components/ui/Input";
 import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
-import { useModalForm } from "@/hooks/modal";
 import { logger } from '@/lib/services/logger';
 
 export const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose, onUpdate }) => {

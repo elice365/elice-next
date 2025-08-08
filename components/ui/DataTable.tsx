@@ -61,7 +61,7 @@ export function DataTable<T extends Record<string, any>>({
   emptyText = 'No data available',
   className = '',
   size = 'middle'
-}: DataTableProps<T>) {
+}: Readonly<DataTableProps<T>>) {
   const getRowKey = (record: T, index: number): string => {
     if (typeof rowKey === 'function') {
       return rowKey(record);

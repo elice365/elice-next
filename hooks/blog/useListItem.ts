@@ -14,14 +14,20 @@ export const useListItem = (post: PostType, mobile: boolean) => {
   const isLiking = useAppSelector((state) => state.blog.isLiking);
   const [isLikeAnimating, setIsLikeAnimating] = useState(false);
 
-  const getPostImages = useCallback((images: string[] | any): string[] => {
+  const getPostImages = useCallback((images: string[] | string | { main?: string; thumbnail?: string } | Record<string, unknown> | null | undefined): string[] => {
     if (Array.isArray(images) && images.length > 0) {
       return images.filter(img => typeof img === 'string' && img.trim() !== '');
     }
-    if (images && typeof images === 'object') {
+    if (images && typeof images === 'object' && !Array.isArray(images)) {
       const imageUrls: string[] = [];
-      if (images.main) imageUrls.push(images.main);
-      if (images.thumbnail && images.thumbnail !== images.main) imageUrls.push(images.thumbnail);
+      const hasMainOrThumbnail = 'main' in images || 'thumbnail' in images;
+      
+      if (hasMainOrThumbnail) {
+        const imageObj = images as { main?: string; thumbnail?: string };
+        if (imageObj.main) imageUrls.push(imageObj.main);
+        if (imageObj.thumbnail && imageObj.thumbnail !== imageObj.main) imageUrls.push(imageObj.thumbnail);
+      }
+      
       if (imageUrls.length > 0) return imageUrls;
     }
     if (typeof images === 'string' && images.trim() !== '') {
@@ -42,7 +48,7 @@ export const useListItem = (post: PostType, mobile: boolean) => {
         action: post.isLiked ? 'unlike' : 'like'
       })).unwrap();
     } catch (error) {
-      // Failed to toggle like
+      console.error('Failed to toggle like:', error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setTimeout(() => setIsLikeAnimating(false), 300);
     }

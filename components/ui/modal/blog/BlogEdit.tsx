@@ -512,10 +512,10 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
         </div>
 
         {/* Status */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-color)]">
+        <fieldset className="space-y-2">
+          <legend className="block text-sm font-medium text-[var(--text-color)]">
             상태
-          </label>
+          </legend>
           <div className="flex gap-3">
             <label className="flex items-center gap-2">
               <input
@@ -540,7 +540,7 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
               <span className="text-[var(--text-color)]">✅ 게시</span>
             </label>
           </div>
-        </div>
+        </fieldset>
 
         {/* Notice */}
         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">

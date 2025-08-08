@@ -201,7 +201,7 @@ export function validateUser(
 
 // Category validation patterns
 export const categoryValidation = {
-  code: /^[a-zA-Z0-9_]+$/,
+  code: /^\w+$/,
   slug: /^[a-z0-9가-힣-]+$/
 };
 

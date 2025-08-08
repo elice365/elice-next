@@ -36,7 +36,7 @@ export function parseContent(content?: PostContent | null): BlogContent | null {
   }
 }
 
-export function getMainImage(images: string[] | string | { main?: string; thumbnail?: string } | unknown): string {
+export function getMainImage(images: string[] | string | { main?: string; thumbnail?: string } | Record<string, unknown> | null | undefined): string {
   if (typeof images === 'string') {
     return images;
   }

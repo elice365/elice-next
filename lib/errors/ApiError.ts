@@ -206,9 +206,12 @@ export class ValidationError extends ApiError {
   }
 
   static invalid(field: string, value: any, reason?: string) {
+    const reasonSuffix = reason ? `: ${reason}` : '';
+    const message = `Invalid ${field}${reasonSuffix}`;
+    
     return new ValidationError(
       field,
-      `Invalid ${field}${reason ? `: ${reason}` : ''}`,
+      message,
       value
     );
   }

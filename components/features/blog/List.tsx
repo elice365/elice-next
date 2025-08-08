@@ -192,24 +192,17 @@ const PostImageArea = memo(({ post, mobile, tablet, postImages, mainImage, image
         <div className={`absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 ${!mobile && 'group-hover:opacity-100'} transition-opacity duration-700 ${mobile ? 'rounded-lg' : 'rounded-xl'}`}></div>
         
         {postImages.length > 1 && !mobile && (
-          <div
+          <button
             ref={toggleBtnRef}
-            className={`z-30 absolute border rounded-full border-[var(--border-color)] bottom-1 right-1 w-8 h-8 bg-black/80 text-white flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-white`}
+            className={`z-30 absolute border rounded-full border-[var(--border-color)] bottom-1 right-1 w-8 h-8 bg-black/80 text-white flex items-center justify-center shadow-md transition-all duration-300 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-white`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={handleInteraction}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleInteraction();
-              }
-            }}
-            tabIndex={0}
-            role="button"
+            type="button"
             aria-label="이미지 갤러리 토글"
           >
             <Icon name="Plus" size={12} />
-          </div>
+          </button>
         )}
         
         {mobile && postImages.length > 1 && (
