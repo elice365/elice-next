@@ -3,7 +3,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 export const useImageSlider = (mobile: boolean) => {
   const [isVisible, setIsVisible] = useState(false);
   const slideContainerRef = useRef<HTMLDivElement>(null);
-  const toggleBtnRef = useRef<HTMLDivElement>(null);
+  const toggleBtnRef = useRef<HTMLButtonElement>(null);
 
   const handleInteraction = useCallback(() => {
     if (mobile) {

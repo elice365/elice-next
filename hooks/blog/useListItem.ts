@@ -15,26 +15,38 @@ export const useListItem = (post: PostType, mobile: boolean) => {
   const [isLikeAnimating, setIsLikeAnimating] = useState(false);
 
   const getPostImages = useCallback((images: string[] | string | { main?: string; thumbnail?: string } | Record<string, unknown> | null | undefined): string[] => {
+    // Handle array input
     if (Array.isArray(images) && images.length > 0) {
       return images.filter(img => typeof img === 'string' && img.trim() !== '');
     }
+    
+    // Handle object input
     if (images && typeof images === 'object' && !Array.isArray(images)) {
-      const imageUrls: string[] = [];
-      const hasMainOrThumbnail = 'main' in images || 'thumbnail' in images;
-      
-      if (hasMainOrThumbnail) {
-        const imageObj = images as { main?: string; thumbnail?: string };
-        if (imageObj.main) imageUrls.push(imageObj.main);
-        if (imageObj.thumbnail && imageObj.thumbnail !== imageObj.main) imageUrls.push(imageObj.thumbnail);
-      }
-      
-      if (imageUrls.length > 0) return imageUrls;
+      return extractImageUrls(images);
     }
+    
+    // Handle string input
     if (typeof images === 'string' && images.trim() !== '') {
       return [images];
     }
+    
     return DEFAULT_POST_IMAGES;
   }, []);
+
+  const extractImageUrls = (imageObj: Record<string, unknown>): string[] => {
+    const imageUrls: string[] = [];
+    const hasMainOrThumbnail = 'main' in imageObj || 'thumbnail' in imageObj;
+    
+    if (hasMainOrThumbnail) {
+      const typedImageObj = imageObj as { main?: string; thumbnail?: string };
+      if (typedImageObj.main) imageUrls.push(typedImageObj.main);
+      if (typedImageObj.thumbnail && typedImageObj.thumbnail !== typedImageObj.main) {
+        imageUrls.push(typedImageObj.thumbnail);
+      }
+    }
+    
+    return imageUrls.length > 0 ? imageUrls : DEFAULT_POST_IMAGES;
+  };
 
   const handleLike = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault();

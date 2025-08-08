@@ -139,11 +139,14 @@ export async function validateApiRequest<T>(
     const body = await request.json();
     return validateWithSchema(schema, body);
   } catch (error) {
-    const errorMessage = error instanceof SyntaxError 
-      ? 'Invalid JSON in request body'
-      : error instanceof Error 
-        ? `Request parsing failed: ${error.message}`
-        : 'Failed to parse request body';
+    let errorMessage: string;
+    if (error instanceof SyntaxError) {
+      errorMessage = 'Invalid JSON in request body';
+    } else if (error instanceof Error) {
+      errorMessage = `Request parsing failed: ${error.message}`;
+    } else {
+      errorMessage = 'Failed to parse request body';
+    }
     
     return { 
       success: false, 
