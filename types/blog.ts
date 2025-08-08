@@ -8,10 +8,10 @@ import { User } from '@prisma/client';
 // Core Blog Types
 // ==========================================
 
-export interface BlogPost extends Post {
+export interface BlogPost extends Omit<Post, 'tags' | 'category'> {
   author?: User;
   category?: BlogCategory;
-  tags?: BlogTag[];
+  tags: BlogTag[];
   content?: PostContent;
   _count?: {
     comments: number;
@@ -20,20 +20,29 @@ export interface BlogPost extends Post {
 }
 
 export interface BlogCategory {
-  id: string;
+  uid: string;
+  code: string;
   name: string;
   slug: string;
+  path: string;
+  level: number;
+  parentId?: string;
   description?: string;
   postCount?: number;
   createdAt: Date;
   updatedAt: Date;
+  _count?: {
+    posts: number;
+  };
 }
 
 export interface BlogTag {
-  id: string;
+  uid: string;
   name: string;
-  slug: string;
-  postCount?: number;
+  slug?: string;
+  _count?: {
+    posts: number;
+  };
 }
 
 // ==========================================
@@ -381,26 +390,26 @@ export type BlogPostWithRelations = BlogPost & {
 };
 
 export type BlogPostPreview = Pick<BlogPost, 
-  | 'id' 
+  | 'uid' 
   | 'title' 
-  | 'excerpt' 
-  | 'thumbnail' 
-  | 'slug' 
-  | 'createdAt'
+  | 'description' 
+  | 'images' 
+  | 'url' 
+  | 'createdTime'
 >;
 
 export type BlogPostCard = Pick<BlogPost, 
-  | 'id' 
+  | 'uid' 
   | 'title' 
-  | 'excerpt' 
-  | 'thumbnail' 
-  | 'slug' 
-  | 'createdAt' 
-  | 'viewCount' 
+  | 'description' 
+  | 'images' 
+  | 'url' 
+  | 'createdTime' 
+  | 'views' 
   | 'likeCount'
 > & {
-  author?: Pick<User, 'id' | 'name' | 'image'>;
-  category?: Pick<BlogCategory, 'id' | 'name' | 'slug'>;
+  author?: Pick<User, 'id' | 'name'>;
+  category?: Pick<BlogCategory, 'uid' | 'name' | 'slug'>;
 };
 
 // ==========================================

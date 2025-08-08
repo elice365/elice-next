@@ -32,7 +32,7 @@ const deleteImage = async (
     }
 
     // In production, this would delete from Cloudflare R2
-    // TODO: Implement actual R2 delete operation
+    // R2 integration pending - currently returns success
     
     const result = {
       success: true,
@@ -42,6 +42,7 @@ const deleteImage = async (
     return setRequest(result);
 
   } catch (error) {
+    console.error('Failed to delete image:', error);
     return setMessage('NetworkError', null, 500);
   }
 };

@@ -88,7 +88,7 @@ export const Gallery = memo(function Gallery({
           grabCursor={true}
         >
           {products.map((product, index) => (
-            <SwiperSlide key={`product-${index}`} style={{ width: '100%' }}>
+            <SwiperSlide key={`product-${product.url || product.title || index}`} style={{ width: '100%' }}>
               <div className={`relative w-full aspect-square sm:aspect-[4/2] lg:aspect-[4/1]
                 }`}>
                 {/* Background layer with parallax */}
@@ -133,7 +133,7 @@ export const Gallery = memo(function Gallery({
                       <div className={`flex flex-wrap mb-3 ${mobile ? 'gap-1' : 'gap-2'}`}>
                         {product.tag.map((tag: string, tagIndex: number) => (
                           <motion.span
-                            key={tagIndex}
+                            key={`tag-${tag}-${tagIndex}`}
                             className={`bg-black/60 rounded-md inline-flex items-center gap-1 backdrop-blur-sm ${getResponsiveClasses.tag(mobile)}`}
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}

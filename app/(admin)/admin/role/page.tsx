@@ -8,8 +8,7 @@ import { RoleEditModal } from "@/components/ui/modal/role/RoleEdit";
 import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { Role } from "@/types/admin";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
-import { useAdminPage } from "@/hooks/admin";
-import { useAdminModals } from "@/hooks/admin";
+import { useAdminPage, useAdminModals } from "@/hooks/admin";
 import { getBadgeStyle, getBadgeIcon } from "@/utils/admin/badges";
 
 // 역할 관리 페이지 메인 컴포넌트

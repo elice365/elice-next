@@ -6,8 +6,8 @@ import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { Post } from "@/types/post";
-import { BlogContent, BlogImage, ProductItem, ContentSection, AuthorInfo } from '@/types/adminBlog';
-import { getLanguageName, DEFAULT_BLOG_CONTENT } from '@/utils/admin/blog/utils';
+import { BlogContent, BlogImage, ProductItem, ContentSection } from '@/types/adminBlog';
+import { getLanguageName } from '@/utils/admin/blog/utils';
 
 
 export default function BlogContentEditorPage() {
@@ -66,6 +66,7 @@ export default function BlogContentEditorPage() {
         await loadContentFromCDN(data.data.post.url, language);
       }
     } catch (error) {
+      console.error('Failed to load post data:', error);
       alert("글 정보를 불러오는데 실패했습니다.");
     } finally {
       setLoading(false);
@@ -81,6 +82,7 @@ export default function BlogContentEditorPage() {
         setHasChanges(false);
       }
     } catch (error) {
+      console.error('Failed to load content from CDN:', error);
       // If no content exists, use default structure
       setBlogContent({
         product: [],
@@ -105,7 +107,8 @@ export default function BlogContentEditorPage() {
       try {
         const response = await fetch(`https://cdn.elice.pro/post/${post.uid}/${lang}.json`);
         status[lang] = response.ok;
-      } catch {
+      } catch (error) {
+        console.error(`Failed to check language status for ${lang}:`, error);
         status[lang] = false;
       }
     }
@@ -191,7 +194,7 @@ export default function BlogContentEditorPage() {
         setImages(data.data.images);
       }
     } catch (error) {
-      console.error("Failed to load images", error);
+      console.error("Failed to load images:", error);
     } finally {
       setLoadingImages(false);
     }
@@ -215,6 +218,7 @@ export default function BlogContentEditorPage() {
         return null;
       }
     } catch (error) {
+      console.error('Image upload failed:', error);
       alert("이미지 업로드 중 오류가 발생했습니다.");
       return null;
     } finally {
@@ -255,6 +259,7 @@ export default function BlogContentEditorPage() {
         setImages(prev => prev.filter(img => img.id !== imageId));
       }
     } catch (error) {
+      console.error('Failed to delete image:', error);
       alert("이미지 삭제에 실패했습니다.");
     }
   };
@@ -282,6 +287,7 @@ export default function BlogContentEditorPage() {
         alert("저장에 실패했습니다.");
       }
     } catch (error) {
+      console.error('Failed to save content:', error);
       alert("저장 중 오류가 발생했습니다.");
     } finally {
       setSaving(false);
@@ -305,6 +311,7 @@ export default function BlogContentEditorPage() {
         alert(`${fromLang} 언어의 콘텐츠를 찾을 수 없습니다.`);
       }
     } catch (error) {
+      console.error('Failed to copy content:', error);
       alert("콘텐츠 복사 중 오류가 발생했습니다.");
     }
   };
@@ -328,6 +335,7 @@ export default function BlogContentEditorPage() {
         }
       }
     } catch (error) {
+      console.error('Failed to delete language version:', error);
       alert("콘텐츠 삭제 중 오류가 발생했습니다.");
     }
   };
@@ -528,10 +536,11 @@ export default function BlogContentEditorPage() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
+                    <label htmlFor={`product-title-${index}`} className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
                       제품명
                     </label>
                     <input
+                      id={`product-title-${index}`}
                       type="text"
                       value={product.title}
                       onChange={(e) => updateProduct(index, 'title', e.target.value)}
@@ -540,12 +549,13 @@ export default function BlogContentEditorPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
+                    <label htmlFor={`product-url-${index}`} className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
                       이미지
                     </label>
                     <div className="space-y-2">
                       <div className="flex gap-2">
                         <input
+                          id={`product-url-${index}`}
                           type="url"
                           value={product.url}
                           onChange={(e) => updateProduct(index, 'url', e.target.value)}
@@ -578,10 +588,11 @@ export default function BlogContentEditorPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
+                  <label htmlFor={`product-desc-${index}`} className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
                     설명
                   </label>
                   <textarea
+                    id={`product-desc-${index}`}
                     value={product.description}
                     onChange={(e) => updateProduct(index, 'description', e.target.value)}
                     className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] resize-none"
@@ -591,10 +602,11 @@ export default function BlogContentEditorPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
+                  <label htmlFor={`product-tags-${index}`} className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
                     태그 (Enter로 추가)
                   </label>
                   <input
+                    id={`product-tags-${index}`}
                     type="text"
                     onKeyDown={(e) => handleProductTagInput(index, e)}
                     className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)]"
@@ -642,10 +654,11 @@ export default function BlogContentEditorPage() {
           
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
+              <label htmlFor="author-name" className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
                 작성자 이름 *
               </label>
               <input
+                id="author-name"
                 type="text"
                 value={blogContent.author.name}
                 onChange={(e) => {
@@ -661,10 +674,11 @@ export default function BlogContentEditorPage() {
             </div>
             
             <div>
-              <label className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
+              <label htmlFor="author-desc" className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
                 작성자 설명 *
               </label>
               <textarea
+                id="author-desc"
                 value={blogContent.author.description}
                 onChange={(e) => {
                   setBlogContent(prev => ({
@@ -680,10 +694,11 @@ export default function BlogContentEditorPage() {
             </div>
             
             <div>
-              <label className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
+              <label htmlFor="author-profile" className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
                 프로필 이미지 URL
               </label>
               <input
+                id="author-profile"
                 type="url"
                 value={blogContent.author.profileImage}
                 onChange={(e) => {
@@ -742,10 +757,11 @@ export default function BlogContentEditorPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
+                  <label htmlFor={`section-title-${index}`} className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
                     제목
                   </label>
                   <input
+                    id={`section-title-${index}`}
                     type="text"
                     value={section.title}
                     onChange={(e) => updateContentSection(index, 'title', e.target.value)}
@@ -755,10 +771,11 @@ export default function BlogContentEditorPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
+                  <label htmlFor={`section-context-${index}`} className="block text-sm text-[var(--text-color)] opacity-80 mb-1">
                     내용
                   </label>
                   <textarea
+                    id={`section-context-${index}`}
                     value={section.context}
                     onChange={(e) => updateContentSection(index, 'context', e.target.value)}
                     className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] resize-none"

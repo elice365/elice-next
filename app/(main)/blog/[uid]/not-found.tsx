@@ -10,8 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogNotFound() {
-  const blogT = await getTranslations("router");
-  
   return (
     <div className="min-h-screen bg-[var(--color-panel)] flex items-center justify-center px-4 transition-colors duration-300">
       <div className="max-w-md w-full text-center animate-fade-in">

@@ -67,7 +67,7 @@ export default async function BlogPage() {
             "@type": "Blog",
             "name": `${blogT("blog")} | Elice`,
             "description": "Discover insightful articles, tutorials, and updates from our blog.",
-            "url": `${process.env.NEXT_PUBLIC_URLNEXT_PUBLIC_URL}/blog`,
+            "url": `${process.env.NEXT_PUBLIC_URL}/blog`,
             "publisher": {
               "@type": "Organization",
               "name": "Elice",
@@ -80,7 +80,7 @@ export default async function BlogPage() {
             },
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": `${process.env.NEXT_PUBLIC_URLNEXT_PUBLIC_URL}/blog`
+              "@id": `${process.env.NEXT_PUBLIC_URL}/blog`
             }
           }),
         }}

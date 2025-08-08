@@ -54,6 +54,7 @@ const getContent = async (
       }
     } catch (error) {
       // Content doesn't exist yet, return empty template
+      logger.debug('Content not found in R2, returning empty template', 'R2');
     }
     
     // Return empty content template if not found
@@ -78,6 +79,7 @@ const getContent = async (
     return setRequest(result);
 
   } catch (error) {
+    logger.error('Failed to get blog content', 'BlogContent', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -151,6 +153,7 @@ const saveContent = async (
     }
 
   } catch (error) {
+    logger.error('Failed to save blog content', 'BlogContent', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -190,6 +193,7 @@ const deleteContent = async (
       
     } catch (error) {
       // If file doesn't exist, still return success
+      logger.debug('Error deleting from R2', 'R2', error);
       if ((error as any)?.Code === 'NoSuchKey') {
         const result = {
           message: `${language} 언어의 콘텐츠가 이미 없습니다.`,

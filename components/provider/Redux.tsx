@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { logger } from '@/lib/services/logger';
 
 // PostHog를 동적으로 로드하는 컴포넌트
-function PostHogProvider({ children }: { children: React.ReactNode }) {
+function PostHogProvider({ children }: { readonly children: React.ReactNode }) {
   useEffect(() => {
     const initPostHog = async () => {
       if (typeof window === 'undefined') return;

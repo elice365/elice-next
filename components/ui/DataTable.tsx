@@ -15,8 +15,8 @@ export interface Column<T> {
 }
 
 export interface DataTableProps<T> {
-  columns: Column<T>[];
-  data: T[];
+  readonly columns: readonly Column<T>[];
+  readonly data: readonly T[];
   loading?: boolean;
   pagination?: {
     current: number;
@@ -103,7 +103,7 @@ export function DataTable<T extends Record<string, any>>({
                     type="checkbox"
                     className="rounded border-gray-300"
                     onChange={(e) => {
-                      rowSelection.onSelectAll?.(e.target.checked, data);
+                      rowSelection.onSelectAll?.(e.target.checked, [...data]);
                     }}
                   />
                 </th>

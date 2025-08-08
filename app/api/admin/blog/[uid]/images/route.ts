@@ -30,9 +30,7 @@ const getImages = async (
     }
 
     // In production, this would list files from Cloudflare R2
-    // For now, return sample data or empty array
-    // TODO: Implement actual R2 list operation
-    
+    // For now, return empty array - R2 integration pending
     const images: string[] = [];
 
     const result = {
@@ -42,6 +40,7 @@ const getImages = async (
     return setRequest(result);
 
   } catch (error) {
+    console.error('Failed to get images for post:', error);
     return setMessage('NetworkError', null, 500);
   }
 };
