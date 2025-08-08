@@ -3,7 +3,7 @@
 import { memo, useState, useCallback, useRef, useEffect } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { useAppSelector } from '@/stores/hook';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { logger } from '@/lib/services/logger';
 import { CommentItem } from './CommentItem';
 
@@ -56,7 +56,6 @@ export const Comment = memo(function Comment({
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
-  const [replyContent, setReplyContent] = useState('');
   
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
   const replyTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -74,10 +73,8 @@ export const Comment = memo(function Comment({
   const handleReplyToggle = useCallback((commentId: string) => {
     if (replyingTo === commentId) {
       setReplyingTo(null);
-      setReplyContent('');
     } else {
       setReplyingTo(commentId);
-      setReplyContent('');
     }
   }, [replyingTo]);
   const [isSubmitting, setIsSubmitting] = useState(false);

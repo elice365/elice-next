@@ -33,6 +33,7 @@
 }
 
 /* Tailwind CSS v4 theme configuration - Valid v4 syntax, ignore SonarCloud warnings */
+/* sonar-disable-next-line css:S4662 */
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -363,14 +364,17 @@ body {
 }
 
 /* Custom utility classes for animations - Tailwind CSS v4 syntax */
+/* sonar-disable-next-line css:S4662 */
 @utility animate-fade-in {
   animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* sonar-disable-next-line css:S4662 */
 @utility animate-slide-in {
   animation: slideInLeft 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* sonar-disable-next-line css:S4662 */
 @utility animate-scale-in {
   animation: scaleIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }

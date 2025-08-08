@@ -15,7 +15,7 @@ interface BlogData {
   description: string;
   category?: Category;
   tags: Array<{ uid: string; name: string }>;
-  images: string[] | any; // Support both new array format and legacy object format
+  images: string[] | Record<string, unknown>; // Support both new array format and legacy object format
   status: 'draft' | 'published';
   publishedAt?: string;
   views: number;
@@ -74,9 +74,12 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
         imagesArray = post.images;
       } else if (post.images && typeof post.images === 'object') {
         // Handle legacy format: { main: "url", thumbnail: "url" }
-        if (post.images.main) imagesArray.push(post.images.main);
-        if (post.images.thumbnail && post.images.thumbnail !== post.images.main) {
-          imagesArray.push(post.images.thumbnail);
+        const imageObj = post.images as { main?: string; thumbnail?: string };
+        if (imageObj.main && typeof imageObj.main === 'string') {
+          imagesArray.push(imageObj.main);
+        }
+        if (imageObj.thumbnail && typeof imageObj.thumbnail === 'string' && imageObj.thumbnail !== imageObj.main) {
+          imagesArray.push(imageObj.thumbnail);
         }
       }
       

@@ -77,7 +77,7 @@ const getBlogPosts = async (
  * ---------------------------------------------------------------- */
 const createBlogPost = async (
   request: NextRequest,
-  context: AuthInfo
+  _context: AuthInfo
 ): Promise<APIResult> => {
   try {
     const body = await request.json();
@@ -100,7 +100,7 @@ const createBlogPost = async (
     const url = title
       .toLowerCase()
       .replace(/[^a-z0-9가-힣]+/g, '-')
-      .replace(/^(-+)|(-+)$/g, '');
+      .replace(/(^-+)|(-+$)/g, '');
 
     // Create blog post
     const newPost = await BlogDB.createBlogPost({
@@ -133,7 +133,7 @@ const createBlogPost = async (
  * ---------------------------------------------------------------- */
 const updateBlogPost = async (
   request: NextRequest,
-  context: AuthInfo
+  _context: AuthInfo
 ): Promise<APIResult> => {
   try {
     const body = await request.json();
