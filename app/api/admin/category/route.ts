@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as CategoryDB from '@/lib/db/category';
 import { categoryValidation } from '@/utils/regex/admin';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/category
@@ -49,7 +50,8 @@ const getCategories = async (
     return { success: true, data: result };
 
   } catch (error) {
-    return { success: false, message: 'NetworkError' };
+    logger.error('어드민 카테고리 목록 조회 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 
@@ -106,7 +108,8 @@ const createCategory = async (
     }
 
   } catch (error) {
-    return { success: false, message: 'NetworkError' };
+    logger.error('카테고리 생성 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 
@@ -145,7 +148,8 @@ const deleteCategories = async (
     }
 
   } catch (error) {
-    return { success: false, message: 'NetworkError' };
+    logger.error('카테고리 삭제 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 

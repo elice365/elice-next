@@ -23,7 +23,6 @@ export const ShareButton = memo(function ShareButton({
 }: ShareButtonProps) {
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
-  const encodedDescription = encodeURIComponent(description || '');
 
   const shareButtons = [
     {
@@ -93,15 +92,32 @@ export const ShareButton = memo(function ShareButton({
       // You could add a toast notification here
       alert('링크가 클립보드에 복사되었습니다!');
     } catch (err) {
-      // Failed to copy link
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = url;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      alert('링크가 클립보드에 복사되었습니다!');
+      console.error('Failed to copy link:', err);
+      // Fallback for older browsers that don't support Clipboard API
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        textArea.style.pointerEvents = 'none';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        textArea.setSelectionRange(0, textArea.value.length);
+        
+        // Use the newer Clipboard API write method as fallback
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(url);
+        } else {
+          // Last resort: throw error if no clipboard support
+          throw new Error('Clipboard API not supported');
+        }
+        
+        document.body.removeChild(textArea);
+        alert('링크가 클립보드에 복사되었습니다!');
+      } catch (fallbackError) {
+        alert('클립보드 복사를 지원하지 않는 브라우저입니다. URL을 수동으로 복사해주세요: ' + url);
+      }
     }
     onClose?.();
   }, [url, onClose]);

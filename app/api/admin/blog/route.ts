@@ -66,8 +66,8 @@ const getBlogPosts = async (
     return setRequest(result);
 
   } catch (error) {
-    logger.error('[API] Get blog posts failed', 'API', error);
-    return setMessage('NetworkError', null, 500);
+    logger.error('블로그 목록 조회 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 
@@ -100,7 +100,7 @@ const createBlogPost = async (
     const url = title
       .toLowerCase()
       .replace(/[^a-z0-9가-힣]+/g, '-')
-      .replace(/(^(-+)|(-+)$)/g, '');
+      .replace(/^-+|-+$/g, '');
 
     // Create blog post
     const newPost = await BlogDB.createBlogPost({
@@ -122,8 +122,8 @@ const createBlogPost = async (
     return setRequest(result);
 
   } catch (error) {
-    logger.error('[API] Get blog posts failed', 'API', error);
-    return setMessage('NetworkError', null, 500);
+    logger.error('블로그 글 생성 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 
@@ -176,8 +176,8 @@ const updateBlogPost = async (
     return setRequest(result);
 
   } catch (error) {
-    logger.error('[API] Get blog posts failed', 'API', error);
-    return setMessage('NetworkError', null, 500);
+    logger.error('블로그 글 수정 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 
@@ -209,8 +209,8 @@ const deleteBlogPosts = async (
     return setRequest(result);
 
   } catch (error) {
-    logger.error('[API] Get blog posts failed', 'API', error);
-    return setMessage('NetworkError', null, 500);
+    logger.error('블로그 글 삭제 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 

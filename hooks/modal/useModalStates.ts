@@ -34,7 +34,7 @@ export function useModalStates<T = any>({
   const initialStates: ModalStates = modalNames.reduce((acc, name) => {
     acc[name] = false;
     return acc;
-  }, {});
+  }, {} as ModalStates);
 
   const [modalStates, setModalStates] = useState<ModalStates>(initialStates);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
@@ -123,11 +123,33 @@ export function useModalStates<T = any>({
   };
 }
 
-// Hook for common admin page modal patterns
-export function useAdminModals<T = any>() {
-  return useModalStates<T>({
+// Hook for common admin page modal patterns - returns array for backward compatibility
+export function useAdminModals<T = any>(): [any, any] {
+  const modalStates = useModalStates<T>({
     modalNames: ['create', 'edit', 'delete', 'view', 'manage']
   });
+  
+  // Create state object with expected properties
+  const state = {
+    isCreateModalOpen: modalStates.isModalOpen('create'),
+    isEditModalOpen: modalStates.isModalOpen('edit'),
+    isDeleteModalOpen: modalStates.isModalOpen('delete'),
+    isViewModalOpen: modalStates.isModalOpen('view'),
+    isManageModalOpen: modalStates.isModalOpen('manage'),
+    selectedRecord: modalStates.selectedItem,
+  };
+  
+  // Create actions object with expected methods
+  const actions = {
+    openCreateModal: () => modalStates.openModal('create'),
+    openEditModal: (item: T, event?: any) => modalStates.openModal('edit', item),
+    openDeleteModal: (item: T, event?: any) => modalStates.openModal('delete', item),
+    openViewModal: (item: T, event?: any) => modalStates.openModal('view', item),
+    openManageModal: (item: T, event?: any) => modalStates.openModal('manage', item),
+    closeModals: () => modalStates.closeAllModals(),
+  };
+  
+  return [state, actions];
 }
 
 // Enhanced hook with loading and error state for better UX

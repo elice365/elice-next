@@ -8,10 +8,9 @@ import { memo, useCallback, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "@/stores/hook"
 import { SearchInput } from "@/components/features/search/Input";
 import { Avatar } from "@/components/ui/Avatar";
-import { usePanel } from "@/hooks/ui";
+import { usePanel, useAnimatedWidth } from "@/hooks/ui";
 import { useModal } from "@/hooks/modal";
 import { useAuth } from "@/hooks/auth";
-import { useAnimatedWidth } from "@/hooks/ui"
 import { Icon } from "../ui/Icon";
 export default memo(function Navigator({ router }: PanelProps) {
     const dispatch = useAppDispatch()

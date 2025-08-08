@@ -41,7 +41,8 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
         setCategories(data.data.categories);
       }
     } catch (error) {
-      // Failed to load categories
+      console.error('Failed to load categories:', error);
+      setErrors({ general: 'Failed to load categories' });
     } finally {
       setLoadingCategories(false);
     }
@@ -116,6 +117,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
 
   // Error handler
   const handleError = (error: any) => {
+    console.error('Blog create error:', error);
     setErrors({ general: '블로그 글 생성 중 오류가 발생했습니다.' });
   };
 
@@ -411,7 +413,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
                     <div className="w-20 h-20 rounded-lg overflow-hidden border border-[var(--border-color)] bg-[var(--hover)]">
                       <img
                         src={imageUrl}
-                        alt={`Image ${index + 1}`}
+                        alt={`업로드된 콘텐츠 ${index + 1}`}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           const target = e.currentTarget;

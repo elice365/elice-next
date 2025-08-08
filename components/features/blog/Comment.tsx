@@ -88,17 +88,22 @@ export const Comment = memo(function Comment({
 
     setIsSubmitting(true);
     try {
-      // TODO: Implement actual comment submission API
-      const comment: Comment = {
-        id: Date.now().toString(),
-        author: user.name || user.email,
-        content: newComment.trim(),
-        createdAt: new Date(),
-        likes: 0,
-        isLiked: false,
-        replies: []
-      };
-
+      // Submit comment to API
+      const response = await fetch(`/api/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: newComment.trim(),
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit comment');
+      }
+      
+      const comment: Comment = await response.json();
       setComments(prev => [comment, ...prev]);
       setNewComment('');
     } catch (error) {
@@ -113,16 +118,22 @@ export const Comment = memo(function Comment({
 
     setIsSubmitting(true);
     try {
-      // TODO: Implement actual reply submission API
-      const reply: Comment = {
-        id: Date.now().toString(),
-        author: user.name || user.email,
-        content: replyContent.trim(),
-        createdAt: new Date(),
-        likes: 0,
-        isLiked: false
-      };
-
+      // Submit reply to API
+      const response = await fetch(`/api/posts/${postId}/comments/${commentId}/reply`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: replyContent.trim(),
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit reply');
+      }
+      
+      const reply: Comment = await response.json();
       setComments(prev => {
         const updatedComments = prev.map(comment => {
           if (comment.id === commentId) {

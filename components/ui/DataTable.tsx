@@ -27,7 +27,6 @@ export interface DataTableProps<T> {
   };
   onPaginationChange?: (page: number, pageSize: number) => void;
   onSort?: (column: keyof T | string, direction: 'asc' | 'desc') => void;
-  onRowSelect?: (selectedRows: T[], selectedRowKeys: string[]) => void;
   rowSelection?: {
     selectedRowKeys?: string[];
     onSelect?: (record: T, selected: boolean) => void;

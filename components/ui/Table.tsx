@@ -198,8 +198,17 @@ export const Table = memo(function Table<T = any>({
                                         }}
                                         aria-pressed={isRowSelected}
                                         aria-label={onRowClick ? `행 ${index + 1} 선택` : undefined}
-                                        className={`${onRowClick ? 'hover:bg-[var(--hover)] hover:text-[var(--hover-text)] hover:shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--hover-primary)] focus:ring-inset' : ''} ${isRowSelected ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' : ''
-                                            } transition-all duration-200`}
+                                        className={(() => {
+                                            const baseClasses = 'transition-all duration-200';
+                                            const clickableClasses = onRowClick 
+                                                ? 'hover:bg-[var(--hover)] hover:text-[var(--hover-text)] hover:shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--hover-primary)] focus:ring-inset' 
+                                                : '';
+                                            const selectedClasses = isRowSelected 
+                                                ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' 
+                                                : '';
+                                            
+                                            return `${baseClasses} ${clickableClasses} ${selectedClasses}`.trim();
+                                        })()}
                                     >
                                         {finalColumns.map((column) => {
                                             const value = getValue(record, column.key);
@@ -266,10 +275,9 @@ export const Table = memo(function Table<T = any>({
 
                             return (
                                 onRowClick ? (
-                                    <div
+                                    <button
                                         key={rowKeyValue}
-                                        role="button"
-                                        tabIndex={0}
+                                        type="button"
                                         onClick={() => onRowClick(record, index)}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' || e.key === ' ') {
@@ -324,7 +332,7 @@ export const Table = memo(function Table<T = any>({
                                                 })
                                             }
                                         </div>
-                                    </div>
+                                    </button>
                                 ) : (
                                     <div
                                         key={rowKeyValue}

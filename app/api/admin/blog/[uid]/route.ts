@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
+import { logger } from '@/lib/services/logger';
 
 interface RouteParams {
   params: Promise<{
@@ -36,7 +37,8 @@ const getBlogPost = async (
     return setRequest({ post });
 
   } catch (error) {
-    return setMessage('NetworkError', null, 500);
+    logger.error('블로그 글 조회 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 
@@ -91,7 +93,8 @@ const updateBlogPost = async (
     return setRequest(result);
 
   } catch (error) {
-    return setMessage('NetworkError', null, 500);
+    logger.error('블로그 글 수정 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 
@@ -122,7 +125,8 @@ const deleteBlogPost = async (
     return setRequest(result);
 
   } catch (error) {
-    return setMessage('NetworkError', null, 500);
+    logger.error('블로그 글 삭제 실패', 'API', error);
+    return { success: false, message: '서버 오류가 발생했습니다' };
   }
 };
 

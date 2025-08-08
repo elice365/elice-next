@@ -362,6 +362,64 @@ export default function BlogContentEditorPage() {
     updateProduct(productIndex, 'tag', product.tag.filter(tag => tag !== tagToRemove));
   };
 
+  const renderImageGallery = () => {
+    if (loadingImages) {
+      return (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        </div>
+      );
+    }
+    
+    if (images.length > 0) {
+      return (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {images.map((image) => (
+            <div key={image.id} className="relative group">
+              <div className="aspect-square rounded-lg overflow-hidden border border-[var(--border-color)]">
+                <img
+                  src={image.url}
+                  alt={image.filename}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(image.url);
+                    alert("이미지 URL이 복사되었습니다.");
+                  }}
+                  className="p-2 bg-white/90 rounded-lg hover:bg-white transition-colors"
+                  title="URL 복사"
+                >
+                  <Icon name="Copy" size={16} className="text-gray-700" />
+                </button>
+                <button
+                  onClick={() => deleteImage(image.id)}
+                  className="p-2 bg-red-500/90 rounded-lg hover:bg-red-500 transition-colors"
+                  title="삭제"
+                >
+                  <Icon name="Trash2" size={16} className="text-white" />
+                </button>
+              </div>
+              <p className="text-xs text-[var(--text-color)] opacity-60 mt-1 truncate">
+                {image.filename}
+              </p>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    
+    // Empty state - no images
+    const emptyStateMessage = uploadingImage ? "업로드 중..." : "업로드된 이미지가 없습니다";
+    return (
+      <div className="text-center py-8 text-[var(--text-color)] opacity-60">
+        {emptyStateMessage}
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -818,51 +876,7 @@ export default function BlogContentEditorPage() {
             </label>
           </div>
           
-          {loadingImages ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            </div>
-          ) : images.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {images.map((image) => (
-                <div key={image.id} className="relative group">
-                  <div className="aspect-square rounded-lg overflow-hidden border border-[var(--border-color)]">
-                    <img
-                      src={image.url}
-                      alt={image.filename}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(image.url);
-                        alert("이미지 URL이 복사되었습니다.");
-                      }}
-                      className="p-2 bg-white/90 rounded-lg hover:bg-white transition-colors"
-                      title="URL 복사"
-                    >
-                      <Icon name="Copy" size={16} className="text-gray-700" />
-                    </button>
-                    <button
-                      onClick={() => deleteImage(image.id)}
-                      className="p-2 bg-red-500/90 rounded-lg hover:bg-red-500 transition-colors"
-                      title="삭제"
-                    >
-                      <Icon name="Trash2" size={16} className="text-white" />
-                    </button>
-                  </div>
-                  <p className="text-xs text-[var(--text-color)] opacity-60 mt-1 truncate">
-                    {image.filename}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-[var(--text-color)] opacity-60">
-              {uploadingImage ? "업로드 중..." : "업로드된 이미지가 없습니다"}
-            </div>
-          )}
+          {renderImageGallery()}
         </div>
 
         {/* Preview */}

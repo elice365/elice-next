@@ -23,7 +23,6 @@ const deleteImage = async (
   try {
     const resolvedParams = await params;
     const postId = resolvedParams.uid;
-    const imageId = resolvedParams.imageId;
 
     // Get post to verify it exists
     const post = await BlogDB.getPostById(postId);

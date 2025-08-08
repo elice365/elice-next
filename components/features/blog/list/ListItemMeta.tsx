@@ -4,15 +4,15 @@ import { Icon } from '@/components/ui/Icon';
 import { motion } from 'framer-motion';
 
 interface ListItemMetaProps {
-  views: number;
-  likeCount: number;
-  isLiked: boolean;
-  createdTime: Date;
-  mobile: boolean;
-  handleLike: (e: React.MouseEvent | React.KeyboardEvent) => void;
-  isLikeAnimating: boolean;
-  formatDate: (date: Date) => string;
-  getMetaClassNames: (mobile: boolean) => string;
+  readonly views: number;
+  readonly likeCount: number;
+  readonly isLiked: boolean;
+  readonly createdTime: Date;
+  readonly mobile: boolean;
+  readonly handleLike: (e: React.MouseEvent | React.KeyboardEvent) => void;
+  readonly isLikeAnimating: boolean;
+  readonly formatDate: (date: Date) => string;
+  readonly getMetaClassNames: (mobile: boolean) => string;
 }
 
 export function ListItemMeta({

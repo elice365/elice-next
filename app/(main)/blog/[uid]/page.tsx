@@ -10,8 +10,8 @@ import { api } from "@/lib/fetch";
 export const dynamic = 'force-dynamic';
 
 interface BlogPageProps {
-  params: Promise<{
-    uid: string;
+  readonly params: Promise<{
+    readonly uid: string;
   }>;
 }
 
@@ -43,7 +43,7 @@ async function fetchPostData(uid: string, language: string = 'ko') {
       return null;
     }
 
-    return data.data as PostDetailResponse;
+    return data.data;
   } catch (error) {
     // Failed to fetch post data
     console.error('Failed to fetch post data:', error);
@@ -68,7 +68,7 @@ async function fetchPostContent(uid: string, language: string = 'ko'): Promise<P
       data: content,
     };
   } catch (error) {
-    // Failed to fetch post content from CDN
+    console.error('Failed to fetch post content from CDN:', error);
     return null;
   }
 }
@@ -96,15 +96,15 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
   const postUrl = `${t("openGraph.url")}/blog/${resolvedParams.uid}`;
   
   // Use post image if available, otherwise use default
-  const getPostImageUrl = (images: string[] | any): string | null => {
+  const getPostImageUrl = (images: string[] | Record<string, string> | string): string | null => {
     // Handle new array format
     if (Array.isArray(images) && images.length > 0) {
       return images[0];
     }
     // Handle legacy object format
-    if (images && typeof images === 'object') {
-      if (images.main) return images.main;
-      if (images.thumbnail) return images.thumbnail;
+    if (images && typeof images === 'object' && !Array.isArray(images)) {
+      if ('main' in images && images.main) return images.main;
+      if ('thumbnail' in images && images.thumbnail) return images.thumbnail;
     }
     // Handle string format
     if (typeof images === 'string') return images;

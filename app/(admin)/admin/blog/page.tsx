@@ -69,8 +69,9 @@ export default function AdminBlogPage() {
         alert('삭제 중 오류가 발생했습니다.');
       }
     } catch (error) {
-      // Failed to delete posts
-      alert('삭제 중 오류가 발생했습니다.');
+      console.error('Bulk delete error:', error);
+      const message = error instanceof Error ? error.message : '삭제 중 오류가 발생했습니다.';
+      alert(message);
     }
   };
 
@@ -90,7 +91,9 @@ export default function AdminBlogPage() {
         pageActions.refresh();
       }
     } catch (error) {
-      alert(`${action} 중 오류가 발생했습니다.`);
+      console.error('Publish toggle error:', error);
+      const message = error instanceof Error ? error.message : `${action} 중 오류가 발생했습니다.`;
+      alert(message);
     }
   };
 

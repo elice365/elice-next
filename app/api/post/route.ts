@@ -4,10 +4,11 @@ import { APIResult, AuthInfo } from '@/types/api';
 import { prisma } from '@/lib/db/prisma';
 import { safeBody } from '@/utils/parse/body';
 import { trackPostView } from '@/lib/db/views';
-import { requestInfo } from '@/lib/server/info';
 import { logger } from '@/lib/services/logger';
 
 // Types for blog post API
+type PostImages = string[] | Record<string, string> | string;
+
 interface PostListRequest {
   type: 'list';
   page?: number;
@@ -37,7 +38,7 @@ interface PostListResponse {
     title: string;
     description: string;
     url: string;
-    images: string[] | Record<string, string> | string;
+    images: PostImages;
     views: number;
     likeCount: number;
     createdTime: Date;
@@ -67,7 +68,7 @@ interface PostDetailResponse {
     title: string;
     description: string;
     url: string;
-    images: string[] | Record<string, string> | string;
+    images: PostImages;
     views: number;
     likeCount: number;
     createdTime: Date;
@@ -126,7 +127,7 @@ async function fetchCDNContent(uid: string, language: string = 'ko') {
       data,
     };
   } catch (error) {
-    // Error fetching CDN content
+    logger.error('Error fetching CDN content', 'CDN_FETCH', error);
     return null;
   }
 }
@@ -249,7 +250,7 @@ async function handlePostList(
   // Transform posts to include isLiked flag and calculated views
   const transformedPosts = posts.map((post) => ({
     ...post,
-    images: post.images as string | string[] | Record<string, string>,
+    images: post.images as PostImages,
     category: post.category || undefined, // Convert null to undefined
     views: (post as { _count: { view: number } })._count.view, // PostView 관계에서 계산된 조회수
     isLiked: context.userId ? ((post as { likes?: Array<{ uid: string }> }).likes?.length ?? 0) > 0 : false,
@@ -361,7 +362,7 @@ async function handlePostDetail(
   // Transform post to include isLiked flag and calculated views
   const transformedPost = {
     ...post,
-    images: post.images as string | string[] | Record<string, string>,
+    images: post.images as PostImages,
     category: post.category || undefined, // Convert null to undefined
     views: post._count.view, // PostView 관계에서 계산된 조회수
     isLiked: context.userId ? ((post.likes as Array<{ uid: string }> | false) !== false && post.likes.length > 0) : false,
@@ -465,7 +466,7 @@ async function handleGetRequest(
     const type = searchParams.get('type');
 
     switch (type) {
-      case 'categories':
+      case 'categories': {
         const categories = await prisma.category.findMany({
           orderBy: { name: 'asc' },
           select: {
@@ -487,8 +488,9 @@ async function handleGetRequest(
           success: true,
           data: { categories },
         };
+      }
 
-      case 'tags':
+      case 'tags': {
         const tags = await prisma.tag.findMany({
           orderBy: { name: 'asc' },
           select: {
@@ -506,6 +508,7 @@ async function handleGetRequest(
           success: true,
           data: { tags },
         };
+      }
 
       default:
         return {
@@ -514,7 +517,7 @@ async function handleGetRequest(
         };
     }
   } catch (error) {
-    // GET /api/post error
+    logger.error('POST request processing failed', 'POST_REQUEST', error);
     return {
       success: false,
       message: 'Failed to process request',

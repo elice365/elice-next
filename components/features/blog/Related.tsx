@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Icon } from '@/components/ui/Icon';
 import { useAppSelector } from '@/stores/hook';
 import { motion } from 'framer-motion';
+import { logger } from '@/lib/services/logger';
 
 interface RelatedPostsProps {
   currentPostId: string;
@@ -132,7 +133,7 @@ export const Related = memo(function Related({
         </h2>
         <div className={`grid gap-6 ${getGridCols(mobile, tablet)}`}>
           {[...Array(getMaxPosts(mobile, tablet))].map((_, index) => (
-            <div key={`skeleton-${index}`} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden animate-pulse">
+            <div key={`related-skeleton-${currentPostId}-${index}`} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden animate-pulse">
               <div className="aspect-video bg-gray-200 dark:bg-gray-700" />
               <div className="p-4 space-y-3">
                 <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
@@ -161,15 +162,15 @@ export const Related = memo(function Related({
       <div className={`grid gap-6 ${getGridCols(mobile, tablet)}`}>
         {relatedPosts.map((post, index) => {
           // Get main image with fallback - updated for array-based images
-          const getMainImage = (images: string[] | any): string => {
+          const getMainImage = (images: string[] | Record<string, string> | string): string => {
             // Handle new array format
             if (Array.isArray(images) && images.length > 0) {
               return images[0];
             }
             // Handle legacy object format
-            if (images && typeof images === 'object') {
-              if (images.main) return images.main;
-              if (images.thumbnail) return images.thumbnail;
+            if (images && typeof images === 'object' && !Array.isArray(images)) {
+              if ('main' in images && images.main) return images.main;
+              if ('thumbnail' in images && images.thumbnail) return images.thumbnail;
             }
             // Handle string format
             if (typeof images === 'string') return images;

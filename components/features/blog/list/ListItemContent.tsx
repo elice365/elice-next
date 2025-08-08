@@ -6,10 +6,10 @@ import { motion } from 'framer-motion';
 import { PostType } from '@/types/post';
 
 interface ListItemContentProps {
-  post: PostType;
-  mobile: boolean;
-  tablet: boolean;
-  getTitleTextSize: (mobile: boolean, tablet: boolean) => string;
+  readonly post: PostType;
+  readonly mobile: boolean;
+  readonly tablet: boolean;
+  readonly getTitleTextSize: (mobile: boolean, tablet: boolean) => string;
 }
 
 export function ListItemContent({ 

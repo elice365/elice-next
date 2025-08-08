@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, memo } from 'react';
+import { useState, memo, useRef } from 'react';
 import Image from 'next/image';
 import { Icon } from '@/components/ui/Icon';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,6 +34,7 @@ export const ListItemImage = memo(function ListItemImage({
 }: ListItemImageProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const mainImage = images[0];
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleNextImage = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -55,11 +56,14 @@ export const ListItemImage = memo(function ListItemImage({
   };
 
   return (
-    <div 
-      className={`${mobile ? 'w-full relative' : 'col-span-3 sm:col-span-2'} ${mobile ? 'h-48' : ''} relative overflow-hidden`}
+    <section 
+      className={(() => {
+        const baseClasses = 'relative overflow-hidden';
+        const layoutClasses = mobile ? 'w-full h-48' : 'col-span-3 sm:col-span-2';
+        return `${baseClasses} ${layoutClasses}`;
+      })()}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      role="region"
       aria-label={`Image gallery for ${title}`}
     >
       {/* Main Image Container */}
@@ -80,7 +84,7 @@ export const ListItemImage = memo(function ListItemImage({
         {/* Show carousel button only when multiple images exist */}
         {images.length > 1 && (
           <button 
-            ref={toggleBtnRef}
+            ref={buttonRef}
             onClick={onInteraction}
             onKeyDown={handleKeyDown}
             className={`absolute ${mobile ? 'bottom-2 right-2' : 'top-2 right-2'} bg-white/90 dark:bg-black/80 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1 cursor-pointer transition-all duration-300 hover:bg-white dark:hover:bg-black z-20 focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -98,10 +102,14 @@ export const ListItemImage = memo(function ListItemImage({
         {isVisible && images.length > 1 && (
           <motion.div 
             ref={slideContainerRef}
-            className={`absolute ${mobile ? 'inset-0' : 'top-0 -right-full'} ${mobile ? 'w-full' : 'w-52'} h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg z-30 ${mobile ? '' : 'shadow-xl'}`}
-            initial={{ x: mobile ? '100%' : 0, opacity: mobile ? 1 : 0 }}
+            className={(() => {
+              const baseClasses = 'absolute h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg z-30';
+              const positionClasses = mobile ? 'inset-0 w-full' : 'top-0 -right-full w-52 shadow-xl';
+              return `${baseClasses} ${positionClasses}`;
+            })()}
+            initial={mobile ? { x: '100%', opacity: 1 } : { x: 0, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: mobile ? '100%' : 0, opacity: mobile ? 1 : 0 }}
+            exit={mobile ? { x: '100%', opacity: 1 } : { x: 0, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
           >
             <div className="relative w-full h-full flex flex-col">
@@ -175,7 +183,7 @@ export const ListItemImage = memo(function ListItemImage({
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </section>
   );
 });
 

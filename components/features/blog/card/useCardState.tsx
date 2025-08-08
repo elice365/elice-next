@@ -30,7 +30,8 @@ export const useCardState = (post: PostType) => {
         action: post.isLiked ? 'unlike' : 'like'
       })).unwrap();
     } catch (error) {
-      // Failed to toggle like
+      console.error('Failed to toggle like:', error);
+      // Optionally show error message to user
     } finally {
       setTimeout(() => setIsLikeAnimating(false), 300);
     }

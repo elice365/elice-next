@@ -265,7 +265,7 @@ export const Filters = memo(function Filters() {
           <Badge className="bg-primary text-white flex items-center gap-1">
             <span>{categories.find(c => c.slug === filters.category)?.name}</span>
             <button
-              onClick={() => handleCategorySelect(filters.category!)}
+              onClick={() => filters.category && handleCategorySelect(filters.category)}
               className="hover:bg-white/20 rounded-full p-0.5"
             >
               <Icon name="X" size={12} />
@@ -277,7 +277,7 @@ export const Filters = memo(function Filters() {
           <Badge className="bg-primary text-white flex items-center gap-1">
             <span>#{filters.tag}</span>
             <button
-              onClick={() => handleTagSelect(filters.tag!)}
+              onClick={() => filters.tag && handleTagSelect(filters.tag)}
               className="hover:bg-white/20 rounded-full p-0.5"
             >
               <Icon name="X" size={12} />
@@ -319,7 +319,7 @@ export const Filters = memo(function Filters() {
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
           <div className="flex gap-2">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={`filter-skeleton-${i}`} className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
+              <div key={`filter-skeleton-category-${i}`} className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
             ))}
           </div>
         </div>

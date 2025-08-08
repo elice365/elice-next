@@ -7,7 +7,6 @@ import { PostType } from '@/types/post';
 import { useAppSelector } from '@/stores/hook';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '@/components/ui/Icon';
-import { ListItemImage } from './list/ListItemImage';
 import { useListItem, useImageSlider } from '@/hooks/blog';
 
 interface BlogListItemProps {

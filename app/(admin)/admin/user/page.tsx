@@ -7,7 +7,8 @@ import { UserRoleManager } from "@/components/features/admin/UserRoleManager";
 import { UserModal } from "@/components/ui/modal/user/User";
 import { User } from "@/types/user";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
-import { useAdminPage, useAdminModals } from "@/hooks/admin";
+import { useAdminPage } from "@/hooks/admin";
+import { useAdminModals } from "@/hooks/modal/useModalStates";
 import { getBadgeStyle, getBadgeIcon, getBadgeText } from "@/utils/admin/badges";
 
 // 사용자 관리 페이지 메인 컴포넌트  

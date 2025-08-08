@@ -2,7 +2,6 @@
 
 import { memo, useCallback, useEffect } from 'react';
 import { Card } from '../features/blog/Card';
-// import { Filters } from '../features/blog/Filters';
 import { Icon } from '@/components/ui/Icon';
 import { useAppSelector, useAppDispatch } from '@/stores/hook';
 import { 

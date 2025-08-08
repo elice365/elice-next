@@ -22,17 +22,17 @@ const getImageHeightClass = (mobile: boolean, tablet: boolean): string => {
 };
 
 // Get the main image with fallback
-const getImageSrc = (images: string[] | any): string => {
+const getImageSrc = (images: string[] | Record<string, string> | string): string => {
   // Handle new array format
   if (Array.isArray(images) && images.length > 0) {
     return images[0];
   }
   // Handle legacy object format
-  if (images && typeof images === 'object') {
-    if (images.main) return images.main;
-    if (images.thumbnail) return images.thumbnail;
-    if (images.src) return images.src;
-    if (images.url) return images.url;
+  if (images && typeof images === 'object' && !Array.isArray(images)) {
+    if ('main' in images && images.main) return images.main;
+    if ('thumbnail' in images && images.thumbnail) return images.thumbnail;
+    if ('src' in images && images.src) return images.src;
+    if ('url' in images && images.url) return images.url;
   }
   // Handle string format
   if (typeof images === 'string') return images;
@@ -129,7 +129,11 @@ const TagsList = memo(function TagsList({ tags, mobile }: TagsListProps) {
 
   return (
     <motion.div 
-      className={`absolute ${mobile ? 'bottom-2 left-2' : 'bottom-3 left-3'} z-20 flex flex-wrap ${mobile ? 'gap-1' : 'gap-1.5'}`}
+      className={(() => {
+        const baseClasses = 'absolute z-20 flex flex-wrap';
+        const positionClasses = mobile ? 'bottom-2 left-2 gap-1' : 'bottom-3 left-3 gap-1.5';
+        return `${baseClasses} ${positionClasses}`;
+      })()}
       initial={!mobile ? { opacity: 0, y: 20 } : {}}
       animate={!mobile ? { opacity: 1, y: 0 } : {}}
       transition={!mobile ? { delay: 0.2, duration: 0.4 } : {}}

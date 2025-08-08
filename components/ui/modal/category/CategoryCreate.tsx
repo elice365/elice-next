@@ -45,7 +45,8 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
         setCategories(data.data.categories);
       }
     } catch (error) {
-      // Failed to load categories
+      console.error('Failed to load categories:', error);
+      setErrors({ general: 'Failed to load categories' });
     } finally {
       setLoadingCategories(false);
     }
@@ -91,7 +92,7 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
     
     if (!formData.code.trim()) {
       newErrors.code = '카테고리 코드는 필수입니다.';
-    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.code)) {
+    } else if (!/^\w+$/.test(formData.code)) {
       newErrors.code = '카테고리 코드는 영문, 숫자, 언더스코어(_)만 사용할 수 있습니다.';
     }
 
@@ -131,6 +132,7 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
 
   // Error handler
   const handleError = (error: any) => {
+    console.error('Category create error:', error);
     setErrors({ general: '카테고리 생성 중 오류가 발생했습니다.' });
   };
 
@@ -152,12 +154,13 @@ export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCrea
       
       if (data.success) {
         handleSuccess(data);
+        return;
+      }
+      
+      if (data.message === 'DuplicateField' && data.data?.field) {
+        setErrors({ [data.data.field]: data.data.message || '중복된 값입니다.' });
       } else {
-        if (data.message === 'DuplicateField' && data.data?.field) {
-          setErrors({ [data.data.field]: data.data.message || '중복된 값입니다.' });
-        } else {
-          setErrors({ general: data.message || '카테고리 생성에 실패했습니다.' });
-        }
+        setErrors({ general: data.message || '카테고리 생성에 실패했습니다.' });
       }
     } catch (error) {
       handleError(error);

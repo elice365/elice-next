@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
+import { logger } from '@/lib/services/logger';
 
 interface RouteParams {
   params: Promise<{
@@ -45,7 +46,8 @@ const updateBlogPostStatus = async (
     return setRequest(result);
 
   } catch (error) {
-    return setMessage('NetworkError', null, 500);
+    logger.error('Blog post status update failed', 'UPDATE_STATUS', error);
+    return setMessage('NetworkError', 'Status update failed', 500);
   }
 };
 

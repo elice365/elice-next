@@ -12,5 +12,5 @@ export interface PanelProps {
 }
 
 export interface PanelType {
-  type?: 'user' | 'admin';
+  readonly type?: 'user' | 'admin';
 }

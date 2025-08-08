@@ -25,7 +25,7 @@ export function useAuthFormSubmission({
   const { setError } = useAuthError();
 
   const handleSuccess = useCallback((successMessage: string) => {
-    logger.auth.info('Form submission successful', { formType: title });
+    logger.auth('Form submission successful', { formType: title });
     
     // Configure redirect delay based on auth type
     let redirectDelay = 0;
@@ -45,7 +45,7 @@ export function useAuthFormSubmission({
   }, [title, successRedirect, onSuccess, router]);
 
   const handleError = useCallback((error: unknown) => {
-    logger.auth.error('Form submission failed', { 
+    logger.error('Form submission failed', 'AUTH', { 
       formType: title,
       error: error instanceof Error ? error.message : String(error)
     });

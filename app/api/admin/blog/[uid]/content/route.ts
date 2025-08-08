@@ -54,7 +54,7 @@ const getContent = async (
       }
     } catch (error) {
       // Content doesn't exist yet, return empty template
-      logger.debug('Content not found in R2, returning empty template', 'R2');
+      logger.debug('Content not found in R2, returning empty template', 'R2', error);
     }
     
     // Return empty content template if not found
@@ -207,7 +207,8 @@ const deleteContent = async (
     }
 
   } catch (error) {
-    return setMessage('NetworkError', null, 500);
+    logger.error('Content deletion failed', 'DELETE', error);
+    return setMessage('NetworkError', 'Content deletion failed', 500);
   }
 };
 

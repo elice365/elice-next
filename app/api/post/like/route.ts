@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import { prisma } from '@/lib/db/prisma';
 import { safeBody } from '@/utils/parse/body';
+import { logger } from '@/lib/services/logger';
 
 interface LikeRequest {
   postId: string;
@@ -105,12 +106,8 @@ async function handleLikeAction(
             where: { uid: postId },
             data: { likeCount: { decrement: 1 } },
           }),
-        ]);
-        liked = false;
+        ]);        
         likeCount -= 1;
-      } else {
-        // Not liked
-        liked = false;
       }
     }
 
@@ -123,10 +120,10 @@ async function handleLikeAction(
       },
     };
   } catch (error) {
-    // POST /api/post/like error
+    logger.error('좋아요 처리 실패', 'API', error);
     return {
       success: false,
-      message: 'Failed to process like action',
+      message: '서버 오류가 발생했습니다',
     };
   }
 }
@@ -178,10 +175,10 @@ async function checkLikeStatus(
       },
     };
   } catch (error) {
-    // GET /api/post/like error
+    logger.error('좋아요 상태 조회 실패', 'API', error);
     return {
       success: false,
-      message: 'Failed to check like status',
+      message: '서버 오류가 발생했습니다',
     };
   }
 }

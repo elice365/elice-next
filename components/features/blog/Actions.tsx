@@ -12,7 +12,6 @@ interface BlogPostActionsProps {
   onLike: () => void;
   onBookmark: () => void;
   onShare: () => void;
-  variant?: 'desktop' | 'mobile';
 }
 
 export const Actions = memo(function Actions({

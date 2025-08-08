@@ -5,6 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Card } from "./Card";
 import { ListItem } from "./List";
 import { Tag } from "@/types/post";
+import "@/styles/blog-display.css";
 
 interface BlogPost {
   uid: string;
@@ -28,10 +29,10 @@ interface BlogPost {
 }
 
 interface BlogDisplayProps {
-  posts: BlogPost[];
-  isLoading?: boolean;
-  locale?: string;
-  defaultView?: "card" | "list";
+  readonly posts: readonly BlogPost[];
+  readonly isLoading?: boolean;
+  readonly locale?: string;
+  readonly defaultView?: "card" | "list";
 }
 
 export function Display({ 
@@ -60,7 +61,7 @@ export function Display({
         {viewType === "card" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={`card-skeleton-${i}`} className="animate-pulse">
+              <div key={`card-skeleton-${viewType}-${i}`} className="animate-pulse">
                 <div className="bg-gray-200 rounded-xl h-64 mb-4"></div>
                 <div className="px-5 space-y-3">
                   <div className="h-6 bg-gray-200 rounded"></div>
@@ -73,7 +74,7 @@ export function Display({
         ) : (
           <div className="space-y-4">
             {[...Array(4)].map((_, i) => (
-              <div key={`list-skeleton-${i}`} className="animate-pulse flex gap-6 p-6 bg-gray-100 rounded-xl">
+              <div key={`list-skeleton-${viewType}-${i}`} className="animate-pulse flex gap-6 p-6 bg-gray-100 rounded-xl">
                 <div className="w-48 h-36 bg-gray-200 rounded-lg flex-shrink-0"></div>
                 <div className="flex-1 space-y-3">
                   <div className="h-6 bg-gray-200 rounded"></div>
@@ -221,37 +222,6 @@ export function Display({
         )}
       </div>
 
-      <style jsx>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slide-in {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .animate-slide-in {
-          animation: slide-in 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-      `}</style>
     </div>
   );
 }

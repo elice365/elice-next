@@ -4,7 +4,7 @@ import { useEffect, useState, RefObject } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ReadingProgressIndicatorProps {
-  targetRef: RefObject<HTMLElement>;
+  readonly targetRef: RefObject<HTMLElement>;
 }
 
 export function ReadingProgressIndicator({ targetRef }: ReadingProgressIndicatorProps) {

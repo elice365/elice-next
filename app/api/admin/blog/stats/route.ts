@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/blog/stats
@@ -31,7 +32,8 @@ const getBlogStats = async (
     return setRequest(result);
 
   } catch (error) {
-    return setMessage('NetworkError', null, 500);
+    logger.error('Blog stats fetch failed', 'STATS', error);
+    return setMessage('NetworkError', 'Failed to fetch blog statistics', 500);
   }
 };
 

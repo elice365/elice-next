@@ -3,6 +3,7 @@ import { handler } from '@/lib/request';
 import { setMessage, setRequest } from '@/lib/response';
 import { APIResult } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/post/categories
@@ -33,7 +34,8 @@ const getCategories = async (
     return setRequest(result);
 
   } catch (error) {
-    return setMessage('NetworkError', null, 500);
+    logger.error('Categories fetch failed', 'GET_CATEGORIES', error);
+    return setMessage('NetworkError', 'Failed to fetch categories', 500);
   }
 };
 

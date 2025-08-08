@@ -36,6 +36,7 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
   
   const [formData, setFormData] = useState({
     type: 'post',
@@ -57,7 +58,8 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
         setCategories(data.data.categories);
       }
     } catch (error) {
-      // Failed to load categories
+      console.error('Failed to load categories:', error);
+      setErrors({ general: 'Failed to load categories' });
     } finally {
       setLoadingCategories(false);
     }
@@ -125,6 +127,7 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
 
   // Error handler
   const handleError = (error: any) => {
+    console.error('Blog edit error:', error);
     alert('블로그 글 수정 중 오류가 발생했습니다.');
   };
 
@@ -235,6 +238,13 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
       loading={loading}
     >
       <form id="blog-edit-form" onSubmit={handleSubmit} className="p-6 space-y-6">
+        {/* Error display */}
+        {errors.general && (
+          <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p className="text-sm text-red-600 dark:text-red-400">{errors.general}</p>
+          </div>
+        )}
+        
         {/* Metadata info */}
         <div className="grid grid-cols-2 gap-4 p-4 bg-[var(--modal-header-bg)] rounded-lg">
           <div>
@@ -428,7 +438,7 @@ export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModa
                     <div className="w-20 h-20 rounded-lg overflow-hidden border border-[var(--border-color)] bg-[var(--hover)]">
                       <img
                         src={imageUrl}
-                        alt={`Image ${index + 1}`}
+                        alt={`업로드된 콘텐츠 ${index + 1}`}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           const target = e.currentTarget;

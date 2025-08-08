@@ -9,7 +9,8 @@ import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { WebRouter } from "@/types/admin";
 import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
 import { logger } from "@/lib/services/logger";
-import { useAdminPage, useAdminModals, useRoles, formatRolesForFilter } from "@/hooks/admin";
+import { useAdminPage, useRoles, formatRolesForFilter } from "@/hooks/admin";
+import { useAdminModals } from "@/hooks/modal/useModalStates";
 import { getBadgeStyle, getBadgeText } from "@/utils/admin/badges";
 import { api } from "@/lib/fetch";
 

@@ -83,7 +83,9 @@ export default function AdminCategoryPage() {
         alert('삭제 중 오류가 발생했습니다.');
       }
     } catch (error) {
-      alert('삭제 중 오류가 발생했습니다.');
+      console.error('Category bulk delete error:', error);
+      const message = error instanceof Error ? error.message : '삭제 중 오류가 발생했습니다.';
+      alert(message);
     }
   };
 
@@ -194,17 +196,28 @@ export default function AdminCategoryPage() {
                 
                 {/* Sequential image toggle button */}
                 {categoryImages.length > 1 && (
-                  <div
-                    className={`absolute border-r border-b border-[var(--border-color)] bottom-0 right-0 w-6 h-6 bg-black/80 text-white flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 hover:bg-white hover:text-black ${showSequential ? 'rotate-45' : ''}`}
+                  <button
+                    type="button"
+                    className={`absolute border-r border-b border-[var(--border-color)] bottom-0 right-0 w-6 h-6 bg-black/80 text-white flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 ${showSequential ? 'rotate-45' : ''}`}
                     onMouseEnter={() => {
                       setVisibleImages({ ...visibleImages, [record.uid]: true });
                     }}
                     onMouseLeave={() => {
                       setVisibleImages({ ...visibleImages, [record.uid]: false });
                     }}
+                    onClick={() => {
+                      setVisibleImages({ ...visibleImages, [record.uid]: !visibleImages[record.uid] });
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setVisibleImages({ ...visibleImages, [record.uid]: !visibleImages[record.uid] });
+                      }
+                    }}
+                    aria-label={`이미지 갤러리 토글 (${categoryImages.length}개 이미지)`}
                   >
                     <Icon name="Plus" size={12} />
-                  </div>
+                  </button>
                 )}
               </div>
               

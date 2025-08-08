@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as CategoryDB from '@/lib/db/category';
+import { logger } from '@/lib/services/logger';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/category/stats
@@ -15,6 +16,7 @@ const getCategoryStats = async (
     const stats = await CategoryDB.getCategoryStats();
     return { success: true, data: stats };
   } catch (error) {
+    logger.error('Failed to get category stats', 'CATEGORY_API', { error: error instanceof Error ? error.message : error });
     return { success: false, message: 'NetworkError' };
   }
 };

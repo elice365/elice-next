@@ -5,7 +5,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button";
 import { SocialButtons } from "@/components/features/auth/SocialButtons";
 
 interface AuthFormActionsProps {
