@@ -1,31 +1,17 @@
-export interface ProductItem {
-  url: string;
-  tag: string[];
-  title: string;
-  description: string;
-}
+// This file is for backward compatibility
+// All blog content types have been moved to types/blog/ folder
+export type {
+  ProductItem,
+  ContentSection,
+  AuthorInfo,
+  BlogContent
+} from './blog/content';
 
-export interface ContentSection {
-  title: string;
-  context: string;
-}
-
+// Blog image type specific to admin
 export interface BlogImage {
   id: string;
   url: string;
   filename: string;
   size: number;
   uploadedAt: string;
-}
-
-export interface AuthorInfo {
-  name: string;
-  description: string;
-  profileImage: string;
-}
-
-export interface BlogContent {
-  product: ProductItem[];
-  author: AuthorInfo;
-  content: ContentSection[];
 }
