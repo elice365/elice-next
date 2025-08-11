@@ -121,12 +121,31 @@ export interface BadgeStyles {
   [key: string]: string;
 }
 
-// Common admin page props
-export interface AdminPageProps<T> {
+// Common admin page configuration
+export interface AdminPageConfig<T> {
   endpoint: string;
   entityName: string;
   createFields: Field[];
   editFields?: Field[];
   searchFields?: Field[];
   filterFields?: string[];
+}
+
+// User Role Manager Component Types
+export interface SimpleRole {
+  id: string;
+  name: string;
+  description: string | null;
+}
+
+export interface UserRoleManagerProps {
+  userId: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onUpdate: () => void;
+}
+
+export interface UserRoleResponse {
+  userRoles: SimpleRole[];
+  availableRoles: SimpleRole[];
 }

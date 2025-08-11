@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { handler } from '@/lib/request';
 import { notification } from '@/lib/services/notifications';
 import { APIResult, AuthInfo } from '@/types/api';
-import { NotificationResponse } from '@/types/notifications';
+import { NotificationResponse } from '@/types/common/notifications';
 
 // GET /api/notification - 알림 조회
 async function getNotifications(

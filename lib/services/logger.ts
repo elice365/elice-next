@@ -3,15 +3,7 @@
  * Replaces console.log statements with proper logging levels
  */
 
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';
-
-interface LogEntry {
-  level: LogLevel;
-  message: string;
-  timestamp: string;
-  context?: string;
-  data?: any;
-}
+import type { LogLevel, LogEntry } from "@/types/lib/logger";
 
 class Logger {
   private readonly isDevelopment = process.env.NODE_ENV === 'development';

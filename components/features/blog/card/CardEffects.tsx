@@ -1,8 +1,6 @@
 import { memo } from 'react';
+import type { CardEffectsProps } from '@/types/blog/card';
 
-interface CardEffectsProps {
-  mobile: boolean;
-}
 
 export const CardEffects = memo(function CardEffects({ mobile }: CardEffectsProps) {
   if (mobile) return null;

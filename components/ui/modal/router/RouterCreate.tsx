@@ -12,12 +12,7 @@ import { logger } from "@/lib/services/logger";
 import { ICON_CATEGORIES, IconCategory } from "@/constants/modal/iconCategories";
 import { useRoles, formatRolesForRouter } from "@/hooks/admin";
 import { useTranslations } from "next-intl";
-
-interface RouterCreateModalProps {
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly onUpdate: () => void;
-}
+import type { RouterCreateModalProps } from "@/types/ui/modal";
 
 
 export function RouterCreateModal({ isOpen, onClose, onUpdate }: RouterCreateModalProps) {

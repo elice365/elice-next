@@ -6,25 +6,10 @@ import { useAppSelector } from '@/stores/hook';
 import { motion } from 'framer-motion';
 import { logger } from '@/lib/services/logger';
 import { CommentItem } from './CommentItem';
-
-interface CommentSectionProps {
-  postId: string;
-  className?: string;
-}
-
-interface Comment {
-  id: string;
-  author: string;
-  avatar?: string;
-  content: string;
-  createdAt: Date;
-  likes: number;
-  isLiked?: boolean;
-  replies?: Comment[];
-}
+import type { CommentSectionProps, Comment as CommentType } from '@/types/common/comment';
 
 // Helper functions to reduce nesting complexity
-function updateRepliesLikes(replies: Comment[] | undefined, commentId: string): Comment[] | undefined {
+function updateRepliesLikes(replies: CommentType[] | undefined, commentId: string): CommentType[] | undefined {
   if (!replies) return replies;
   return replies.map(reply => {
     if (reply.id === commentId) {
@@ -38,7 +23,7 @@ function updateRepliesLikes(replies: Comment[] | undefined, commentId: string): 
   });
 }
 
-function addReplyToComment(comments: Comment[], commentId: string, reply: Comment): Comment[] {
+function addReplyToComment(comments: CommentType[], commentId: string, reply: CommentType): CommentType[] {
   return comments.map(c => {
     if (c.id === commentId) {
       return { ...c, replies: [...(c.replies || []), reply] };
@@ -53,7 +38,7 @@ export const Comment = memo(function Comment({
 }: CommentSectionProps) {
   const user = useAppSelector((state) => state.auth.user);
   
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   
@@ -101,7 +86,7 @@ export const Comment = memo(function Comment({
         throw new Error('Failed to submit comment');
       }
       
-      const comment: Comment = await response.json();
+      const comment: CommentType = await response.json();
       setComments(prev => [comment, ...prev]);
       setNewComment('');
     } catch (error) {
@@ -158,7 +143,7 @@ export const Comment = memo(function Comment({
 
     setIsSubmitting(true);
     try {
-      const reply: Comment = {
+      const reply: CommentType = {
         id: Date.now().toString(),
         author: user.name || user.email,
         content: content,

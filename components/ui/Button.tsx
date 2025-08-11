@@ -1,5 +1,5 @@
 'use client';
-import { ButtonType } from '@/types/button';
+import { ButtonType } from '@/types/ui/button';
 import { memo, useCallback, useMemo } from 'react';
 import { useModal } from '@/hooks/modal';
 import { usePanel } from '@/hooks/ui';

@@ -10,13 +10,8 @@ import { Icon } from '@/components/ui/Icon';
 import { useAppSelector } from '@/stores/hook';
 import { motion } from 'framer-motion';
 import { logger } from '@/lib/services/logger';
+import type { RelatedPostsProps } from '@/types/blog/components';
 
-interface RelatedPostsProps {
-  currentPostId: string;
-  category?: string;
-  tags?: string[];
-  className?: string;
-}
 
 // Helper functions to avoid nested ternary operators
 function getMaxPosts(mobile: boolean, tablet: boolean): number {
@@ -54,7 +49,7 @@ function processLatestPosts(latestResult: any, currentPostId: string, existingPo
 
 export const Related = memo(function Related({
   currentPostId,
-  category,
+  categoryId,
   tags = [],
   className = ''
 }: RelatedPostsProps) {
@@ -68,9 +63,9 @@ export const Related = memo(function Related({
         // First try to get posts from the same category
         let posts: Post[] = [];
         
-        if (category) {
+        if (categoryId) {
           const categoryResult = await fetchPostList({
-            category,
+            category: categoryId,
             limit: 6,
             sortBy: 'popular'
           });
@@ -82,7 +77,7 @@ export const Related = memo(function Related({
           const tagResults = await Promise.all(
             tags.slice(0, 2).map(tag => 
               fetchPostList({
-                tag,
+                tag: tag.name,
                 limit: 4,
                 sortBy: 'popular'
               })
@@ -115,7 +110,7 @@ export const Related = memo(function Related({
     };
 
     loadRelatedPosts();
-  }, [currentPostId, category, tags, fetchPostList, mobile, tablet]);
+  }, [currentPostId, categoryId, tags, fetchPostList, mobile, tablet]);
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('ko-KR', {

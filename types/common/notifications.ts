@@ -11,6 +11,24 @@ export interface NotificationData {
   link?: string;
 }
 
+// Admin 페이지용 NotificationData
+export interface AdminNotificationData {
+  id: string;
+  userId: string;
+  user?: {
+    id: string;
+    email: string;
+    name: string;
+  };
+  category: string;
+  title: string;
+  content: string;
+  link?: string;
+  read: boolean;
+  readTime?: string;
+  createdTime: string;
+}
+
 export interface NotificationResponse {
   success: boolean;
   notifications: NotificationData[];

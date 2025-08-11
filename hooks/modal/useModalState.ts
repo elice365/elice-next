@@ -1,19 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-
-interface UseModalStateProps {
-  onOpen?: () => void;
-  onClose?: () => void;
-  defaultOpen?: boolean;
-}
-
-interface UseModalStateReturn {
-  isOpen: boolean;
-  open: () => void;
-  close: () => void;
-  toggle: () => void;
-}
+import type { UseModalStateProps, UseModalStateReturn } from "@/types/hooks/modal";
 
 export function useModalState({
   onOpen,

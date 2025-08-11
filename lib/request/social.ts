@@ -8,7 +8,7 @@ import { processSocial } from '@/lib/services/social/login';
 import {
   SocialProvider,
   SocialAuthRequest,
-} from '@/types/social';
+} from '@/types/auth/social';
 import { socialTypeCheck } from '@/utils/type/social';
 
 /**

@@ -1,12 +1,7 @@
 import { cookies } from 'next/headers';
 import { tokenServer } from '@/lib/services/token/server';
-import { TokenPayload } from '@/lib/services/token/types';
 import { logger } from '@/lib/services/logger';
-
-interface InitialAuthData {
-  user: TokenPayload;
-  accessToken: string;
-}
+import type { InitialAuthData } from '@/types/lib/server';
 
 // cache() 함수로 래핑하여 동일한 렌더링 사이클에서 중복 호출 방지
 export async function UserInfo(): Promise<InitialAuthData | null> {

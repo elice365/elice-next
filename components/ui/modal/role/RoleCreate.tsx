@@ -10,12 +10,7 @@ import { validateRole } from "@/utils/regex/admin";
 import { FormErrors } from "@/types/admin";
 import { logger } from '@/lib/services/logger';
 import { useTranslations } from "next-intl";
-
-interface RoleCreateModalProps {
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly onUpdate: () => void;
-}
+import type { RoleCreateModalProps } from "@/types/ui/modal";
 
 export function RoleCreateModal({ isOpen, onClose, onUpdate }: RoleCreateModalProps) {
   const [formData, setFormData] = useState({ name: '', description: '' });

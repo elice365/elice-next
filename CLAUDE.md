@@ -163,6 +163,37 @@ import { authConfig } from '@/constants/auth/client';
 import { BlogCard } from '@/components/features/blog/Card';
 ```
 
+### TypeScript Type Organization
+**IMPORTANT**: All TypeScript interfaces are centralized in the `types/` directory:
+- **Never declare interfaces directly in component files**
+- **Always import types using `import type`** syntax
+- **Use centralized type definitions** from appropriate `types/` subdirectories
+
+Type organization structure:
+- `types/ui/` - UI component interfaces (modal, table, card, form)
+- `types/hooks/` - Custom hook interfaces (admin, auth, modal, performance)
+- `types/lib/` - Library service interfaces (token, logger, server, social)
+- `types/admin/` - Admin page and component interfaces
+- `types/auth/` - Authentication and session interfaces
+- `types/blog/` - Blog system interfaces
+- `types/api/` - API route and response interfaces
+- `types/layout/` - Layout component interfaces
+- `types/utils/` - Utility function interfaces
+
+Example centralized type imports:
+```typescript
+// Good - centralized types
+import type { BlogEditModalProps } from '@/types/ui/modal';
+import type { UseAdminTableReturn } from '@/types/hooks/admin';
+import type { LogLevel, LogContext } from '@/types/lib/logger';
+
+// Bad - avoid inline interface declarations
+interface BadProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+```
+
 ## Key Development Patterns
 
 ### Error Handling
@@ -180,6 +211,8 @@ import { BlogCard } from '@/components/features/blog/Card';
 - Centralized modal state in Redux (`stores/slice/modal.ts`)
 - Modal components in `components/ui/modal/`
 - Admin modals for CRUD operations
+- Modal interfaces in `types/ui/modal.ts`
+- Common modal patterns: BaseModal, FormModal, DeleteModal
 
 ### Responsive Design
 - Mobile-first Tailwind classes
@@ -207,4 +240,27 @@ Required for production:
 - Social login credentials (KAKAO_*, GOOGLE_*, etc.)
 - `NODE_ENV=production` for security headers
 
-This codebase follows modern Next.js patterns with enterprise-grade authentication, internationalization, and a comprehensive blog system. The architecture emphasizes type safety, security, and developer experience.
+## Code Quality and Maintenance
+
+### Interface Migration Pattern
+When working with existing code that has inline interface declarations:
+1. **Identify** all interface declarations in component/hook/lib files
+2. **Create or update** appropriate type files in `types/` directory
+3. **Move interfaces** to centralized type files with proper exports
+4. **Update imports** to use `import type` syntax
+5. **Remove inline declarations** from original files
+6. **Verify** no interface declarations remain outside `types/` directory
+
+### Custom Hooks Architecture
+- Admin hooks in `hooks/admin/` with types in `types/hooks/admin.ts`
+- Auth hooks in `hooks/auth/` with types in `types/hooks/auth.ts`
+- Modal hooks in `hooks/modal/` with types in `types/hooks/modal.ts`
+- UI hooks with types in `types/hooks/ui.ts`
+
+### Library Service Patterns
+- Token management in `lib/services/token/` with types in `types/lib/token.ts`
+- Logging service in `lib/services/logger.ts` with types in `types/lib/logger.ts`
+- Social login in `lib/services/social/` with types in `types/lib/social.ts`
+- Response utilities in `lib/response/` with types in `types/lib/response.ts`
+
+This codebase follows modern Next.js patterns with enterprise-grade authentication, internationalization, and a comprehensive blog system. The architecture emphasizes type safety through centralized type management, security, and developer experience.

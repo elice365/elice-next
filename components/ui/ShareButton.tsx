@@ -3,15 +3,8 @@
 import { memo, useCallback } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { motion } from 'framer-motion';
+import type { ShareButtonProps } from '@/types/ui';
 
-interface ShareButtonProps {
-  url: string;
-  title: string;
-  description?: string;
-  horizontal?: boolean;
-  onClose?: () => void;
-  className?: string;
-}
 
 export const ShareButton = memo(function ShareButton({
   url,
@@ -52,8 +45,8 @@ export const ShareButton = memo(function ShareButton({
         objectType: 'feed',
         content: {
           title: title,
-          description: description,
-          imageUrl: `${process.env.NEXT_PUBLIC_URLNEXT_PUBLIC_URL}/images/logo.jpg`,
+          description: description || '',
+          imageUrl: `${process.env.NEXT_PUBLIC_URL}/images/logo.jpg`,
           link: {
             mobileWebUrl: url,
             webUrl: url,

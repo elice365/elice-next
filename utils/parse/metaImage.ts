@@ -1,4 +1,4 @@
-import { ImageMeta } from "@/types/image";
+import { ImageMeta } from "@/types/ui/image";
 
 export const metaImage = (images: ImageMeta[]) =>
   images.map(({ url, width, height, alt }) => ({

@@ -6,12 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { Category } from "@/types/blog/post";
-
-interface BlogCreateModalProps {
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly onSuccess: () => void;
-}
+import type { BlogCreateModalProps } from "@/types/ui/modal";
 
 export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalProps) {
   const [loading, setLoading] = useState(false);

@@ -1,11 +1,7 @@
 "use client";
 
 import { memo } from "react";
-
-interface BadgeProps {
-    children: React.ReactNode;
-    className?: string;
-}
+import type { BadgeProps } from "@/types/ui";
 
 export const Badge = memo(function Badge({ children, className = "" }: BadgeProps) {
     return (

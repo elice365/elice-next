@@ -8,12 +8,7 @@ import { useTranslations } from "next-intl";
 import { extractErrorMessage } from "@/lib/auth/utils";
 import { useAuthError } from "@/hooks/auth";
 import { logger } from "@/lib/services/logger";
-
-interface UseAuthFormSubmissionProps {
-  title: string;
-  successRedirect?: string;
-  onSuccess?: () => void;
-}
+import type { UseAuthFormSubmissionProps } from '@/types/hooks/auth';
 
 export function useAuthFormSubmission({ 
   title, 

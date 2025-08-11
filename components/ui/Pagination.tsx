@@ -2,18 +2,7 @@
 
 import { memo } from "react";
 import { Icon } from "./Icon";
-
-export interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-  hasNext: boolean;
-  hasPrev: boolean;
-  onPageChange: (page: number) => void;
-  className?: string;
-  showInfo?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-}
+import type { PaginationProps } from "@/types/ui/table";
 
 const sizeClasses = {
   sm: {

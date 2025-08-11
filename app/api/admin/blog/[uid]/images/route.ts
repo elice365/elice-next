@@ -3,12 +3,7 @@ import { handler } from '@/lib/request';
 import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
-
-interface RouteParams {
-  params: Promise<{
-    uid: string;
-  }>;
-}
+import type { APIRouteParams as RouteParams } from '@/types/api/routes';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/blog/[uid]/images

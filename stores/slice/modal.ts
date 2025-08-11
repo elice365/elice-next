@@ -1,11 +1,6 @@
 import { FormType } from "@/types/auth";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-interface ModalState {
-  readonly search: boolean;
-  readonly auth: boolean;
-  readonly form: FormType;
-};
+import type { ModalSliceState as ModalState } from "@/types/common/modal";
 
 const initialState: ModalState = {
   search: false,

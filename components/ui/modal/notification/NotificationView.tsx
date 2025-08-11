@@ -3,29 +3,7 @@
 import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
 import { Badge } from "@/components/ui/Badge";
-
-interface NotificationData {
-  id: string;
-  userId: string;
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-  };
-  category: string;
-  title: string;
-  content: string;
-  link?: string;
-  read: boolean;
-  readTime?: string;
-  createdTime: string;
-}
-
-interface NotificationViewModalProps {
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly notification: NotificationData | null;
-}
+import type { NotificationData, NotificationViewModalProps } from "@/types/ui/modal";
 
 export function NotificationViewModal({ isOpen, onClose, notification }: NotificationViewModalProps) {
   if (!notification) return null;

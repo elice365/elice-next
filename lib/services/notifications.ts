@@ -1,5 +1,5 @@
 import { Redis } from "@upstash/redis";
-import { NotificationData, NotificationResponse } from "@/types/notifications";
+import { NotificationData, NotificationResponse } from "@/types/common/notifications";
 import * as NotificationDB from "@/lib/db/notification";
 import { logger } from '@/lib/services/logger';
 

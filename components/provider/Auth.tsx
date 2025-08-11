@@ -8,6 +8,7 @@ import { APIResult } from '@/types/api';
 import { api } from '@/lib/fetch';
 import { logger } from '@/lib/services/logger';
 import { useTokenRefresh } from '@/hooks/auth/useTokenRefresh';
+import type { AuthProps } from '@/types/common/provider';
 /**
  * Type definition for authentication data
  * Represents the resolved user information and tokens from server-side authentication
@@ -34,15 +35,6 @@ const AuthContext = createContext<AuthData>(null);
 
 export const useAuthData = () => useContext(AuthContext);
 
-/**
- * Props interface for Auth provider component
- */
-interface AuthProps {
-  /** Server-side authentication data passed from layout */
-  readonly AuthData: AuthData;
-  /** Child components that will have access to authentication context */
-  readonly children: ReactNode;
-}
 
 /**
  * Auth Provider Component

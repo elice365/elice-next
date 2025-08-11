@@ -1,6 +1,6 @@
 // Modal Component Type Definitions
 
-import { Category } from './blog/post';
+import { Category } from '../blog/post';
 
 // ==========================================
 // Blog Modals
@@ -110,12 +110,7 @@ export interface ModalState {
   type?: string;
 }
 
-export interface UseModalStateReturn {
-  isOpen: boolean;
-  open: () => void;
-  close: () => void;
-  toggle: () => void;
-}
+// UseModalStateReturn is already exported from hooks.ts
 
 export interface UseModalFormReturn<T> {
   formData: T;
@@ -127,4 +122,10 @@ export interface UseModalFormReturn<T> {
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   resetForm: () => void;
   clearError: (field: string) => void;
+}
+
+export interface ModalSliceState {
+  readonly search: boolean;
+  readonly auth: boolean;
+  readonly form: import('../auth/auth').FormType;
 }

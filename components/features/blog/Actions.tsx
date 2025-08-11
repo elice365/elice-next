@@ -4,15 +4,8 @@ import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Bookmark, Share2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import type { BlogPostActionsProps } from '@/types/blog/components';
 
-interface BlogPostActionsProps {
-  isLiked: boolean;
-  isBookmarked: boolean;
-  likeCount: number;
-  onLike: () => void;
-  onBookmark: () => void;
-  onShare: () => void;
-}
 
 export const Actions = memo(function Actions({
   isLiked,

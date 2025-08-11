@@ -3,28 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
+import type { SimpleRole, UserRoleManagerProps, UserRoleResponse } from "@/types/admin/admin";
 
-interface Role {
-  id: string;
-  name: string;
-  description: string | null;
-}
-
-interface UserRoleManagerProps {
-  userId: string;
-  isOpen: boolean;
-  onClose: () => void;
-  onUpdate: () => void;
-}
-
-interface RoleResponse {
-  userRoles: Role[];
-  availableRoles: Role[];
-}
 
 export const UserRoleManager: React.FC<UserRoleManagerProps> = ({ userId, isOpen, onClose, onUpdate }) => {
-  const [userRoles, setUserRoles] = useState<Role[]>([]);
-  const [availableRoles, setAvailableRoles] = useState<Role[]>([]);
+  const [userRoles, setUserRoles] = useState<SimpleRole[]>([]);
+  const [availableRoles, setAvailableRoles] = useState<SimpleRole[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -32,7 +16,7 @@ export const UserRoleManager: React.FC<UserRoleManagerProps> = ({ userId, isOpen
   const fetchUserRoles = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get<APIResult<RoleResponse>>(`/api/admin/users/${userId}/roles`);
+      const { data } = await api.get<APIResult<UserRoleResponse>>(`/api/admin/users/${userId}/roles`);
       
       if (data.success && data.data) {
         setUserRoles(data.data.userRoles);
@@ -89,7 +73,7 @@ export const UserRoleManager: React.FC<UserRoleManagerProps> = ({ userId, isOpen
 
   // 사용자가 해당 역할을 가지고 있는지 확인
   const hasRole = (roleId: string) => {
-    return userRoles.some((ur: Role) => ur.id === roleId);
+    return userRoles.some((ur: SimpleRole) => ur.id === roleId);
   };
 
   if (!isOpen) return null;

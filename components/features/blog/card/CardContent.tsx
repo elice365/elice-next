@@ -2,13 +2,15 @@ import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '@/components/ui/Icon';
 import { PostType } from '@/types/blog/post';
-
-interface CardContentProps {
-  post: PostType;
-  mobile: boolean;
-  tablet: boolean;
-  formatDate: (date: Date) => string;
-}
+import type { 
+  CardContentProps, 
+  CardTitleProps, 
+  CardDescriptionProps,
+  CardStatsProps,
+  StatsItemsProps,
+  StatItemProps,
+  DateDisplayProps
+} from '@/types/blog/card';
 
 export const CardContent = memo(function CardContent({ 
   post, 
@@ -37,11 +39,6 @@ function getPaddingClass(mobile: boolean, tablet: boolean): string {
   return 'p-6';
 }
 
-interface CardTitleProps {
-  title: string;
-  mobile: boolean;
-  tablet: boolean;
-}
 
 const CardTitle = memo(function CardTitle({ title, mobile, tablet }: CardTitleProps) {
   const titleClassName = getTitleClassName(mobile, tablet);
@@ -68,11 +65,6 @@ function getTitleClassName(mobile: boolean, tablet: boolean): string {
   return `${baseClasses} ${sizeClass} ${hoverClass}`.trim();
 }
 
-interface CardDescriptionProps {
-  description: string;
-  mobile: boolean;
-}
-
 const CardDescription = memo(function CardDescription({ description, mobile }: CardDescriptionProps) {
   const descriptionClassName = getDescriptionClassName(mobile);
 
@@ -91,12 +83,6 @@ function getDescriptionClassName(mobile: boolean): string {
   return `${baseClasses} ${sizeClass} ${trackingClass}`.trim();
 }
 
-interface CardStatsProps {
-  post: PostType;
-  mobile: boolean;
-  formatDate: (date: Date) => string;
-}
-
 const CardStats = memo(function CardStats({ post, mobile, formatDate }: CardStatsProps) {
   const containerClassName = getStatsContainerClassName(mobile);
 
@@ -113,11 +99,6 @@ function getStatsContainerClassName(mobile: boolean): string {
   const paddingClass = mobile ? 'pt-3' : 'pt-4';
   
   return `${baseClasses} ${paddingClass}`.trim();
-}
-
-interface StatsItemsProps {
-  post: PostType;
-  mobile: boolean;
 }
 
 const StatsItems = memo(function StatsItems({ post, mobile }: StatsItemsProps) {
@@ -155,13 +136,6 @@ function getStatsItemsContainerClassName(mobile: boolean): string {
   return `${baseClasses} ${gapClass} ${sizeClass}`.trim();
 }
 
-interface StatItemProps {
-  icon: string;
-  value: string;
-  mobile: boolean;
-  filled?: boolean;
-}
-
 const StatItem = memo(function StatItem({ icon, value, mobile, filled = false }: StatItemProps) {
   const itemClassName = getStatItemClassName(mobile);
 
@@ -187,12 +161,6 @@ function getStatItemClassName(mobile: boolean): string {
   const cursorClass = !mobile ? 'cursor-pointer' : '';
   
   return `${baseClasses} ${gapClass} ${cursorClass}`.trim();
-}
-
-interface DateDisplayProps {
-  date: Date;
-  mobile: boolean;
-  formatDate: (date: Date) => string;
 }
 
 const DateDisplay = memo(function DateDisplay({ date, mobile, formatDate }: DateDisplayProps) {

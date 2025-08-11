@@ -4,18 +4,7 @@ import { tokenServer } from "../services/token/server";
 import { searchSession, searchSessionId, updateSession } from "@/lib/db/session";
 import { setMessage } from "../response";
 import { requestIP } from "../server/info";
-
-// Types for token validation
-interface TokenValidationResult {
-  sessionId: string;
-  userId: string;
-  fingerprint: string;
-}
-
-interface RefreshTokens {
-  refreshToken?: string;
-  fingerprint?: string;
-}
+import type { TokenValidationResult, RefreshTokens } from "@/types/lib/token";
 
 // Validation functions to reduce complexity
 async function validateRequest(request: NextRequest): Promise<APIResult | null> {

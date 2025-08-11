@@ -4,12 +4,7 @@ import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
 import { logger } from '@/lib/services/logger';
-
-interface RouteParams {
-  params: Promise<{
-    uid: string;
-  }>;
-}
+import type { APIRouteParams as RouteParams } from '@/types/api/routes';
 
 /* ------------------------------------------------------------------
  * PUT /api/admin/blog/[uid]/status

@@ -1,19 +1,14 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
-import { ImageMeta } from "@/types/image";
+import { ImageMeta } from "@/types/ui/image";
 import { metaImage } from "@/utils/parse/metaImage";
 import { Post } from "@/components/features/blog/Post";
 import { PostDetailResponse, PostContent } from "@/types/blog/post";
 import { api } from "@/lib/fetch";
+import type { BlogPageProps } from "@/types/admin/pages";
 
 export const dynamic = 'force-dynamic';
-
-interface BlogPageProps {
-  readonly params: Promise<{
-    readonly uid: string;
-  }>;
-}
 
 // Fetch post data for metadata and content
 async function fetchPostData(uid: string, language: string = 'ko') {

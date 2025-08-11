@@ -5,27 +5,8 @@ import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-
-interface Category {
-  uid: string;
-  code: string;
-  name: string;
-  slug: string;
-  path: string;
-  level: number;
-  parentId: string | null;
-  _count?: {
-    posts: number;
-    children: number;
-  };
-}
-
-interface CategoryEditModalProps {
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly onSuccess: () => void;
-  readonly category: Category | null;
-}
+import type { Category } from "@/types/blog/post";
+import type { CategoryEditModalProps } from "@/types/ui/modal";
 
 export function CategoryEditModal({ isOpen, onClose, onSuccess, category }: CategoryEditModalProps) {
   const [loading, setLoading] = useState(false);

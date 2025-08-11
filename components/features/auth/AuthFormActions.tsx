@@ -6,15 +6,8 @@ import React from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { SocialButtons } from "@/components/features/auth/SocialButtons";
+import type { AuthFormActionsProps } from '@/types/auth';
 
-interface AuthFormActionsProps {
-  title: string;
-  loading: boolean;
-  success: string | null;
-  error: string | null;
-  onSubmit: (e: React.FormEvent) => void;
-  showSocialLogin?: boolean;
-}
 
 export const AuthFormActions: React.FC<AuthFormActionsProps> = ({
   title,

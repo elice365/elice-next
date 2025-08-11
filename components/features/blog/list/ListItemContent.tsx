@@ -4,13 +4,8 @@ import Link from 'next/link';
 import { Icon } from '@/components/ui/Icon';
 import { motion } from 'framer-motion';
 import { PostType } from '@/types/blog/post';
+import type { ListItemContentProps } from '@/types/blog/components';
 
-interface ListItemContentProps {
-  readonly post: PostType;
-  readonly mobile: boolean;
-  readonly tablet: boolean;
-  readonly getTitleTextSize: (mobile: boolean, tablet: boolean) => string;
-}
 
 export function ListItemContent({ 
   post, 

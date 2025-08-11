@@ -8,7 +8,7 @@ import {
   AppleUserInfo,
   SocialError,
   RawSocialUserInfo
-} from '@/types/social';
+} from '@/types/auth/social';
 import { error as logError } from '@/lib/services/logger';
 
 

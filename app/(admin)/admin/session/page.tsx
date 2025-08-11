@@ -3,9 +3,10 @@
 import React from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
-import { Session } from "@/types/session";
+import { Session } from "@/types/auth/session";
 import { BaseModal } from "@/components/ui/modal/common/BaseModal";
-import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
+import { Admin } from "@/components/layout/Admin";
+import type { StatCardConfig, FilterConfig } from "@/types/layout/admin";
 import { useAdminPage } from "@/hooks/admin";
 import { api } from "@/lib/fetch";
 

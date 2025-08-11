@@ -3,40 +3,7 @@
 import { useEffect, ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { BaseModalProps } from "@/types/admin";
-
-/**
- * Extended props interface for BaseModal component
- * @interface BaseModalExtendedProps
- * @extends BaseModalProps
- */
-interface BaseModalExtendedProps extends BaseModalProps {
-  /** Modal title displayed in the header */
-  readonly title: string;
-  /** Optional subtitle displayed below the title */
-  readonly subtitle?: string;
-  /** Optional icon name from Lucide React icons */
-  readonly icon?: string;
-  /** Icon color class (e.g., 'text-blue-600') */
-  readonly iconColor?: string;
-  /** Modal size variant */
-  readonly size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
-  /** Modal content */
-  readonly children: ReactNode;
-  /** Optional footer content */
-  readonly footer?: ReactNode;
-  /** Loading state - prevents closing and shows overlay */
-  readonly loading?: boolean;
-  /** Additional CSS classes for the modal container */
-  readonly className?: string;
-  /** Prevent closing on backdrop click */
-  readonly closeOnBackdrop?: boolean;
-  /** Prevent closing on ESC key */
-  readonly closeOnEscape?: boolean;
-  /** Custom loading message */
-  readonly loadingMessage?: string;
-  /** Modal variant for different styles */
-  readonly variant?: 'default' | 'danger' | 'success' | 'warning';
-}
+import type { BaseModalExtendedProps } from "@/types/ui/modal";
 
 /**
  * Size class mappings for modal widths

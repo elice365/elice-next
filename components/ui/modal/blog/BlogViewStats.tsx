@@ -7,35 +7,7 @@ import { BaseModal } from '@/components/ui/modal/common/BaseModal';
 import { api } from '@/lib/fetch';
 import { APIResult } from '@/types/api';
 import { logger } from '@/lib/services/logger';
-
-interface ViewDetail {
-  id: string;
-  userId: string | null;
-  userName: string | null;
-  userEmail: string | null;
-  ip: string;
-  userAgent: string;
-  viewedAt: Date;
-  isAnonymous: boolean;
-}
-
-interface ViewStatsData {
-  postId: string;
-  postTitle: string;
-  totalViews: number;
-  uniqueUsers: number;
-  anonymousViews: number;
-  views: ViewDetail[];
-  viewsByDate: Array<{ date: string; count: number }>;
-  viewsByHour: Array<{ hour: number; count: number }>;
-}
-
-interface BlogViewStatsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  postId: string | null;
-  postTitle?: string;
-}
+import type { ViewDetail, ViewStatsData, BlogViewStatsModalProps } from '@/types/ui/modal';
 
 export const BlogViewStatsModal: React.FC<BlogViewStatsModalProps> = ({
   isOpen,

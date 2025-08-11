@@ -8,20 +8,21 @@ import {
   setLayout,
   selectBlogLayout,
   selectFilteredPosts,
-  selectIsLoadingList,
-  selectListError,
+  selectIsPostsLoading,
+  selectError,
   fetchBlogPosts,
   selectCurrentPage,
-  selectPostsPagination,
+  selectTotalPages,
+  selectTotalCount,
+  selectHasNextPage,
+  selectHasPrevPage,
   setCurrentPage
 } from '@/stores/slice/blog';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import type { BlogLayoutProps } from '@/types/common/layout';
 import { List } from '../features/blog/List';
 
-interface BlogLayoutProps {
-  className?: string;
-}
 
 // Helper function to determine grid columns based on device type
 const getGridColumns = ({ mobile, tablet }: { mobile: boolean; tablet: boolean }) => {
@@ -38,10 +39,12 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
   // Blog state
   const layout = useAppSelector(selectBlogLayout);
   const posts = useAppSelector(selectFilteredPosts);
-  const isLoading = useAppSelector(selectIsLoadingList);
-  const error = useAppSelector(selectListError);
+  const isLoading = useAppSelector(selectIsPostsLoading);
+  const error = useAppSelector(selectError);
   const currentPage = useAppSelector(selectCurrentPage);
-  const pagination = useAppSelector(selectPostsPagination);
+  const totalPages = useAppSelector(selectTotalPages);
+  const hasNext = useAppSelector(selectHasNextPage);
+  const hasPrev = useAppSelector(selectHasPrevPage);
   const filters = useAppSelector((state) => state.blog.filters);
 
   // Load posts on mount and when filters change
@@ -61,10 +64,10 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
   }, [dispatch]);
 
   const handleLoadMore = useCallback(() => {
-    if (pagination?.hasNext) {
+    if (hasNext) {
       dispatch(setCurrentPage(currentPage + 1));
     }
-  }, [dispatch, pagination?.hasNext, currentPage]);
+  }, [dispatch, hasNext, currentPage]);
 
   const renderViewToggle = () => (
     <div className="flex items-center bg-[var(--selecter)] rounded-lg p-1">
@@ -97,7 +100,7 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
   );
 
   const renderPostCount = () => {
-    const totalCount = pagination?.totalCount || 0;
+    const totalCount = useAppSelector(selectTotalCount);
     return (
       <div className="text-sm text-[var(--text-color)] opacity-60">
         {totalCount > 0 ? (
@@ -179,7 +182,7 @@ export const BlogLayout = memo(function BlogLayout({ className = '' }: BlogLayou
   };
 
   const renderLoadMore = () => {
-    if (!pagination?.hasNext || isLoading) return null;
+    if (!hasNext || isLoading) return null;
 
     return (
       <div className="flex justify-center pt-8">

@@ -6,30 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { Category } from "@/types/blog/post";
-
-interface BlogData {
-  id: string;
-  uid: string;
-  type: string;
-  title: string;
-  description: string;
-  category?: Category;
-  tags: Array<{ uid: string; name: string }>;
-  images: string[] | Record<string, unknown>; // Support both new array format and legacy object format
-  status: 'draft' | 'published';
-  publishedAt?: string;
-  views: number;
-  likeCount: number;
-  createdTime: string;
-  updatedTime: string;
-}
-
-interface BlogEditModalProps {
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly onSuccess: () => void;
-  readonly post: BlogData | null;
-}
+import type { BlogData, BlogEditModalProps } from "@/types/ui/modal";
 
 export function BlogEditModal({ isOpen, onClose, onSuccess, post }: BlogEditModalProps) {
   const [loading, setLoading] = useState(false);

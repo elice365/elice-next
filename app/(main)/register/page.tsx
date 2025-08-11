@@ -1,5 +1,5 @@
 import { RegisterPage } from '@/components/pages/Register';
-import { ImageMeta } from '@/types/image';
+import { ImageMeta } from '@/types/ui/image';
 import { metaImage } from '@/utils/parse/metaImage';
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';

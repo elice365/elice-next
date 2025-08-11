@@ -44,7 +44,9 @@ export interface BlogDisplayProps {
 
 export interface BlogPostProps {
   post: PostType;
+  content: import('./post').PostContent | null;
   mobile?: boolean;
+  isLoading?: boolean;
 }
 
 export interface BlogPostHeaderProps {
@@ -54,20 +56,31 @@ export interface BlogPostHeaderProps {
 }
 
 export interface BlogPostContentProps {
+  sections: import('./content').ContentSection[];
+  mobile: boolean;
+  tablet: boolean;
+}
+
+export interface BlogPostContentFullProps {
   content: BlogContent | null;
   mobile?: boolean;
   tablet?: boolean;
 }
 
 export interface BlogPostActionsProps {
-  post: PostType;
-  mobile?: boolean;
+  isLiked: boolean;
+  isBookmarked: boolean;
+  likeCount: number;
+  onLike: () => void;
+  onBookmark: () => void;
+  onShare: () => void;
 }
 
 export interface BlogPostGalleryProps {
-  images: string[];
-  title: string;
-  mobile?: boolean;
+  products: import('./content').ProductItem[];
+  author?: import('./content').AuthorInfo;
+  mobile: boolean;
+  tablet: boolean;
 }
 
 // ==========================================
@@ -111,6 +124,92 @@ export interface AuthorInfo {
 }
 
 export interface AuthorInfoCardProps {
-  author: AuthorInfo;
+  author: import('./content').AuthorInfo;
   className?: string;
+  variant?: 'desktop' | 'mobile';
+}
+
+// Blog Content Section Interfaces
+export interface AccentSectionProps {
+  section: import('./content').ContentSection;
+  mobile: boolean;
+  tablet: boolean;
+  isInView: boolean;
+}
+
+export interface PrimarySectionProps {
+  section: import('./content').ContentSection;
+  mobile: boolean;
+  tablet: boolean;
+  isInView: boolean;
+}
+
+export interface ContentSectionItemProps {
+  section: import('./content').ContentSection;
+  index: number;
+  mobile: boolean;
+  tablet: boolean;
+}
+
+export interface ListItemMetaProps {
+  readonly views: number;
+  readonly likeCount: number;
+  readonly isLiked: boolean;
+  readonly createdTime: Date;
+  readonly mobile: boolean;
+  readonly handleLike: (e: React.MouseEvent | React.KeyboardEvent) => void;
+  readonly isLikeAnimating: boolean;
+  readonly formatDate: (date: Date) => string;
+  readonly getMetaClassNames: (mobile: boolean) => string;
+}
+
+export interface ListItemContentProps {
+  readonly post: import('./post').PostType;
+  readonly mobile: boolean;
+  readonly tablet: boolean;
+  readonly getTitleTextSize: (mobile: boolean, tablet: boolean) => string;
+}
+
+export interface ListItemImageProps {
+  images: string[];
+  title: string;
+  mobile: boolean;
+  tablet: boolean;
+  isVisible: boolean;
+  onInteraction: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  slideContainerRef: React.RefObject<HTMLDivElement>;
+  toggleBtnRef: React.RefObject<HTMLDivElement>;
+  getImageDimensions: (mobile: boolean, tablet: boolean) => string;
+}
+
+
+// Display Component Interfaces
+export interface BlogDisplayPost {
+  uid: string;
+  title: string;
+  description: string;
+  url?: string;
+  images?: string[];
+  tags?: import('./post').Tag[];
+  author?: {
+    name: string;
+    profileImage?: string;
+    description?: string;
+  };
+  views?: number;
+  likeCount?: number;
+  createdTime?: string;
+  category?: {
+    name: string;
+    slug: string;
+  };
+}
+
+export interface BlogDisplayProps {
+  readonly posts: readonly BlogDisplayPost[];
+  readonly isLoading?: boolean;
+  readonly locale?: string;
+  readonly defaultView?: "card" | "list";
 }

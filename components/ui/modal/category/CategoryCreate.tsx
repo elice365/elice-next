@@ -5,22 +5,8 @@ import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-
-interface Category {
-  uid: string;
-  code: string;
-  name: string;
-  slug: string;
-  path: string;
-  level: number;
-  parentId: string | null;
-}
-
-interface CategoryCreateModalProps {
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly onSuccess: () => void;
-}
+import type { Category } from "@/types/blog/post";
+import type { CategoryCreateModalProps } from "@/types/ui/modal";
 
 export function CategoryCreateModal({ isOpen, onClose, onSuccess }: CategoryCreateModalProps) {
   const [loading, setLoading] = useState(false);

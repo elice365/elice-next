@@ -17,79 +17,55 @@ import {
   LikeResponse,
   PaginationInfo 
 } from '@/types/blog/post';
+import type { BlogFilters, BlogSliceState } from '@/types/blog/core';
 
 // Layout types
 export type BlogLayout = 'card' | 'list';
 
-// Filter state type
-interface BlogFilters {
-  category?: string;
-  tag?: string;
-  search?: string;
-  sortBy?: 'latest' | 'popular' | 'views';
-}
-
-// Blog state type definition
-export interface BlogState {
-  // Post list state
-  posts: Post[];
-  selectedPost: Post | null;
-  postContent: PostDetailResponse['content'] | null;
-  postsPagination: PaginationInfo | null;
-  
-  // Notice state
-  notices: Notice[];
-  noticesPagination: PaginationInfo | null;
-  
-  // UI state
-  layout: BlogLayout;
-  
-  // Filter state
-  filters: BlogFilters;
-  
-  // Pagination state
-  currentPage: number;
-  
-  // Loading states
-  isLoadingList: boolean;
-  isLoadingPost: boolean;
-  isLoadingNotices: boolean;
-  isLoadingMetadata: boolean;
-  isLiking: boolean;
-  
-  // Error states
-  listError: string | null;
-  postError: string | null;
-  noticesError: string | null;
-  
-  // Categories and tags
-  categories: Category[];
-  tags: Tag[];
-}
+// Blog state type definition (alias for consistency)
+export interface BlogState extends BlogSliceState {}
 
 // Initial state
 const initialState: BlogState = {
+  // Post list state
   posts: [],
-  selectedPost: null,
-  postContent: null,
-  postsPagination: null,
+  categories: [],
+  tags: [],
   notices: [],
-  noticesPagination: null,
-  layout: 'card',
+  
+  // Current selections
+  currentPost: null,
+  selectedCategory: null,
+  selectedTag: null,
+  
+  // Pagination
+  currentPage: 1,
+  totalPages: 1,
+  totalCount: 0,
+  hasNextPage: false,
+  hasPrevPage: false,
+  
+  // Filters and search
   filters: {
     sortBy: 'latest'
   },
-  currentPage: 1,
-  isLoadingList: false,
-  isLoadingPost: false,
-  isLoadingNotices: false,
-  isLoadingMetadata: false,
+  
+  // Layout and view options
+  layout: 'card',
+  isViewToggled: false,
+  
+  // Loading states
+  isLoading: false,
+  isPostLoading: false,
+  isPostsLoading: false,
+  isCategoriesLoading: false,
+  isTagsLoading: false,
+  isNoticesLoading: false,
   isLiking: false,
-  listError: null,
+  
+  // Error states
+  error: null,
   postError: null,
-  noticesError: null,
-  categories: [],
-  tags: [],
 };
 
 // Async thunks
@@ -217,7 +193,7 @@ const blogSlice = createSlice({
     
     // Error actions
     clearListError: (state) => {
-      state.listError = null;
+      state.error = null;
     },
     
     clearPostError: (state) => {
@@ -225,13 +201,12 @@ const blogSlice = createSlice({
     },
     
     clearNoticesError: (state) => {
-      state.noticesError = null;
+      state.error = null;
     },
     
     // Clear selected post
     clearSelectedPost: (state) => {
-      state.selectedPost = null;
-      state.postContent = null;
+      state.currentPost = null;
       state.postError = null;
     },
     
@@ -243,8 +218,8 @@ const blogSlice = createSlice({
         state.posts[postIndex] = { ...state.posts[postIndex], ...updates };
       }
       // Also update selected post if it matches
-      if (state.selectedPost?.uid === uid) {
-        state.selectedPost = { ...state.selectedPost, ...updates };
+      if (state.currentPost?.uid === uid) {
+        state.currentPost = { ...state.currentPost, ...updates };
       }
     },
   },
@@ -252,97 +227,95 @@ const blogSlice = createSlice({
     // Fetch posts
     builder
       .addCase(fetchBlogPosts.pending, (state) => {
-        state.isLoadingList = true;
-        state.listError = null;
+        state.isPostsLoading = true;
+        state.error = null;
       })
       .addCase(fetchBlogPosts.fulfilled, (state, action) => {
-        state.isLoadingList = false;
+        state.isPostsLoading = false;
         const payload = action.payload;
         if (payload && typeof payload === 'object' && 'posts' in payload && 'pagination' in payload) {
           state.posts = payload.posts as Post[];
-          state.postsPagination = payload.pagination as PaginationInfo;
-          state.currentPage = (payload.pagination as PaginationInfo).currentPage;
+          const pagination = payload.pagination as PaginationInfo;
+          state.currentPage = pagination.currentPage;
+          state.totalPages = pagination.totalPages;
+          state.totalCount = pagination.totalCount;
+          state.hasNextPage = pagination.hasNext;
+          state.hasPrevPage = pagination.hasPrev;
         }
       })
       .addCase(fetchBlogPosts.rejected, (state, action) => {
-        state.isLoadingList = false;
-        state.listError = action.payload as string || 'Failed to fetch posts';
+        state.isPostsLoading = false;
+        state.error = action.payload as string || 'Failed to fetch posts';
       });
     
     // Fetch single post
     builder
       .addCase(fetchBlogPost.pending, (state) => {
-        state.isLoadingPost = true;
+        state.isPostLoading = true;
         state.postError = null;
       })
       .addCase(fetchBlogPost.fulfilled, (state, action) => {
-        state.isLoadingPost = false;
+        state.isPostLoading = false;
         const payload = action.payload;
         if (payload && typeof payload === 'object') {
           if ('post' in payload) {
-            state.selectedPost = payload.post as Post;
-          }
-          if ('content' in payload) {
-            state.postContent = (payload.content as PostDetailResponse['content']) || null;
+            state.currentPost = payload.post as Post;
           }
         }
       })
       .addCase(fetchBlogPost.rejected, (state, action) => {
-        state.isLoadingPost = false;
+        state.isPostLoading = false;
         state.postError = action.payload as string || 'Failed to fetch post';
       });
     
     // Fetch notices
     builder
       .addCase(fetchNotices.pending, (state) => {
-        state.isLoadingNotices = true;
-        state.noticesError = null;
+        state.isNoticesLoading = true;
+        state.error = null;
       })
       .addCase(fetchNotices.fulfilled, (state, action) => {
-        state.isLoadingNotices = false;
+        state.isNoticesLoading = false;
         const payload = action.payload;
         if (payload && typeof payload === 'object') {
           if ('notices' in payload) {
             state.notices = payload.notices as Notice[];
           }
-          if ('pagination' in payload) {
-            state.noticesPagination = payload.pagination as PaginationInfo;
-          }
         }
       })
       .addCase(fetchNotices.rejected, (state, action) => {
-        state.isLoadingNotices = false;
-        state.noticesError = action.payload as string || 'Failed to fetch notices';
+        state.isNoticesLoading = false;
+        state.error = action.payload as string || 'Failed to fetch notices';
       });
     
     // Fetch categories
     builder
       .addCase(fetchCategories.pending, (state) => {
-        state.isLoadingMetadata = true;
+        state.isCategoriesLoading = true;
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
-        state.isLoadingMetadata = false;
+        state.isCategoriesLoading = false;
         if (Array.isArray(action.payload)) {
-          state.categories = action.payload as Category[];
+          state.categories = action.payload as any; // Transform from Category to BlogCategory
         }
       })
       .addCase(fetchCategories.rejected, (state) => {
-        state.isLoadingMetadata = false;
+        state.isCategoriesLoading = false;
       });
     
     // Fetch tags
     builder
       .addCase(fetchTags.pending, (state) => {
-        state.isLoadingMetadata = true;
+        state.isTagsLoading = true;
       })
       .addCase(fetchTags.fulfilled, (state, action) => {
-        state.isLoadingMetadata = false;
+        state.isTagsLoading = false;
         if (Array.isArray(action.payload)) {
-          state.tags = action.payload as Tag[];
+          state.tags = action.payload as any; // Transform from Tag to BlogTag
         }
       })
       .addCase(fetchTags.rejected, (state) => {
-        state.isLoadingMetadata = false;
+        state.isTagsLoading = false;
       });
     
     // Toggle like
@@ -365,9 +338,9 @@ const blogSlice = createSlice({
           }
           
           // Update the selected post if it's the same
-          if (state.selectedPost && state.selectedPost.uid === postId) {
-            state.selectedPost.isLiked = liked;
-            state.selectedPost.likeCount = likeCount;
+          if (state.currentPost && state.currentPost.uid === postId) {
+            state.currentPost.isLiked = liked;
+            state.currentPost.likeCount = likeCount;
           }
         }
       })
@@ -392,22 +365,24 @@ export const {
 
 // Base selectors
 export const selectBlogPosts = (state: { blog: BlogState }) => state.blog.posts;
-export const selectSelectedPost = (state: { blog: BlogState }) => state.blog.selectedPost;
-export const selectPostContent = (state: { blog: BlogState }) => state.blog.postContent;
+export const selectCurrentPost = (state: { blog: BlogState }) => state.blog.currentPost;
 export const selectNotices = (state: { blog: BlogState }) => state.blog.notices;
 export const selectBlogLayout = (state: { blog: BlogState }) => state.blog.layout;
 export const selectBlogFilters = (state: { blog: BlogState }) => state.blog.filters;
-export const selectPostsPagination = (state: { blog: BlogState }) => state.blog.postsPagination;
-export const selectNoticesPagination = (state: { blog: BlogState }) => state.blog.noticesPagination;
 export const selectCurrentPage = (state: { blog: BlogState }) => state.blog.currentPage;
-export const selectIsLoadingList = (state: { blog: BlogState }) => state.blog.isLoadingList;
-export const selectIsLoadingPost = (state: { blog: BlogState }) => state.blog.isLoadingPost;
-export const selectIsLoadingNotices = (state: { blog: BlogState }) => state.blog.isLoadingNotices;
-export const selectIsLoadingMetadata = (state: { blog: BlogState }) => state.blog.isLoadingMetadata;
+export const selectTotalPages = (state: { blog: BlogState }) => state.blog.totalPages;
+export const selectTotalCount = (state: { blog: BlogState }) => state.blog.totalCount;
+export const selectHasNextPage = (state: { blog: BlogState }) => state.blog.hasNextPage;
+export const selectHasPrevPage = (state: { blog: BlogState }) => state.blog.hasPrevPage;
+export const selectIsLoading = (state: { blog: BlogState }) => state.blog.isLoading;
+export const selectIsPostsLoading = (state: { blog: BlogState }) => state.blog.isPostsLoading;
+export const selectIsPostLoading = (state: { blog: BlogState }) => state.blog.isPostLoading;
+export const selectIsNoticesLoading = (state: { blog: BlogState }) => state.blog.isNoticesLoading;
+export const selectIsCategoriesLoading = (state: { blog: BlogState }) => state.blog.isCategoriesLoading;
+export const selectIsTagsLoading = (state: { blog: BlogState }) => state.blog.isTagsLoading;
 export const selectIsLiking = (state: { blog: BlogState }) => state.blog.isLiking;
-export const selectListError = (state: { blog: BlogState }) => state.blog.listError;
+export const selectError = (state: { blog: BlogState }) => state.blog.error;
 export const selectPostError = (state: { blog: BlogState }) => state.blog.postError;
-export const selectNoticesError = (state: { blog: BlogState }) => state.blog.noticesError;
 export const selectCategories = (state: { blog: BlogState }) => state.blog.categories;
 export const selectTags = (state: { blog: BlogState }) => state.blog.tags;
 
@@ -467,13 +442,13 @@ export const selectTagByName = createSelector(
 );
 
 export const selectHasMorePosts = createSelector(
-  [selectPostsPagination],
-  (pagination) => pagination?.hasNext || false
+  [selectHasNextPage],
+  (hasNext) => hasNext
 );
 
 export const selectHasMoreNotices = createSelector(
-  [selectNoticesPagination],
-  (pagination) => pagination?.hasNext || false
+  [selectHasNextPage],
+  (hasNext) => hasNext
 );
 
 export const selectUnreadNoticesCount = createSelector(

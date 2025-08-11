@@ -21,7 +21,7 @@ export const authServerConfig = {
       appID: getRequiredEnvVar('KAKAO_CLIENT_ID'),
       appSecret: getRequiredEnvVar('KAKAO_CLIENT_SECRET'),
       redirect: `${getRequiredEnvVar('NEXT_PUBLIC_URL')}/auth/kakao`,
-      auth: 'https://kauth.kakao.com/oauth/authorize',
+      auth: 'https://kauth.kakao.com/oauthorize',
       token: 'https://kauth.kakao.com/oauth/token',
       tokenInfo: 'https://kapi.kakao.com/v1/user/access_token_info',
       userInfo: 'https://kapi.kakao.com/v2/user/me',
@@ -59,7 +59,7 @@ export const authServerConfig = {
       keyId: getRequiredEnvVar('APPLE_KEY_ID'),
       privateKey: getRequiredEnvVar('APPLE_PRIVATE_KEY'),
       redirect: `${getRequiredEnvVar('NEXT_PUBLIC_URL')}/auth/apple`,
-      auth: 'https://appleid.apple.com/auth/authorize',
+      auth: 'https://appleid.apple.com/authorize',
       token: 'https://appleid.apple.com/auth/token',
       scope: 'name email'
     }

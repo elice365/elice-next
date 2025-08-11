@@ -14,15 +14,7 @@ import { api } from '@/lib/fetch';
 import { tokenClient } from '@/lib/services/token/client';
 import { logger } from '@/lib/services/logger';
 import { authConfig } from '@/constants/auth/client';
-
-interface TokenRefreshOptions {
-  // Activity detection settings
-  enabled?: boolean;
-  debounceTime?: number; // Time to wait after activity before refresh (ms)
-  refreshBeforeExpiry?: number; // Time before expiry to trigger refresh (ms)
-  activityEvents?: string[]; // Events to monitor for activity
-  enableVisibilityRefresh?: boolean; // Refresh on tab focus
-}
+import type { TokenRefreshOptions } from '@/types/hooks/auth';
 
 const DEFAULT_OPTIONS: Required<TokenRefreshOptions> = {
   enabled: true,

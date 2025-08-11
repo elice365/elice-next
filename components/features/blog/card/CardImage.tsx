@@ -2,15 +2,8 @@ import { memo } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Icon } from '@/components/ui/Icon';
-import { PostType } from '@/types/blog/post';
+import type { CardImageProps, CategoryBadgeProps, TagsListProps, TagItemProps, RemainingTagsCountProps } from '@/types/blog/card';
 
-interface CardImageProps {
-  post: PostType;
-  mobile: boolean;
-  tablet: boolean;
-  imageError: boolean;
-  onImageError: () => void;
-}
 
 const DEFAULT_POST_IMAGE = "https://placehold.co/350x200.png";
 
@@ -102,10 +95,6 @@ export const CardImage = memo(function CardImage({
   );
 });
 
-interface CategoryBadgeProps {
-  category: any;
-  mobile: boolean;
-}
 
 const CategoryBadge = memo(function CategoryBadge({ category, mobile }: CategoryBadgeProps) {
   const positionClasses = mobile ? 'top-2 left-2' : 'top-3 left-3';
@@ -137,10 +126,6 @@ function getCategoryBadgeClassName(mobile: boolean): string {
   return `${baseClasses} ${mobileClasses} ${desktopClasses}`.trim();
 }
 
-interface TagsListProps {
-  tags: any[];
-  mobile: boolean;
-}
 
 const TagsList = memo(function TagsList({ tags, mobile }: TagsListProps) {
   const maxTags = mobile ? 2 : 3;
@@ -159,7 +144,7 @@ const TagsList = memo(function TagsList({ tags, mobile }: TagsListProps) {
       transition={!mobile ? { delay: 0.2, duration: 0.4 } : {}}
     >
       {visibleTags.map((tag, index) => (
-        <TagItem key={`tag-${tag.id || tag.name}-${index}`} tag={tag} mobile={mobile} index={index} />
+        <TagItem key={`tag-${tag.uid || tag.name}-${index}`} tag={tag} mobile={mobile} index={index} />
       ))}
       {remainingCount > 0 && (
         <RemainingTagsCount count={remainingCount} mobile={mobile} />
@@ -168,11 +153,6 @@ const TagsList = memo(function TagsList({ tags, mobile }: TagsListProps) {
   );
 });
 
-interface TagItemProps {
-  tag: any;
-  mobile: boolean;
-  index: number;
-}
 
 const TagItem = memo(function TagItem({ tag, mobile, index }: TagItemProps) {
   return (
@@ -196,10 +176,6 @@ function getTagClassName(mobile: boolean): string {
   return `${baseClasses} ${sizeClasses} ${hoverClasses}`.trim();
 }
 
-interface RemainingTagsCountProps {
-  count: number;
-  mobile: boolean;
-}
 
 const RemainingTagsCount = memo(function RemainingTagsCount({ count, mobile }: RemainingTagsCountProps) {
   return (

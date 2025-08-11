@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-import { UserModalProps } from "@/types/user";
+import { UserModalProps } from "@/types/common/user";
 import { Input } from "@/components/ui/Input";
 import { BaseModal } from "../common/BaseModal";
 import { Icon } from "@/components/ui/Icon";

@@ -20,7 +20,7 @@ import {
   social
 } from '@/stores/slice/auth';
 import { Auth, AuthType } from '@/types/auth';
-import { SocialProvider } from '@/types/social';
+import { SocialProvider } from '@/types/auth/social';
 import { usePostHog } from 'posthog-js/react';
 
 /**

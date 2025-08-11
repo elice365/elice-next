@@ -7,16 +7,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import { Icon } from '@/components/ui/Icon';
 import { ProductItem, AuthorInfo } from '@/utils/blog/contentParser';
+import type { BlogPostGalleryProps } from '@/types/blog/components';
 
 // Import Swiper styles
 import 'swiper/css';
 
-interface BlogPostGalleryProps {
-  products: ProductItem[];
-  author?: AuthorInfo;
-  mobile: boolean;
-  tablet: boolean;
-}
 
 // Responsive utility functions
 const getResponsiveClasses = {

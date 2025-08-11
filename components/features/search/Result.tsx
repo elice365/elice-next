@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { SearchCard } from '@/components/ui/card/Search';
-import { SearchItem } from '@/types/search';
+import { SearchItem } from '@/types/common/search';
 
 export const SearchResults = memo<{ results: SearchItem[]; isLoading: boolean }>(({ results, isLoading }) => (
   <div className="p-4">

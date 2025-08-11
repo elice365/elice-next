@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { ImageMeta } from "@/types/image";
+import { ImageMeta } from "@/types/ui/image";
 import { getTranslations } from "next-intl/server";
 import { metaImage } from "@/utils/parse/metaImage";
 import { BlogLayout } from "@/components/layout/Blog";

@@ -7,22 +7,8 @@ import { Icon } from "@/components/ui/Icon";
 
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-import { BaseModalProps } from "@/types/admin";
 import { logger } from "@/lib/services/logger";
-
-interface DeleteModalProps extends BaseModalProps {
-  readonly title: string;
-  readonly entity: any;
-  readonly entityName: string;
-  readonly endpoint: string;
-  readonly confirmationText?: string;
-  readonly requiresConfirmation?: boolean;
-  readonly warningMessage?: string;
-  readonly getDangerLevel?: (entity: any) => 'low' | 'medium' | 'high';
-  readonly getDisplayName?: (entity: any) => string;
-  readonly onSuccess?: (deletedEntity: any) => void;
-  readonly children?: React.ReactNode;
-}
+import type { AdminDeleteModalProps } from "@/types/ui/modal";
 
 export function DeleteModal({
   isOpen,
@@ -39,7 +25,7 @@ export function DeleteModal({
   getDisplayName,
   onSuccess,
   children
-}: DeleteModalProps) {
+}: AdminDeleteModalProps) {
   const [loading, setLoading] = useState(false);
   const [confirmInput, setConfirmInput] = useState('');
   const [error, setError] = useState('');

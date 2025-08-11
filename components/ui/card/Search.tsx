@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { memo } from 'react';
-import { SearchItem } from '@/types/search';
+import { SearchItem } from '@/types/common/search';
 import { Icon } from "../Icon";
 import { Badge } from "../Badge";
 

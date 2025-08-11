@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
-import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
+import { Admin } from "@/components/layout/Admin";
+import type { StatCardConfig, FilterConfig } from "@/types/layout/admin";
 import { useAdminPage } from "@/hooks/admin";
 import { CategoryCreateModal } from "@/components/ui/modal/category/CategoryCreate";
 import { CategoryEditModal } from "@/components/ui/modal/category/CategoryEdit";
@@ -12,25 +13,7 @@ import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import Image from "next/image";
 import "@/styles/admin-category.css";
-
-// Category data interface
-interface CategoryData {
-  uid: string;
-  code: string;
-  name: string;
-  slug: string;
-  path: string;
-  level: number;
-  parentId: string | null;
-  parent?: CategoryData | null;
-  children?: CategoryData[];
-  _count?: {
-    posts: number;
-    children: number;
-  };
-  image?: string;
-  images?: string[]; // Additional images for sequential display
-}
+import { CategoryData } from "@/types/admin/pages";
 
 // Default placeholder images
 const DEFAULT_CATEGORY_IMAGE = "https://placehold.co/100x100.png?text=Category&w=1080&q=75";

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from 'next/image';
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
-import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
+import { Admin } from "@/components/layout/Admin";
 import { useAdminPage } from "@/hooks/admin";
 import { BlogCreateModal } from "@/components/ui/modal/blog/BlogCreate";
 import { BlogEditModal } from "@/components/ui/modal/blog/BlogEdit";
@@ -14,17 +14,8 @@ import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { Post } from "@/types/blog/post";
-
-// Admin blog data interface
-interface BlogData extends Post {
-  publishedAt: Date | null;
-  status: 'draft' | 'published';
-  views: number;
-  _count: {
-    likes: number;
-    view: number;
-  };
-}
+import { BlogData } from "@/types/admin/pages";
+import { FilterConfig, StatCardConfig } from "@/types/layout/admin";
 
 // Blog management page main component
 export default function AdminBlogPage() {
@@ -443,6 +434,7 @@ export default function AdminBlogPage() {
         post={editingPost ? {
           id: editingPost.uid,
           ...editingPost,
+          status: editingPost.status || 'draft',
           createdTime: editingPost.createdTime ? new Date(editingPost.createdTime).toLocaleString('ko-KR') : '',
           updatedTime: editingPost.updatedTime ? new Date(editingPost.updatedTime).toLocaleString('ko-KR') : '',
           publishedAt: editingPost.publishedAt ? new Date(editingPost.publishedAt).toLocaleString('ko-KR') : undefined

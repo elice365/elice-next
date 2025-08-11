@@ -12,13 +12,9 @@ import { PostSkeleton } from '@/components/ui/skeleton/Post';
 import { Comment } from './Comment';
 import { useBlogActions } from '@/hooks/blog';
 import { parseContent } from '@/utils/blog/contentParser';
+import type { BlogPostProps } from '@/types/blog/components';
 import { Actions } from './Actions';
 
-interface BlogPostProps {
-  post: PostType;
-  content?: PostContent | null;
-  isLoading?: boolean;
-}
 
 export const Post = memo(function Post({
   post,

@@ -3,15 +3,11 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { PostType } from '@/types/blog/post';
+import type { BlogPostHeaderProps } from '@/types/blog/components';
 import { Icon } from '@/components/ui/Icon';
 import { format } from 'date-fns';
 import { ko, enUS, ja, ru } from 'date-fns/locale';
 
-interface BlogPostHeaderProps {
-  post: PostType;
-  mobile: boolean;
-  tablet: boolean;
-}
 
 const localeMap = {
   ko: ko,
@@ -75,7 +71,7 @@ export const Header = memo(function Header({
 
       {/* Title */}
       <motion.h1
-        className={`font-bold text-[var(--blog-text-primary)] leading-tight ${getTitleTextSize(mobile, tablet)}`}
+        className={`font-bold text-[var(--blog-text-primary)] leading-tight ${getTitleTextSize(mobile || false, tablet || false)}`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -140,7 +136,7 @@ export const Header = memo(function Header({
         transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
       >
         <motion.p
-          className={`text-[var(--blog-text-primary)] leading-relaxed ${getDescriptionTextSize(mobile, tablet)}`}
+          className={`text-[var(--blog-text-primary)] leading-relaxed ${getDescriptionTextSize(mobile || false, tablet || false)}`}
         >
           {post.description}
         </motion.p>

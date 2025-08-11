@@ -6,11 +6,7 @@ import { useCallback } from 'react';
 import { useTranslations } from "next-intl";
 import { Field, inputValue } from "@/utils/regex/input";
 import { AuthFormField } from '@/types/auth';
-
-interface UseAuthFormValidationProps {
-  fields: AuthFormField[];
-  validate?: (data: Record<string, string>) => string | null;
-}
+import type { UseAuthFormValidationProps } from '@/types/hooks/auth';
 
 export function useAuthFormValidation({ fields, validate }: UseAuthFormValidationProps) {
   const messages = useTranslations("messages");

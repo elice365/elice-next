@@ -4,20 +4,8 @@ import { useState, memo, useRef } from 'react';
 import Image from 'next/image';
 import { Icon } from '@/components/ui/Icon';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { ListItemImageProps } from '@/types/blog/components';
 
-interface ListItemImageProps {
-  images: string[];
-  title: string;
-  mobile: boolean;
-  tablet: boolean;
-  isVisible: boolean;
-  onInteraction: () => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-  slideContainerRef: React.RefObject<HTMLDivElement>;
-  toggleBtnRef: React.RefObject<HTMLDivElement>;
-  getImageDimensions: (mobile: boolean, tablet: boolean) => string;
-}
 
 export const ListItemImage = memo(function ListItemImage({
   images,

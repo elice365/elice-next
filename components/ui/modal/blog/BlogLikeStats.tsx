@@ -7,34 +7,7 @@ import { BaseModal } from '@/components/ui/modal/common/BaseModal';
 import { api } from '@/lib/fetch';
 import { APIResult } from '@/types/api';
 import { logger } from '@/lib/services/logger';
-
-interface LikeDetail {
-  id: string;
-  userId: string | null;
-  userName: string | null;
-  userEmail: string | null;
-  ip: string;
-  likedAt: Date;
-  isAnonymous: boolean;
-}
-
-interface LikeStatsData {
-  postId: string;
-  postTitle: string;
-  totalLikes: number;
-  uniqueUsers: number;
-  anonymousLikes: number;
-  likes: LikeDetail[];
-  likesByDate: Array<{ date: string; count: number }>;
-  likesByHour: Array<{ hour: number; count: number }>;
-}
-
-interface BlogLikeStatsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  postId: string | null;
-  postTitle?: string;
-}
+import type { LikeDetail, LikeStatsData, BlogLikeStatsModalProps } from '@/types/ui/modal';
 
 export const BlogLikeStatsModal: React.FC<BlogLikeStatsModalProps> = ({
   isOpen,

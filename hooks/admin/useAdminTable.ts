@@ -1,36 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-import { PaginationState } from "@/types/admin";
-
-interface UseAdminTableOptions<T> {
-  endpoint: string;
-  initialLimit?: number;
-  includeStats?: boolean;
-  statsEndpoint?: string;
-}
-
-interface UseAdminTableReturn<T> {
-  // Data state
-  items: T[];
-  loading: boolean;
-  pagination: PaginationState;
-  stats: any;
-  
-  // Filter state
-  search: string;
-  filters: Record<string, string>;
-  
-  // Actions
-  refetch: () => Promise<void>;
-  setSearch: (search: string) => void;
-  setFilter: (key: string, value: string) => void;
-  clearFilters: () => void;
-  handlePageChange: (page: number) => void;
-  
-  // Helper functions
-  fetchStats: () => Promise<void>;
-}
+import type { PaginationState } from "@/types/admin";
+import type { UseAdminTableOptions, UseAdminTableReturn } from "@/types/hooks/admin";
 
 export function useAdminTable<T>({
   endpoint,

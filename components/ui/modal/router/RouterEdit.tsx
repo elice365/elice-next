@@ -7,23 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ICON_CATEGORIES, IconCategory } from "@/constants/modal/iconCategories";
 import { useRoles, formatRolesForRouter } from "@/hooks/admin";
 import { logger } from "@/lib/services/logger";
-
-interface WebRouter {
-  uid: string;
-  name: string;
-  path: string;
-  icon: string;
-  role: string[];
-  createdTime: string;
-  updateTime: string;
-}
-
-interface RouterEditModalProps {
-  readonly router: WebRouter | null;
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly onUpdate: () => void;
-}
+import type { WebRouter, RouterEditModalProps } from "@/types/ui/modal";
 
 
 export function RouterEditModal({ router, isOpen, onClose, onUpdate }: RouterEditModalProps) {

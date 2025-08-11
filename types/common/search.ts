@@ -28,3 +28,15 @@ export interface SearchHookReturn {
   open: () => void;
   close: () => void;
 }
+
+export interface SearchState {
+  query: string;
+  debouncedQuery: string;
+  results: SearchItem[];
+  isLoading: boolean;
+  error: string | null;
+  recent: SearchItem[];
+  popular: SearchItem[];
+  recommend: string[];
+  staticLoading: boolean;
+}

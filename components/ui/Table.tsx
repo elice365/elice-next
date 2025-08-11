@@ -1,35 +1,7 @@
 "use client";
 
-import { memo, ReactNode, useState, useMemo, useCallback } from "react";
-
-export interface TableColumn<T = any> {
-    key: string;
-    title: string;
-    render?: (value: any, record: T, index: number) => ReactNode;
-    className?: string;
-    headerClassName?: string;
-}
-
-export interface TableSelectionConfig<T = any> {
-    type: 'checkbox';
-    selectedRowKeys?: string[];
-    onSelect?: (record: T, selected: boolean, selectedRows: T[]) => void;
-    onSelectAll?: (selected: boolean, selectedRows: T[], changeRows: T[]) => void;
-    getCheckboxProps?: (record: T) => { disabled?: boolean };
-    preserveSelectedRowKeys?: boolean;
-}
-
-export interface TableProps<T = any> {
-    columns: TableColumn<T>[];
-    data: T[];
-    loading?: boolean;
-    onRowClick?: (record: T, index: number) => void;
-    rowKey?: keyof T | ((record: T) => string);
-    className?: string;
-    emptyText?: string;
-    loadingText?: string;
-    rowSelection?: TableSelectionConfig<T>;
-}
+import { memo, useState, useMemo, useCallback } from "react";
+import type { TableColumn, TableSelectionConfig, TableProps } from "@/types/ui/table";
 
 export const Table = memo(function Table<T = any>({
     columns,

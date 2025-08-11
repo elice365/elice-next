@@ -4,16 +4,13 @@ import { memo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { PostType } from '@/types/blog/post';
+import type { BlogCardProps } from '@/types/blog/card';
 import { useCardState } from './useCardState';
 import { CardImage } from './CardImage';
 import { CardContent } from './CardContent';
 import { CardActions } from './CardActions';
 import { CardEffects } from './CardEffects';
 
-interface BlogCardProps {
-  post: PostType;
-  className?: string;
-}
 
 export const Card = memo(function Card({ post, className = '' }: BlogCardProps) {
   const {

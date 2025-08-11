@@ -5,35 +5,9 @@ import { Icon } from "@/components/ui/Icon";
 import { Card } from "./Card";
 import { ListItem } from "./List";
 import { Tag } from "@/types/blog/post";
+import type { BlogDisplayPost, BlogDisplayProps } from '@/types/blog/components';
 import "@/styles/blog-display.css";
 
-interface BlogPost {
-  uid: string;
-  title: string;
-  description: string;
-  url?: string;
-  images?: string[];
-  tags?: Tag[];
-  author?: {
-    name: string;
-    profileImage?: string;
-    description?: string;
-  };
-  views?: number;
-  likeCount?: number;
-  createdTime?: string;
-  category?: {
-    name: string;
-    slug: string;
-  };
-}
-
-interface BlogDisplayProps {
-  readonly posts: readonly BlogPost[];
-  readonly isLoading?: boolean;
-  readonly locale?: string;
-  readonly defaultView?: "card" | "list";
-}
 
 export function Display({ 
   posts, 

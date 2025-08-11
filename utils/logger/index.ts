@@ -3,17 +3,9 @@
  * Replaces scattered console.log statements with structured logging
  */
 
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
-export type LogContext = 'AUTH' | 'API' | 'DB' | 'EMAIL' | 'PERFORMANCE' | 'GENERAL';
+import type { LogLevel, LogContext, LogEntry } from "@/types/utils/logger";
 
-interface LogEntry {
-  level: LogLevel;
-  context: LogContext;
-  message: string;
-  data?: any;
-  timestamp: Date;
-  stack?: string;
-}
+export type { LogLevel, LogContext };
 
 class Logger {
   private readonly isDevelopment = process.env.NODE_ENV === 'development';

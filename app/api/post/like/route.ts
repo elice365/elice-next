@@ -4,17 +4,7 @@ import { APIResult, AuthInfo } from '@/types/api';
 import { prisma } from '@/lib/db/prisma';
 import { safeBody } from '@/utils/parse/body';
 import { logger } from '@/lib/services/logger';
-
-interface LikeRequest {
-  postId: string;
-  action: 'like' | 'unlike';
-}
-
-interface LikeResponse {
-  success: boolean;
-  liked: boolean;
-  likeCount: number;
-}
+import type { LikeRequest, LikeResponse } from '@/types/api/routes';
 
 // POST handler for like/unlike actions
 async function handleLikeAction(

@@ -8,11 +8,8 @@ import { useAppSelector } from '@/stores/hook';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '@/components/ui/Icon';
 import { useListItem, useImageSlider } from '@/hooks/blog';
+import type { BlogListItemProps, BlogListProps } from '@/types/blog/components';
 
-interface BlogListItemProps {
-  post: PostType;
-  className?: string;
-}
 
 // Default images array for posts without images
 const DEFAULT_POST_IMAGES = [
@@ -313,10 +310,6 @@ export const ListItem = memo(function ListItem({ post, className = '' }: BlogLis
   );
 });
 
-interface BlogListProps {
-  posts: PostType[];
-  className?: string;
-}
 
 export const List = memo(function List({ posts, className = '' }: BlogListProps) {
   const { mobile } = useAppSelector((state) => state.device);

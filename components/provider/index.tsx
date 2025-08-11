@@ -8,11 +8,8 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Auth } from "./Auth";
 import { UserInfo } from "@/lib/server/auth";
+import type { AppProps } from '@/types/common/provider';
 
-interface AppProps {
-  readonly children: ReactNode;
-  readonly type: "admin" | "user";
-}
 
 export async function App({ children, type }: AppProps) {
   let AuthData = null;

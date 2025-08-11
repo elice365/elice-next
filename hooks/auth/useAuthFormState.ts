@@ -3,11 +3,7 @@
  * Extracted from complex AuthForm component to improve separation of concerns
  */
 import { useState, useCallback } from 'react';
-import { AuthFormField } from '@/types/auth';
-
-interface UseAuthFormStateProps {
-  fields: AuthFormField[];
-}
+import type { UseAuthFormStateProps } from '@/types/hooks/auth';
 
 export function useAuthFormState({ fields }: UseAuthFormStateProps) {
   const [formData, setFormData] = useState<Record<string, string>>(

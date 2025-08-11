@@ -5,108 +5,22 @@ import { prisma } from '@/lib/db/prisma';
 import { safeBody } from '@/utils/parse/body';
 import { trackPostView } from '@/lib/db/views';
 import { logger } from '@/lib/services/logger';
+import { PostListRequest, PostDetailRequest, NoticeListRequest, PostListResponse, PostDetailResponse, NoticeListResponse } from '@/types/api/routes';
 
 // Types for blog post API
 type PostImages = string[] | Record<string, string> | string;
 
-interface PostListRequest {
-  type: 'list';
-  page?: number;
-  limit?: number;
-  category?: string;
-  tag?: string;
-  search?: string;
-  sortBy?: 'latest' | 'popular' | 'views';
+// Helper function to extract image URL from various formats
+function getImageUrl(images: any): string | undefined {
+  if (Array.isArray(images) && images.length > 0) {
+    return images[0];
+  }
+  if (typeof images === 'string') {
+    return images;
+  }
+  return undefined;
 }
 
-interface PostDetailRequest {
-  type: 'post';
-  uid: string;
-  language?: string;
-}
-
-interface NoticeListRequest {
-  type: 'notice';
-  page?: number;
-  limit?: number;
-}
-
-interface PostListResponse {
-  posts: Array<{
-    uid: string;
-    type: string;
-    title: string;
-    description: string;
-    url: string;
-    images: PostImages;
-    views: number;
-    likeCount: number;
-    createdTime: Date;
-    category?: {
-      name: string;
-      slug: string;
-    };
-    tags: Array<{
-      name: string;
-    }>;
-    isLiked?: boolean;
-  }>;
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalCount: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-    limit: number;
-  };
-}
-
-interface PostDetailResponse {
-  post: {
-    uid: string;
-    type: string;
-    title: string;
-    description: string;
-    url: string;
-    images: PostImages;
-    views: number;
-    likeCount: number;
-    createdTime: Date;
-    category?: {
-      name: string;
-      slug: string;
-    };
-    tags: Array<{
-      name: string;
-    }>;
-    isLiked?: boolean;
-  };
-  content?: {
-    language: string;
-    data: Record<string, unknown>;
-  };
-}
-
-interface NoticeListResponse {
-  notices: Array<{
-    uid: string;
-    title: string;
-    content: string;
-    link?: string;
-    startsTime: Date;
-    endsTime?: Date;
-    createdTime: Date;
-    isRead?: boolean;
-  }>;
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalCount: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-    limit: number;
-  };
-}
 
 // Helper function to fetch content from CDN
 async function fetchCDNContent(uid: string, language: string = 'ko') {
@@ -247,15 +161,28 @@ async function handlePostList(
     prisma.post.count({ where }),
   ]);
 
-  // Transform posts to include isLiked flag and calculated views
+  // Transform posts to match API response type
   const transformedPosts = posts.map((post) => ({
-    ...post,
-    images: post.images as PostImages,
-    category: post.category || undefined, // Convert null to undefined
-    views: (post as { _count: { view: number } })._count.view, // PostView 관계에서 계산된 조회수
+    uid: post.uid,
+    title: post.title,
+    description: post.description,
+    imageUrl: getImageUrl(post.images),
+    status: post.status,
+    viewCount: (post as { _count: { view: number } })._count.view, // PostView 관계에서 계산된 조회수
+    likeCount: post.likeCount || 0,
+    commentCount: 0, // TODO: Implement comment counting
     isLiked: context.userId ? ((post as { likes?: Array<{ uid: string }> }).likes?.length ?? 0) > 0 : false,
-    likes: undefined, // Remove likes array from response
-    _count: undefined, // Remove _count from response
+    category: post.category ? {
+      uid: post.category.slug, // Using slug as uid for now
+      name: post.category.name,
+      slug: post.category.slug
+    } : undefined,
+    tags: post.tags.map(tag => ({
+      uid: tag.name, // Using name as uid for now
+      name: tag.name
+    })),
+    createdAt: post.createdTime.toISOString(),
+    updatedAt: post.updatedTime.toISOString()
   }));
 
   const totalPages = Math.ceil(totalCount / limit);
@@ -270,7 +197,6 @@ async function handlePostList(
         totalCount,
         hasNext: page < totalPages,
         hasPrev: page > 1,
-        limit,
       },
     },
   };
@@ -359,21 +285,38 @@ async function handlePostDetail(
   // Fetch content from CDN
   const content = await fetchCDNContent(uid, language);
 
-  // Transform post to include isLiked flag and calculated views
+  // Transform post to match API response type
   const transformedPost = {
-    ...post,
-    images: post.images as PostImages,
-    category: post.category || undefined, // Convert null to undefined
-    views: post._count.view, // PostView 관계에서 계산된 조회수
+    uid: post.uid,
+    title: post.title,
+    description: post.description,
+    content: undefined, // Will be set from CDN content
+    imageUrl: getImageUrl(post.images),
+    status: post.status,
+    viewCount: post._count.view,
+    likeCount: post.likeCount || 0,
+    commentCount: 0, // TODO: Implement comment counting
     isLiked: context.userId ? ((post.likes as Array<{ uid: string }> | false) !== false && post.likes.length > 0) : false,
-    likes: undefined, // Remove likes array from response
-    _count: undefined, // Remove _count from response
+    category: post.category ? {
+      uid: post.category.slug,
+      name: post.category.name,
+      slug: post.category.slug
+    } : undefined,
+    tags: post.tags.map(tag => ({
+      uid: tag.name,
+      name: tag.name
+    })),
+    createdAt: post.createdTime.toISOString(),
+    updatedAt: post.updatedTime.toISOString()
   };
 
   return {
     success: true,
     data: {
-      post: transformedPost,
+      post: {
+        ...transformedPost,
+        content: content?.data
+      },
       content: content || undefined,
     },
   };
@@ -420,16 +363,13 @@ async function handleNoticeList(
     prisma.notice.count({ where }),
   ]);
 
-  // Transform notices to include isRead flag
+  // Transform notices to match API response type
   const transformedNotices = notices.map((notice) => ({
     uid: notice.uid,
     title: notice.title,
     content: notice.content,
-    link: notice.link || undefined,
-    startsTime: notice.startsTime!,
-    endsTime: notice.endsTime || undefined,
-    createdTime: notice.createdTime!,
     isRead: context.userId ? ((notice as { reads?: Array<{ readTime: Date }> }).reads?.length ?? 0) > 0 : false,
+    createdAt: notice.createdTime!.toISOString(),
   }));
 
   const totalPages = Math.ceil(totalCount / limit);
@@ -444,7 +384,6 @@ async function handleNoticeList(
         totalCount,
         hasNext: page < totalPages,
         hasPrev: page > 1,
-        limit,
       },
     },
   };

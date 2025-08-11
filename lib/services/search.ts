@@ -1,6 +1,6 @@
 import { api } from '@/lib/fetch';
 import { searchConfig } from '@/constants/search';
-import { SearchItem } from '@/types/search';
+import { SearchItem } from '@/types/common/search';
 import { APIResult } from '@/types/api'; // 이미 존재하는 APIResult 타입을 임포트합니다.
 
 const staticData = async () => {

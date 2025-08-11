@@ -5,12 +5,7 @@ import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
 import { uploadJsonToR2, getFromR2, deleteFromR2 } from '@/lib/services/cloudflare/r2';
 import { logger } from '@/lib/services/logger';
-
-interface RouteParams {
-  params: Promise<{
-    uid: string;
-  }>;
-}
+import type { APIRouteParams as RouteParams } from '@/types/api/routes';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/blog/[uid]/content

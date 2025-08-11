@@ -2,17 +2,7 @@
 
 import Image from "next/image";
 import { memo } from "react";
-
-interface AvatarProps {
-    readonly user: {
-        readonly imageUrl?: string;
-        readonly name?: string;
-        readonly email: string;
-    };
-    readonly size?: "sm" | "md" | "lg";
-    readonly className?: string;
-    readonly fallbackMode?: 'text' | 'default-image';
-}
+import type { AvatarProps } from "@/types/ui";
 
 const sizeClasses = {
     sm: "w-8 h-8 text-xs",

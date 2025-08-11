@@ -2,8 +2,9 @@
  * Type definitions for optimization utilities and hooks
  */
 
-// Performance monitoring types
-export interface PerformanceMetrics {
+// PerformanceMetrics is already exported from hooks.ts
+// Using a different name for optimization-specific metrics
+export interface OptimizationMetrics {
   startTime: number;
   endTime?: number;
   duration?: number;
@@ -44,13 +45,15 @@ export interface ApiCallOptions<T> {
   successMessage?: string;
 }
 
-export interface ApiCallState {
+// ApiCallState is already exported from hooks.ts
+// Using a different name for optimization-specific state
+export interface OptimizationCallState {
   loading: boolean;
   error: string | null;
   success: boolean;
 }
 
-export interface ApiCallHookReturn<T> extends ApiCallState {
+export interface ApiCallHookReturn<T> extends OptimizationCallState {
   execute: (apiCall: () => Promise<T>) => Promise<T | null>;
   reset: () => void;
 }
@@ -116,7 +119,7 @@ export interface PaginatedResponse<T = any> extends OptimizedResponse<T[]> {
 // Utility types for performance
 export type PerformanceTimer = {
   start: () => void;
-  end: () => PerformanceMetrics | undefined;
+  end: () => OptimizationMetrics | undefined;
   measure: <T>(operation: () => Promise<T>) => Promise<T>;
 };
 

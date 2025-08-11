@@ -2,10 +2,8 @@
 
 import { useEffect, useState, RefObject } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { ReadingProgressIndicatorProps } from '@/types/ui';
 
-interface ReadingProgressIndicatorProps {
-  readonly targetRef: RefObject<HTMLElement>;
-}
 
 export function ReadingProgressIndicator({ targetRef }: ReadingProgressIndicatorProps) {
   const [progress, setProgress] = useState(0);

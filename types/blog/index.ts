@@ -29,3 +29,19 @@ export type {
   AuthorInfo as AuthorInfoType,
   AuthorInfoCardProps
 } from './components';
+
+// Export card component types (avoid conflicts with components.ts)
+export type {
+  CardImageProps as BlogCardImageProps,
+  CardContentProps as BlogCardContentProps,
+  CardActionsProps as BlogCardActionsProps,
+  TagsListProps as BlogTagsListProps,
+  CategoryBadgeProps as BlogCategoryBadgeProps
+} from './card';
+
+// Export list component types (avoid conflicts with components.ts)
+export type {
+  ListItemMetaProps as BlogListItemMetaProps,
+  ListItemContentProps as BlogListItemContentProps,
+  ListItemImageProps as BlogListItemImageProps
+} from './list';

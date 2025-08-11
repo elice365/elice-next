@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import { api } from '@/lib/fetch';
 import { APIResult } from '@/types/api';
-import { PanelType } from '@/types/panel';
+import { PanelType } from '@/types/ui/panel';
 import { getTranslations } from 'next-intl/server';
 import { logger } from '@/lib/services/logger';
 

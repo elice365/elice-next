@@ -5,42 +5,7 @@ import { Icon } from '@/components/ui/Icon';
 import { StatCard } from '@/components/ui/card/Stat';
 import { Table } from '@/components/ui/Table';
 import { Pagination } from '@/components/ui/Pagination';
-import { AdminPageState, AdminPageActions } from '@/hooks/admin/useAdminPage';
-
-export interface StatCardConfig {
-  title: string;
-  value: number | string;
-  change: {
-    value: string;
-    trend: "up" | "down" | "neutral";
-    period: string;
-  };
-  icon: string;
-  variant: "primary" | "success" | "warning" | "info";
-}
-
-export interface FilterConfig {
-  key: string;
-  label: string;
-  type: 'select' | 'text';
-  icon?: string;
-  options?: { value: string; label: string }[];
-  placeholder?: string;
-}
-
-export interface AdminProps<T> {
-  readonly title: string;
-  readonly state: AdminPageState<T>;
-  readonly actions: AdminPageActions;
-  readonly stats?: readonly StatCardConfig[];
-  readonly filters?: readonly FilterConfig[];
-  readonly columns: any[];
-  readonly actionButtons?: React.ReactNode;
-  readonly bulkActionButtons?: React.ReactNode;
-  readonly onRowClick?: (record: T) => void;
-  readonly rowKey?: string;
-  readonly children?: React.ReactNode;
-}
+import type { StatCardConfig, FilterConfig, AdminProps } from '@/types/layout/admin';
 
 export function Admin<T>({
   title,

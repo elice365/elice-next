@@ -6,12 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { logger } from '@/lib/services/logger';
-
-interface NotificationCreateModalProps {
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly onSuccess: () => void;
-}
+import type { NotificationCreateModalProps } from "@/types/ui/modal";
 
 export function NotificationCreateModal({ isOpen, onClose, onSuccess }: NotificationCreateModalProps) {
   const [loading, setLoading] = useState(false);

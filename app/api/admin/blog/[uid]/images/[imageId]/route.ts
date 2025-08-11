@@ -3,13 +3,7 @@ import { handler } from '@/lib/request';
 import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
-
-interface RouteParams {
-  params: Promise<{
-    uid: string;
-    imageId: string;
-  }>;
-}
+import type { APIImageRouteParams as RouteParams } from '@/types/api/routes';
 
 /* ------------------------------------------------------------------
  * DELETE /api/admin/blog/[uid]/images/[imageId]

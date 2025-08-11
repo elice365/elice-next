@@ -7,7 +7,7 @@ import { Dropdown } from '@/components/ui/Dropdown';
 import { useMounted } from "@/hooks/utils";
 import { useAuth } from '@/hooks/auth';
 import { api } from '@/lib/fetch';
-import { NotificationResponse, NotificationData } from "@/types/notifications";
+import { NotificationResponse, NotificationData } from "@/types/common/notifications";
 import { Translated } from "@/components/i18n/Translated";
 
 // Fetcher function for SWR using api.get

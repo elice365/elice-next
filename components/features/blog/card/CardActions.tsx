@@ -2,15 +2,14 @@ import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '@/components/ui/Icon';
 import { PostType } from '@/types/blog/post';
-
-interface CardActionsProps {
-  post: PostType;
-  mobile: boolean;
-  isLikeAnimating: boolean;
-  isBookmarked: boolean;
-  onLike: (e: React.MouseEvent) => void;
-  onBookmark: () => void;
-}
+import type { 
+  CardActionsProps,
+  MobileActionsProps,
+  DesktopActionsProps,
+  LikeButtonProps,
+  BookmarkButtonProps,
+  ViewMoreButtonProps
+} from '@/types/blog/card';
 
 export const CardActions = memo(function CardActions({
   post,
@@ -43,13 +42,6 @@ export const CardActions = memo(function CardActions({
   );
 });
 
-interface MobileActionsProps {
-  post: PostType;
-  isLikeAnimating: boolean;
-  isBookmarked: boolean;
-  onLike: (e: React.MouseEvent) => void;
-  onBookmark: () => void;
-}
 
 const MobileActions = memo(function MobileActions({
   post,
@@ -76,13 +68,6 @@ const MobileActions = memo(function MobileActions({
   );
 });
 
-interface DesktopActionsProps {
-  post: PostType;
-  isLikeAnimating: boolean;
-  isBookmarked: boolean;
-  onLike: (e: React.MouseEvent) => void;
-  onBookmark: () => void;
-}
 
 const DesktopActions = memo(function DesktopActions({
   post,
@@ -113,12 +98,6 @@ const DesktopActions = memo(function DesktopActions({
   );
 });
 
-interface LikeButtonProps {
-  isLiked: boolean;
-  isAnimating: boolean;
-  onClick: (e: React.MouseEvent) => void;
-  mobile: boolean;
-}
 
 const LikeButton = memo(function LikeButton({
   isLiked,
@@ -168,11 +147,6 @@ function getIconClassName(isLiked: boolean, mobile: boolean): string {
   return `transition-colors duration-300 ${isLiked ? 'text-red-400' : 'group-hover/btn:text-red-300'}`;
 }
 
-interface BookmarkButtonProps {
-  isBookmarked: boolean;
-  onClick: () => void;
-  mobile: boolean;
-}
 
 const BookmarkButton = memo(function BookmarkButton({
   isBookmarked,
@@ -217,10 +191,6 @@ function getBookmarkIconClassName(isBookmarked: boolean, mobile: boolean): strin
   return `transition-colors duration-300 ${isBookmarked ? 'text-yellow-400' : 'group-hover/btn:text-yellow-300'}`;
 }
 
-interface ViewMoreButtonProps {
-  postId: string;
-  mobile: boolean;
-}
 
 const ViewMoreButton = memo(function ViewMoreButton({ postId, mobile }: ViewMoreButtonProps) {
   if (mobile) {

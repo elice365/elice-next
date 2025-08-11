@@ -3,36 +3,12 @@ import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import { prisma } from '@/lib/db/prisma';
 import { logger } from '@/lib/services/logger';
-
-interface LikeDetailResponse {
-  postId: string;
-  postTitle: string;
-  totalLikes: number;
-  uniqueUsers: number;
-  anonymousLikes: number;
-  likes: Array<{
-    id: string;
-    userId: string | null;
-    userName: string | null;
-    userEmail: string | null;
-    ip: string;
-    likedAt: Date;
-    isAnonymous: boolean;
-  }>;
-  likesByDate: Array<{
-    date: string;
-    count: number;
-  }>;
-  likesByHour: Array<{
-    hour: number;
-    count: number;
-  }>;
-}
+import type { LikeStatsData } from '@/types/ui/modal';
 
 async function handleGetPostLikes(
   request: NextRequest,
   context: AuthInfo & Record<string, any>
-): Promise<APIResult<LikeDetailResponse>> {
+): Promise<APIResult<LikeStatsData>> {
   try {
     // Next.js 15에서는 URL에서 직접 파라미터 추출
     const url = new URL(request.url);

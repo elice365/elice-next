@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
-
-interface ResponseParams {
-  success: boolean;
-  message?: string;
-  data?: any;
-  status?: number;
-}
+import type { ResponseParams } from "@/types/lib/server";
 
 export const createResponse = ({ success, message, data, status = 200}: ResponseParams): NextResponse => {
   const response = { success, message, data };

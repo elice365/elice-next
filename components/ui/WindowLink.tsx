@@ -1,14 +1,9 @@
 "use client";
 
-interface OpenProps {
-  link: string;
-  type?: "popup" | "newTab";
-  size?: "small" | "medium" | "large" | { width: number; height: number };
-  children: React.ReactNode;
-  className?: string;
-}
+import type { WindowLinkProps } from '@/types/ui';
 
-export const WindowLink = ({ link, type = "popup", size = "medium", children, className = "" }: OpenProps) => {
+
+export const WindowLink = ({ link, type = "popup", size = "medium", children, className = "" }: WindowLinkProps) => {
   const getSizeConfig = () => {
     if (typeof size === "object") {
       return { width: size.width, height: size.height };

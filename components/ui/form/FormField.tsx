@@ -2,16 +2,10 @@
 
 import { Icon } from "@/components/ui/Icon";
 import { FormField as FormFieldType } from "@/types/admin";
+import type { AdminFormFieldProps } from "@/types/ui/form";
 
-interface FormFieldProps {
-  readonly field: FormFieldType;
-  readonly value: any;
-  readonly onChange: (name: string, value: any) => void;
-  readonly error?: string;
-  readonly disabled?: boolean;
-}
 
-export function FormField({ field, value, onChange, error, disabled = false }: FormFieldProps) {
+export function FormField({ field, value, onChange, error, disabled = false }: AdminFormFieldProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     let newValue: string | boolean;
     if ('type' in e.target && e.target.type === 'checkbox') {

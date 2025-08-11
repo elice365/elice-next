@@ -1,4 +1,4 @@
-import { IconProps } from "@/types/icon";
+import { IconProps } from "@/types/ui/icon";
 import * as LucideIcons from "lucide-react";
 import type { LucideProps } from "lucide-react";
 import { CircleFlag } from "react-circle-flags";

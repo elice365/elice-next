@@ -5,26 +5,9 @@ import { Auth } from '@/types/auth';
 import { create } from '@/stores/asyncThunk';
 import { tokenClient } from '@/lib/services/token/client';
 import { APIResult } from '@/types/api';
-import { SocialProvider } from '@/types/social';
+import { SocialProvider } from '@/types/auth/social';
 import { logger } from '@/lib/services/logger';
-
-// User 정보 타입 정의
-interface User {
-  id: string;
-  email: string;
-  name?: string;
-  imageUrl?: string;
-  roles: string[];
-  tokenExpiry?: number;
-}
-
-// Auth 상태 타입 정의
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-}
+import type { AuthUser as User, AuthSliceState as AuthState } from '@/types/auth/auth';
 
 // 초기 상태
 const initialState: AuthState = {
@@ -32,6 +15,8 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  isRefreshing: false,
+  lastRefresh: undefined,
 };
 
 

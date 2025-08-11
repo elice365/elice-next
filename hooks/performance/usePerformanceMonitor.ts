@@ -1,11 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-
-interface PerformanceMetrics {
-  startTime: number;
-  endTime?: number;
-  duration?: number;
-  memoryUsed?: number;
-}
+import type { PerformanceMetrics } from '@/types/hooks/performance';
 
 export function usePerformanceMonitor(label: string, enabled: boolean = true) {
   const metricsRef = useRef<PerformanceMetrics | null>(null);

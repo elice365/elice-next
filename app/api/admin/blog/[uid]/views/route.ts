@@ -3,37 +3,12 @@ import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import { prisma } from '@/lib/db/prisma';
 import { logger } from '@/lib/services/logger';
-
-interface ViewDetailResponse {
-  postId: string;
-  postTitle: string;
-  totalViews: number;
-  uniqueUsers: number;
-  anonymousViews: number;
-  views: Array<{
-    id: string;
-    userId: string | null;
-    userName: string | null;
-    userEmail: string | null;
-    ip: string;
-    userAgent: string;
-    viewedAt: Date;
-    isAnonymous: boolean;
-  }>;
-  viewsByDate: Array<{
-    date: string;
-    count: number;
-  }>;
-  viewsByHour: Array<{
-    hour: number;
-    count: number;
-  }>;
-}
+import type { ViewStatsData } from '@/types/ui/modal';
 
 async function handleGetPostViews(
   request: NextRequest,
   context: AuthInfo & Record<string, any>
-): Promise<APIResult<ViewDetailResponse>> {
+): Promise<APIResult<ViewStatsData>> {
   try {
     // Next.js 15에서는 URL에서 직접 파라미터 추출
     const url = new URL(request.url);

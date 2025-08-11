@@ -9,22 +9,8 @@ import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
 import { logger } from '@/lib/services/logger';
-import { BaseModalProps, FormField as FormFieldType, ValidationRules, FormErrors } from "@/types/admin";
-
-interface FormModalProps extends BaseModalProps {
-  readonly title: string;
-  readonly subtitle?: string;
-  readonly icon?: string;
-  readonly iconColor?: string;
-  readonly endpoint: string;
-  readonly method?: 'POST' | 'PATCH';
-  readonly fields: FormFieldType[];
-  readonly initialData?: Record<string, any>;
-  readonly validationRules?: ValidationRules;
-  readonly size?: 'sm' | 'md' | 'lg' | 'xl';
-  readonly submitLabel?: string;
-  readonly onSuccess?: (data: any) => void;
-}
+import { FormField as FormFieldType, ValidationRules, FormErrors } from "@/types/admin";
+import type { FormModalProps } from "@/types/ui/modal";
 
 export function FormModal({
   isOpen,

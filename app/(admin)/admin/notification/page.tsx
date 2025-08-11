@@ -3,31 +3,15 @@
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
-import { Admin, StatCardConfig, FilterConfig } from "@/components/layout/Admin";
+import { Admin } from "@/components/layout/Admin";
+import type { StatCardConfig, FilterConfig } from "@/types/layout/admin";
 import { useAdminPage } from "@/hooks/admin";
 import { NotificationCreateModal } from "@/components/ui/modal/notification/NotificationCreate";
 import { NotificationViewModal } from "@/components/ui/modal/notification/NotificationView";
 import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-
-// 알림 데이터 타입
-interface NotificationData {
-  id: string;
-  userId: string;
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-  };
-  category: string;
-  title: string;
-  content: string;
-  link?: string;
-  read: boolean;
-  readTime?: string;
-  createdTime: string;
-}
+import { AdminNotificationData as NotificationData } from "@/types/common/notifications";
 
 // 알림 관리 페이지 메인 컴포넌트
 export default function AdminNotificationPage() {

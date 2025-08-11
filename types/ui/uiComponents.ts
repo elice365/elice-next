@@ -45,11 +45,14 @@ export interface CardActionsProps {
 // ==========================================
 
 export interface AvatarProps {
-  src?: string | null;
-  alt?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  className?: string;
-  fallback?: string;
+  readonly user: {
+    readonly imageUrl?: string;
+    readonly name?: string;
+    readonly email: string;
+  };
+  readonly size?: "sm" | "md" | "lg";
+  readonly className?: string;
+  readonly fallbackMode?: 'text' | 'default-image';
 }
 
 export interface BadgeProps {
@@ -60,13 +63,16 @@ export interface BadgeProps {
 }
 
 export interface ShareButtonProps {
-  url?: string;
-  title?: string;
+  url: string;
+  title: string;
   description?: string;
+  horizontal?: boolean;
+  onClose?: () => void;
   className?: string;
 }
 
 export interface ReadingProgressIndicatorProps {
+  readonly targetRef: React.RefObject<HTMLElement>;
   className?: string;
   color?: string;
   height?: number;

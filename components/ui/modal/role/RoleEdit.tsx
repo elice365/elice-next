@@ -10,13 +10,7 @@ import { validateRole } from "@/utils/regex/admin";
 import { Role, FormErrors } from "@/types/admin";
 import { logger } from '@/lib/services/logger';
 import { useTranslations } from "next-intl";
-
-interface RoleEditModalProps {
-  readonly role: Role | null;
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly onUpdate: () => void;
-}
+import type { RoleEditModalProps } from "@/types/ui/modal";
 
 export function RoleEditModal({ role, isOpen, onClose, onUpdate }: RoleEditModalProps) {
   const [formData, setFormData] = useState({ name: '', description: '' });

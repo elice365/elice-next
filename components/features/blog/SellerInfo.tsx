@@ -3,17 +3,10 @@
 import { memo } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import type { AuthorInfo } from '@/types/blog/content';
+import type { AuthorInfoCardProps } from '@/types/blog/components';
 
-interface AuthorInfo {
-  name: string;
-  description: string;
-  profileImage: string;
-}
 
-interface AuthorInfoCardProps {
-  author: AuthorInfo;
-  variant?: 'desktop' | 'mobile';
-}
 
 export const SellerInfo = memo(function SellerInfo({
   author,

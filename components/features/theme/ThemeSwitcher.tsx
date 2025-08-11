@@ -3,7 +3,7 @@
 import { useTheme } from "next-themes";
 import { memo, useCallback, useMemo } from "react";
 import { setThemeCookie } from "@/utils/cookie/theme";
-import { themeIcon , type Theme } from "@/types/icon";
+import { themeIcon , type Theme } from "@/types/ui/icon";
 import { Dropdown } from '@/components/ui/Dropdown';
 import { useMounted } from "@/hooks/utils";
 

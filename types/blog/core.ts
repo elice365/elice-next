@@ -3,6 +3,7 @@
 
 import { Post, PostContent } from './post';
 import { User } from '@prisma/client';
+import { AuthorInfo } from './content';
 
 // ==========================================
 // Core Blog Types
@@ -85,7 +86,7 @@ export interface BlogStatsResponse {
 // Component Props Types
 // ==========================================
 
-export interface BlogCardProps {
+export interface CoreBlogCardProps {
   post: BlogPost;
   layout?: 'card' | 'list';
   showActions?: boolean;
@@ -98,7 +99,7 @@ export interface BlogCardProps {
   className?: string;
 }
 
-export interface BlogListProps {
+export interface CoreBlogListProps {
   posts: BlogPost[];
   loading?: boolean;
   error?: string | null;
@@ -156,11 +157,8 @@ export interface ProductItem {
   description: string;
 }
 
-export interface AuthorInfo {
-  name: string;
-  description: string;
-  profileImage: string;
-}
+// AuthorInfo imported from content.ts to avoid duplication
+export type { AuthorInfo };
 
 export interface ContentSection {
   title: string;
@@ -428,3 +426,54 @@ export type BlogErrorCode =
   | 'UNAUTHORIZED'
   | 'VALIDATION_ERROR'
   | 'SERVER_ERROR';
+
+// ==========================================
+// Store Slice Types
+// ==========================================
+
+export interface BlogFilters {
+  category?: string;
+  tag?: string;
+  search?: string;
+  sortBy?: 'latest' | 'popular' | 'views';
+}
+
+export interface BlogSliceState {
+  // Post list state
+  posts: Post[];
+  categories: BlogCategory[];
+  tags: BlogTag[];
+  notices: import('./post').Notice[];
+  
+  // Current selections
+  currentPost: Post | null;
+  selectedCategory: BlogCategory | null;
+  selectedTag: BlogTag | null;
+  
+  // Pagination
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  
+  // Filters and search
+  filters: BlogFilters;
+  
+  // Layout and view options
+  layout: 'card' | 'list';
+  isViewToggled: boolean;
+  
+  // Loading states
+  isLoading: boolean;
+  isPostLoading: boolean;
+  isPostsLoading: boolean;
+  isCategoriesLoading: boolean;
+  isTagsLoading: boolean;
+  isNoticesLoading: boolean;
+  isLiking: boolean;
+  
+  // Error states
+  error: string | null;
+  postError: string | null;
+}

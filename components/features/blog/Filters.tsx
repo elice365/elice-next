@@ -11,7 +11,8 @@ import {
   selectBlogFilters,
   selectCategories,
   selectTags,
-  selectIsLoadingMetadata,
+  selectIsCategoriesLoading,
+  selectIsTagsLoading,
   fetchCategories,
   fetchTags
 } from '@/stores/slice/blog';
@@ -25,7 +26,9 @@ export const Filters = memo(function Filters() {
   const filters = useAppSelector(selectBlogFilters);
   const categories = useAppSelector(selectCategories);
   const tags = useAppSelector(selectTags);
-  const isLoadingMetadata = useAppSelector(selectIsLoadingMetadata);
+  const isCategoriesLoading = useAppSelector(selectIsCategoriesLoading);
+  const isTagsLoading = useAppSelector(selectIsTagsLoading);
+  const isLoadingMetadata = isCategoriesLoading || isTagsLoading;
   
   // Local state
   const [searchTerm, setSearchTerm] = useState(filters.search || '');

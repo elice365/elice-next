@@ -4,11 +4,7 @@ import { setQuery, setDebouncedQuery, clearSearch } from '@/stores/slice/search'
 import { useSearchAPI } from './useSearchAPI';
 import { filterField } from '@/utils/regex/input';
 import { useModal } from '../modal';
-
-interface SearchOptions {
-  debounceDelay?: number;
-  minLength?: number;
-}
+import type { SearchOptions } from '@/types/hooks/search';
 
 const DEFAULT_CONFIG = {
   debounceDelay: 500,

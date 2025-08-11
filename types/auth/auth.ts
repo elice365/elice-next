@@ -1,8 +1,8 @@
 // Authentication Types
 
 import { JwtPayload } from "jsonwebtoken";
-import { APIResult } from "./api";
-import { User } from './user';
+import { APIResult } from "../api";
+import { User } from '../common/user';
 import { Session } from './session';
 
 export type AuthType = 'login' | 'register' | 'logout' | 'verify' | 'me' | 'refresh' | 'resend' | 'social' | 'kakao' | 'google' | 'naver' | 'apple';
@@ -28,6 +28,23 @@ export interface AuthFormProps {
   onSubmit: (formData: any) => Promise<void>;
   successRedirect?: string;
   validate?: (formData: any) => string | null;
+  showSocialLogin?: boolean;
+}
+
+// Auth component interfaces
+export interface AuthFormFieldsProps {
+  fields: AuthFormField[];
+  formData: Record<string, string>;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+}
+
+export interface AuthFormActionsProps {
+  title: string;
+  loading: boolean;
+  success: string | null;
+  error: string | null;
+  onSubmit: (e: React.FormEvent) => void;
   showSocialLogin?: boolean;
 }
 
@@ -96,4 +113,23 @@ export interface UserWithRelations {
   sessions: Session[];
   auth: AuthDetails;
   _count: UserCounts;
+}
+
+// Store slice types
+export interface AuthUser {
+  id: string;
+  email: string;
+  name?: string;
+  imageUrl?: string;
+  roles: string[];
+  tokenExpiry?: number;
+}
+
+export interface AuthSliceState {
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  isRefreshing: boolean;
+  lastRefresh?: number;
 }

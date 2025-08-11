@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link";
-import { PanelProps } from "@/types/panel";
+import { PanelProps } from "@/types/ui/panel";
 import { setDevice } from "@/stores/slice/device";
 import { motion, AnimatePresence } from "framer-motion";
 import { memo, useCallback, useEffect } from "react";

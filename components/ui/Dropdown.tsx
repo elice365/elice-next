@@ -1,5 +1,5 @@
 "use client";
-import { DropdownProps } from '@/types/dropdown';
+import { DropdownProps } from '@/types/ui/dropdown';
 import { Icon } from '@/components/ui/Icon';
 import { useDropdown } from '@/hooks/ui';
 import { motion, AnimatePresence } from 'framer-motion';

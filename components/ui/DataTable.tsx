@@ -4,39 +4,7 @@
  */
 import React, { ReactNode } from 'react';
 import { Pagination } from '@/components/ui/Pagination';
-
-export interface Column<T> {
-  key: keyof T | string;
-  title: string;
-  width?: string;
-  align?: 'left' | 'center' | 'right';
-  sortable?: boolean;
-  render?: (value: any, record: T, index: number) => ReactNode;
-}
-
-export interface DataTableProps<T> {
-  readonly columns: readonly Column<T>[];
-  readonly data: readonly T[];
-  loading?: boolean;
-  pagination?: {
-    current: number;
-    total: number;
-    pageSize: number;
-    showSizeChanger?: boolean;
-    pageSizeOptions?: number[];
-  };
-  onPaginationChange?: (page: number, pageSize: number) => void;
-  onSort?: (column: keyof T | string, direction: 'asc' | 'desc') => void;
-  rowSelection?: {
-    selectedRowKeys?: string[];
-    onSelect?: (record: T, selected: boolean) => void;
-    onSelectAll?: (selected: boolean, selectedRows: T[]) => void;
-  };
-  rowKey?: keyof T | ((record: T) => string);
-  emptyText?: string;
-  className?: string;
-  size?: 'small' | 'middle' | 'large';
-}
+import type { Column, DataTableProps } from '@/types/ui/table';
 
 function getAlignmentClass(align?: 'left' | 'center' | 'right'): string {
   switch (align) {

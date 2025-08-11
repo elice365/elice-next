@@ -8,7 +8,7 @@ import {
   SocialLoginResult,
   ProviderTokens,
   OAuthTokenResponse 
-} from "@/types/social";
+} from "@/types/auth/social";
 import { randomUUID } from "crypto";
 import { extractErrorMessage } from "@/lib/auth/utils";
 
@@ -18,6 +18,7 @@ import { createUser, updateUser, createSocialAccount, findUserByEmail, findSocia
 import { setUserRole, searchRole, createRole } from "@/lib/db/roles";
 import { history } from "@/lib/db/history";
 import { request } from "@/lib/fetch";
+import type { SocialLoginParams } from "@/types/lib/social";
 
 /**
  * 소셜 로그인 통합 처리 서비스 (Next.js 15.4.3 최적화)
@@ -30,13 +31,6 @@ import { request } from "@/lib/fetch";
  * 5. 세션 생성
  * 6. 히스토리 기록
  */
-
-interface SocialLoginParams {
-  provider: SocialProvider;
-  code: string;
-  clientInfo: ReturnType<typeof requestInfo>;
-  fingerprint?: string;
-}
 
 // Extract OAuth flow processing
 async function processOAuthFlow(provider: SocialProvider, code: string): Promise<{ userInfo: SocialUserInfo; providerTokens: ProviderTokens }> {

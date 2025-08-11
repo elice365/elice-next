@@ -3,14 +3,10 @@
 import { memo, useRef } from 'react';
 import { useInView } from 'framer-motion';
 import { ContentSection } from '@/utils/blog/contentParser';
+import type { BlogPostContentProps, ContentSectionItemProps } from '@/types/blog/components';
 import { PrimarySection } from './content/PrimarySection';
 import { AccentSection } from './content/AccentSection';
 
-interface BlogPostContentProps {
-  sections: ContentSection[];
-  mobile: boolean;
-  tablet: boolean;
-}
 
 export const Content = memo(function Content({
   sections,
@@ -36,12 +32,6 @@ export const Content = memo(function Content({
   );
 });
 
-interface ContentSectionItemProps {
-  section: ContentSection;
-  index: number;
-  mobile: boolean;
-  tablet: boolean;
-}
 
 const ContentSectionItem = memo(function ContentSectionItem({
   section,

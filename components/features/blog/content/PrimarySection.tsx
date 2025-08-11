@@ -7,17 +7,8 @@
 import { memo, forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import { ContentSection } from '@/utils/blog/contentParser';
+import type { PrimarySectionProps } from '@/types/blog/components';
 
-interface PrimarySectionProps {
-  // sonar-disable-next-line typescript:S4023
-  section: ContentSection; // Used in JSX for title and context
-  // sonar-disable-next-line typescript:S4023
-  mobile: boolean; // Used in getTitleSize and getTextSize functions
-  // sonar-disable-next-line typescript:S4023
-  tablet: boolean; // Used in getTitleSize and getTextSize functions
-  // sonar-disable-next-line typescript:S4023
-  isInView: boolean; // Used for animation state control
-}
 
 const fadeInVariants = {
   hidden: { opacity: 0, y: 20 },

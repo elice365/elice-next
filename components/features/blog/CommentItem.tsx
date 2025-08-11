@@ -4,32 +4,7 @@ import { memo, useState, useCallback, useRef, useEffect } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logger } from '@/lib/services/logger';
-
-interface Comment {
-  id: string;
-  author: string;
-  avatar?: string;
-  content: string;
-  createdAt: Date;
-  likes: number;
-  isLiked?: boolean;
-  replies?: Comment[];
-}
-
-interface CommentItemProps {
-  comment: Comment;
-  isReply?: boolean;
-  parentId?: string;
-  user: any;
-  isSubmitting: boolean;
-  replyingTo: string | null;
-  formatDate: (date: Date) => string;
-  onLikeComment: (commentId: string, isReply?: boolean, parentId?: string) => void;
-  onReplyToggle: (commentId: string) => void;
-  onSubmitReply: (commentId: string, content: string) => Promise<void>;
-  setIsSubmitting: (value: boolean) => void;
-  setReplyingTo: (value: string | null) => void;
-}
+import { Comment, CommentItemProps } from '@/types/common/comment';
 
 export const CommentItem = memo(function CommentItem({
   comment,

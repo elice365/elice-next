@@ -1,5 +1,5 @@
 "use client"
-import { InputExtend } from "@/types/input";
+import { InputExtend } from "@/types/ui/input";
 import { useTranslations } from "next-intl";
 import { Translated } from "@/components/i18n/Translated";
 import { INPUT_FILTER, inputValue } from "@/utils/regex/input";

@@ -5,15 +5,9 @@
 import React from 'react';
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/Input";
-import { AuthFormField } from '@/types/auth';
+import { AuthFormField, AuthFormFieldsProps } from '@/types/auth';
 import { Field } from '@/utils/regex/input';
 
-interface AuthFormFieldsProps {
-  fields: AuthFormField[];
-  formData: Record<string, string>;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  disabled?: boolean;
-}
 
 const fieldVariants = {
   hidden: { opacity: 0, x: -20 },

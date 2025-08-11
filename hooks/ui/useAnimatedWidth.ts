@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-
-interface UseAnimatedWidthOptions {
-  duration?: number
-  openWidth?: number
-  closedWidth?: number
-}
+import type { UseAnimatedWidthOptions } from '@/types/hooks/ui';
 
 export function useAnimatedWidth(
   isOpen: boolean, 
