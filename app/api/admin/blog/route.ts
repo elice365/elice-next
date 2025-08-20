@@ -85,10 +85,12 @@ const createBlogPost = async (
       type = 'post',
       title,
       description,
+      url: providedUrl,
       categoryId,
       tags = [],
       images,
-      status = 'draft'
+      status = 'draft',
+      publishedAt
     } = body;
 
     // Validate required fields
@@ -96,14 +98,14 @@ const createBlogPost = async (
       return setMessage('InvalidField', null, 400);
     }
 
-    // Create URL slug from title
-    const url = title
+    // Use provided URL or create URL slug from title
+    const url = providedUrl || title
       .toLowerCase()
       .replace(/[^a-z0-9가-힣]+/g, '-')
       .replace(/(^-+)|(-+$)/g, '');
 
-    // Create blog post
-    const newPost = await BlogDB.createBlogPost({
+    // Prepare post data
+    const postData: any = {
       type,
       title,
       description,
@@ -111,7 +113,17 @@ const createBlogPost = async (
       images: images || {},
       categoryId,
       status
-    }, tags);
+    };
+
+    // Add publishedAt if provided and status is published
+    if (publishedAt && status === 'published') {
+      postData.publishedAt = new Date(publishedAt);
+    } else if (status === 'published' && !publishedAt) {
+      postData.publishedAt = new Date();
+    }
+
+    // Create blog post
+    const newPost = await BlogDB.createBlogPost(postData, tags);
 
     const result = {
       success: true,

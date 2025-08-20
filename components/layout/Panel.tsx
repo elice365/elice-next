@@ -1,47 +1,44 @@
-import dynamic from 'next/dynamic';
+'use client';
+
+import { useEffect, useState, memo } from 'react';
+import Navigator from '@/components/layout/Navigator';
 import { api } from '@/lib/fetch';
 import { APIResult } from '@/types/api';
 import { PanelType } from '@/types/ui/panel';
-import { getTranslations } from 'next-intl/server';
-import { logger } from '@/lib/services/logger';
+import { useTranslations } from 'next-intl';
 
+export const Panel = memo(function Panel({ type = 'user' }: Readonly<PanelType>) {
+  const t = useTranslations("router");
+  const [router, setRouter] = useState<Array<{name: string; path: string; icon?: string}>>([]);
 
-
-export async function Panel({ type = 'user' }: Readonly<PanelType>) {
-  try {
-    const Navigator = dynamic(() => import('@/components/layout/Navigator'));
-    const t = await getTranslations("router");
-    let apiRouter: Array<{name: string; path: string; icon?: string}> = [];
-
-    try {
-      // API에서 라우터 데이터 가져오기
-      const { data } = await api.get<APIResult>(`/api/router/${type}`);
-      if (!data) {
-        return <Navigator router={[]} />;
+  useEffect(() => {
+    const fetchRouterData = async () => {
+      try {
+        // API에서 라우터 데이터 가져오기
+        const { data } = await api.get<APIResult>(`/api/router/${type}`);
+        
+        if (data?.success && Array.isArray(data?.data)) {
+          // API 데이터를 변환 (아이콘은 문자열로 전달)
+          const apiRouter = data.data.map((item) => ({
+            name: t(item.name),
+            path: item.path,
+            icon: item.icon || undefined
+          }));
+          setRouter(apiRouter);
+        }
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.error('Panel API 호출 오류:', errorMessage);
+        setRouter([]);
       }
+    };
 
-      // API 데이터를 변환 (아이콘은 문자열로 전달)
-      apiRouter = (data?.success && Array.isArray(data?.data)) ? data.data.map((item) => ({
-        name: t(item.name),
-        path: item.path,
-        icon: item.icon || undefined
-      })) : [];
-    } catch (error) {
-      logger.error('Panel API 호출 오류', 'PANEL', error);
-      apiRouter = [];
-    }
+    fetchRouterData();
+  }, [type, t]);
 
-    // API 데이터가 있으면 사용, 없으면 기본값 사용
-    const router = apiRouter;
-
-    return (
-      <Navigator router={router} />
-    );
-  } catch (error) {
-    logger.error('Panel 컴포넌트 오류', 'PANEL', error);
-    return <div>Navigation loading...</div>;
-  }
-};
+  // 로딩 상태 관계없이 Navigator 렌더링 (빈 배열로 시작)
+  return <Navigator router={router} />;
+});
 
 
 

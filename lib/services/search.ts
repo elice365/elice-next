@@ -20,12 +20,14 @@ const searchResults = async (searchText: string) => {
   if (searchText.length <= 1) return [];
   
   // api.post의 제네릭과 인자 타입을 올바르게 수정합니다.
-  const { data } = await api.post<APIResult<SearchItem[]>>('/api/search', {
-    type: searchConfig.type.search,
-    search: searchText
+  const { data } = await api.post<APIResult<any>>('/api/search', {
+    query: searchText, // Use 'query' instead of 'search'
+    type: 'posts'     // Specify we want posts
   });
 
-  return data.data || [];
+  // The API returns { posts, tags, total, suggestions }
+  // We need to extract just the posts array
+  return data.data?.posts || [];
 };
 
 export const search = {

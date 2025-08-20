@@ -1,13 +1,29 @@
+'use client';
+
 import Image from "next/image";
 import { memo } from 'react';
+import { useRouter } from 'next/navigation';
 import { SearchItem } from '@/types/common/search';
 import { Icon } from "../Icon";
 import { Badge } from "../Badge";
 
-export const SearchCard = memo((post: SearchItem) => (
-  <div
-    className="flex flex-col gap-1 p-5 hover:bg-[var(--hover)] rounded cursor-pointer border border-[var(--border-color)] "
-  >
+interface SearchCardProps extends SearchItem {
+  onNavigate?: () => void;
+}
+
+export const SearchCard = memo<SearchCardProps>(({ onNavigate, ...post }) => {
+  const router = useRouter();
+  
+  const handleClick = () => {
+    router.push(post.url);
+    onNavigate?.();
+  };
+  
+  return (
+    <div
+      className="flex flex-col gap-1 p-5 hover:bg-[var(--hover)] rounded cursor-pointer border border-[var(--border-color)] transition-colors"
+      onClick={handleClick}
+    >
 
     <div className="flex gap-3 flex-1 min-w-0">
       <div className="w-16 h-16 bg-background rounded flex-shrink-0 overflow-hidden border border-[var(--border-color)] ">
@@ -24,12 +40,14 @@ export const SearchCard = memo((post: SearchItem) => (
         {post.description && (
           <p className="text-sm text-[var(--text-color)] opacity-70 line-clamp-1">{post.description}</p>
         )}
-        <div className="flex gap-2">
-          <span className="flex gap-1 items-center text-sm text-[var(--text-color)] opacity-70 line-clamp-1">
-            <Icon name="Eye" size={12} /> : 10
+        <div className="flex gap-3">
+          <span className="flex gap-1 items-center text-sm text-[var(--text-color)] opacity-70">
+            <Icon name="Eye" size={12} />
+            <span>{post.views || 0}</span>
           </span>
-          <span className="flex gap-1 items-center text-sm text-[var(--text-color)] opacity-70 line-clamp-1">
-            <Icon name="Heart" size={12} color="red" fill="red" /> : 10
+          <span className="flex gap-1 items-center text-sm text-[var(--text-color)] opacity-70">
+            <Icon name="Heart" size={12} />
+            <span>{post.likeCount || 0}</span>
           </span>
         </div>
       </div>
@@ -43,6 +61,7 @@ export const SearchCard = memo((post: SearchItem) => (
       </div>
     )}
   </div>
-));
+  );
+});
 
 SearchCard.displayName = 'SearchCard';

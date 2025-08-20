@@ -259,10 +259,7 @@ export default function AdminNotificationPage() {
   const actionButtons = (
     <div className="flex items-center gap-3">
       <button
-        onClick={() => {
-          console.log('알림 생성 버튼 클릭됨');
-          setIsCreateModalOpen(true);
-        }}
+        onClick={() => setIsCreateModalOpen(true)}
         className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         <Icon name="Plus" size={16} />
@@ -316,14 +313,8 @@ export default function AdminNotificationPage() {
       {/* 알림 생성 모달 */}
       <NotificationCreateModal
         isOpen={isCreateModalOpen}
-        onClose={() => {
-          console.log('알림 생성 모달 닫힘');
-          setIsCreateModalOpen(false);
-        }}
-        onSuccess={() => {
-          console.log('알림 생성 성공');
-          handleRefresh();
-        }}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={handleRefresh}
       />
 
       {/* 알림 상세보기 모달 */}

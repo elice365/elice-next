@@ -71,6 +71,16 @@ const blogWithRelationsSelect = {
       name: true
     }
   },
+  translations: {
+    select: {
+      id: true,
+      locale: true,
+      title: true,
+      description: true,
+      content: true,
+      url: true
+    }
+  },
   _count: {
     select: {
       likes: true,
@@ -213,6 +223,82 @@ export const deleteBulkBlogPosts = async (postIds: string[]) => {
       uid: {
         in: postIds
       }
+    }
+  });
+};
+
+// ================================
+// Translation Operations
+// ================================
+
+/**
+ * Upsert post translation
+ * @param postId - Post ID
+ * @param locale - Locale code
+ * @param data - Translation data
+ * @returns Created or updated translation
+ */
+export const upsertPostTranslation = async (
+  postId: string,
+  locale: string,
+  data: {
+    title: string;
+    description: string;
+    content?: string | null;
+    url?: string | null;
+  }
+) => {
+  return prisma.postTranslation.upsert({
+    where: {
+      postId_locale: {
+        postId,
+        locale
+      }
+    },
+    update: {
+      title: data.title,
+      description: data.description,
+      content: data.content || null,
+      url: data.url || null,
+      updatedTime: new Date()
+    },
+    create: {
+      postId,
+      locale,
+      title: data.title,
+      description: data.description,
+      content: data.content || null,
+      url: data.url || null
+    },
+    select: {
+      id: true,
+      locale: true,
+      title: true,
+      description: true,
+      content: true
+    }
+  });
+};
+
+/**
+ * Get post translations
+ * @param postId - Post ID
+ * @returns Array of translations
+ */
+export const getPostTranslations = async (postId: string) => {
+  return prisma.postTranslation.findMany({
+    where: { postId },
+    select: {
+      id: true,
+      locale: true,
+      title: true,
+      description: true,
+      content: true,
+      createdTime: true,
+      updatedTime: true
+    },
+    orderBy: {
+      locale: 'asc'
     }
   });
 };

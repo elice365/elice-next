@@ -6,6 +6,7 @@ import { safeBody } from '@/utils/parse/body';
 import { trackPostView } from '@/lib/db/views';
 import { logger } from '@/lib/services/logger';
 import { PostListRequest, PostDetailRequest, NoticeListRequest, PostListResponse, PostDetailResponse, NoticeListResponse } from '@/types/api/routes';
+import { getPreferredLocale } from '@/lib/db/translations';
 
 // Types for blog post API
 type PostImages = string[] | Record<string, string> | string;
@@ -58,7 +59,7 @@ async function handlePostRequest(
 
     switch (type) {
       case 'list':
-        return handlePostList(body as PostListRequest, context);
+        return handlePostList(body as PostListRequest, context, request);
       
       case 'post':
         return handlePostDetail(body as PostDetailRequest, context, request);
@@ -84,8 +85,11 @@ async function handlePostRequest(
 // Handle post list request
 async function handlePostList(
   body: PostListRequest,
-  context: AuthInfo
+  context: AuthInfo,
+  request?: NextRequest
 ): Promise<APIResult<PostListResponse>> {
+  // Get preferred locale from request
+  const locale = request ? getPreferredLocale(request) : 'ko';
   const page = Math.max(1, body.page || 1);
   const limit = Math.min(50, Math.max(1, body.limit || 10));
   const skip = (page - 1) * limit;
@@ -143,6 +147,16 @@ async function handlePostList(
             name: true,
           },
         },
+        translations: {
+          where: {
+            locale: locale
+          },
+          select: {
+            title: true,
+            description: true,
+            url: true,
+          }
+        },
         likes: context.userId ? {
           where: {
             userId: context.userId,
@@ -162,16 +176,22 @@ async function handlePostList(
   ]);
 
   // Transform posts to match API response type
-  const transformedPosts = posts.map((post) => ({
-    uid: post.uid,
-    title: post.title,
-    description: post.description,
-    imageUrl: getImageUrl(post.images),
-    status: post.status,
-    viewCount: (post as { _count: { view: number } })._count.view, // PostView 관계에서 계산된 조회수
-    likeCount: post.likeCount || 0,
-    commentCount: 0, // TODO: Implement comment counting
-    isLiked: context.userId ? ((post as { likes?: Array<{ uid: string }> }).likes?.length ?? 0) > 0 : false,
+  const transformedPosts = posts.map((post) => {
+    // Use translation if available, fallback to default
+    const translation = (post as any).translations?.[0];
+    const title = translation?.title || post.title;
+    const description = translation?.description || post.description;
+    
+    return {
+      uid: post.uid,
+      title,
+      description,
+      imageUrl: getImageUrl(post.images),
+      status: post.status,
+      viewCount: (post as any)._count?.view || 0, // PostView 관계에서 계산된 조회수
+      likeCount: post.likeCount || 0,
+      commentCount: (post as any)._count?.comments || 0,
+      isLiked: context.userId ? ((post as { likes?: Array<{ uid: string }> }).likes?.length ?? 0) > 0 : false,
     category: post.category ? {
       uid: post.category.slug, // Using slug as uid for now
       name: post.category.name,
@@ -181,9 +201,10 @@ async function handlePostList(
       uid: tag.name, // Using name as uid for now
       name: tag.name
     })),
-    createdAt: post.createdTime.toISOString(),
-    updatedAt: post.updatedTime.toISOString()
-  }));
+      createdAt: post.createdTime.toISOString(),
+      updatedAt: post.updatedTime.toISOString()
+    };
+  });
 
   const totalPages = Math.ceil(totalCount / limit);
 
@@ -295,7 +316,7 @@ async function handlePostDetail(
     status: post.status,
     viewCount: post._count.view,
     likeCount: post.likeCount || 0,
-    commentCount: 0, // TODO: Implement comment counting
+    commentCount: (post as any)._count?.comments || 0,
     isLiked: context.userId ? ((post.likes as Array<{ uid: string }> | false) !== false && post.likes.length > 0) : false,
     category: post.category ? {
       uid: post.category.slug,

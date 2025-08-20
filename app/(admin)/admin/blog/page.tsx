@@ -7,15 +7,24 @@ import { Icon } from "@/components/ui/Icon";
 import { Admin } from "@/components/layout/Admin";
 import { useAdminPage } from "@/hooks/admin";
 import { BlogCreateModal } from "@/components/ui/modal/blog/BlogCreate";
-import { BlogEditModal } from "@/components/ui/modal/blog/BlogEdit";
+import { BlogEditMultilangModal as BlogEditModal } from "@/components/ui/modal/blog/BlogEditMultilang";
 import { BlogViewStatsModal } from "@/components/ui/modal/blog/BlogViewStats";
 import { BlogLikeStatsModal } from "@/components/ui/modal/blog/BlogLikeStats";
 import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-import { Post } from "@/types/blog/post";
 import { BlogData } from "@/types/admin/pages";
 import { FilterConfig, StatCardConfig } from "@/types/layout/admin";
+import { formatDateShort, formatDateFull } from "@/utils/date/format";
+import "@/styles/admin/category.css";
+
+// Default placeholder images for blog posts
+const DEFAULT_BLOG_IMAGE = "https://placehold.co/100x100.png?text=Blog&w=1080&q=75";
+const DEFAULT_IMAGES = [
+  "https://placehold.co/100x100.png?text=1&w=1080&q=75",
+  "https://placehold.co/100x100.png?text=2&w=1080&q=75",
+  "https://placehold.co/100x100.png?text=3&w=1080&q=75"
+];
 
 // Blog management page main component
 export default function AdminBlogPage() {
@@ -25,6 +34,9 @@ export default function AdminBlogPage() {
   const [deletingPost, setDeletingPost] = useState<BlogData | null>(null);
   const [viewStatsPost, setViewStatsPost] = useState<BlogData | null>(null);
   const [likeStatsPost, setLikeStatsPost] = useState<BlogData | null>(null);
+  
+  // Sequential image display states (like category page)
+  const [visibleImages, setVisibleImages] = useState<{ [key: string]: boolean }>({});
   
   // Page state management
   const [pageState, pageActions] = useAdminPage<BlogData>({
@@ -175,62 +187,133 @@ export default function AdminBlogPage() {
     }
   ];
 
-  // Table columns configuration
+  // Table columns configuration - 모바일 최적화
   const columns = [
     {
       title: '이미지',
       dataIndex: 'images',
-      key: 'image',
-      width: '80px',
-      render: (images: any) => {
-        const mainImage = Array.isArray(images) ? images[0] : images?.main;
-        return mainImage ? (
-          <div className="relative w-16 h-16 rounded-lg overflow-hidden">
-            <Image
-              src={mainImage}
-              alt=""
-              fill
-              className="object-cover"
-            />
-          </div>
-        ) : (
-          <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-            <Icon name="Image" size={20} className="text-gray-400" />
+      key: 'images',
+      width: '60px',
+      className: 'w-[60px] min-w-[60px]',
+      render: (_: any, record: BlogData) => {
+        // Get images array - handle various formats
+        let blogImages: string[] = [];
+        if (Array.isArray(record.images)) {
+          blogImages = record.images;
+        } else if (typeof record.images === 'object' && record.images) {
+          blogImages = [record.images.main, ...(record.images.additional || [])].filter(Boolean);
+        } else if (record.image) {
+          blogImages = [record.image];
+        }
+        
+        // Use default images if no images available
+        if (blogImages.length === 0) {
+          blogImages = DEFAULT_IMAGES;
+        }
+        
+        const mainImage = blogImages[0] || DEFAULT_BLOG_IMAGE;
+        
+        return (
+          <div className="relative flex-shrink-0">
+            <div className="relative w-8 h-8 sm:w-10 sm:h-10 overflow-hidden rounded">
+              <Image
+                src={mainImage}
+                alt="Blog image"
+                fill
+                className="object-cover"
+              />
+              
+              {/* Image count indicator */}
+              {blogImages.length > 1 && (
+                <div className="absolute bottom-0 right-0 bg-black/70 text-white text-[7px] px-0.5 rounded-tl">
+                  +{blogImages.length - 1}
+                </div>
+              )}
+            </div>
           </div>
         );
       }
     },
     {
-      title: '제목',
+      title: '글 정보',
       dataIndex: 'title',
       key: 'title',
-      render: (title: string, record: BlogData) => (
-        <div>
-          <div className="font-medium text-[var(--text-color)] line-clamp-1">{title}</div>
-          <div className="text-sm text-[var(--text-color)] opacity-60 line-clamp-1 mt-1">
-            {record.description}
+      className: 'min-w-0 flex-1',
+      render: (title: string, record: BlogData) => {
+        return (
+          <div className="min-w-0">
+            <div className="font-medium text-[var(--text-color)] text-xs sm:text-sm line-clamp-1">
+              {title}
+            </div>
+            <div className="text-[9px] sm:text-xs text-[var(--text-color)] opacity-60 line-clamp-1">
+              {record.description || '설명 없음'}
+            </div>
+            
+            {/* 모바일에서 추가 정보 표시 */}
+            <div className="flex items-center gap-2 mt-1 sm:hidden">
+              {/* 카테고리 */}
+              {record.category && (
+                <Badge className="text-primary border-primary/20 text-[8px] py-0 px-1">
+                  {record.category.name}
+                </Badge>
+              )}
+              
+              {/* 상태 */}
+              <div className="flex items-center gap-1">
+                {(record.status || 'draft') === 'published' ? (
+                  <span className="inline-block w-1.5 h-1.5 bg-green-500 rounded-full" title="게시됨"></span>
+                ) : (
+                  <span className="inline-block w-1.5 h-1.5 bg-gray-400 rounded-full" title="임시저장"></span>
+                )}
+              </div>
+              
+              {/* 통계 */}
+              <div className="flex items-center gap-2 text-[8px] text-gray-500">
+                <span className="flex items-center gap-0.5">
+                  <Icon name="Eye" size={8} />
+                  {record?.views || 0}
+                </span>
+                <span className="flex items-center gap-0.5">
+                  <Icon name="Heart" size={8} />
+                  {record?.likeCount || 0}
+                </span>
+              </div>
+            </div>
+
+            {/* 태그는 더 작게 */}
+            {record.tags && record.tags.length > 0 && (
+              <div className="flex items-center gap-1 flex-wrap mt-1 sm:hidden">
+                {record.tags.slice(0, 2).map((tag: any, idx: number) => (
+                  <span key={idx} className="text-[8px] text-gray-400">
+                    #{typeof tag === 'string' ? tag : tag.name}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      )
+        );
+      }
     },
     {
       title: '카테고리',
       dataIndex: 'category',
       key: 'category',
-      width: '120px',
+      width: '90px',
+      className: 'align-middle w-[90px]',
       render: (category: any) => category ? (
-        <Badge className="text-primary border-primary/20 whitespace-nowrap">
+        <Badge className="text-primary border-primary/20 whitespace-nowrap text-[10px] sm:text-xs">
           {category.name}
         </Badge>
       ) : (
-        <span className="text-gray-400">-</span>
+        <span className="text-gray-400 text-xs">-</span>
       )
     },
     {
       title: '유형',
       dataIndex: 'type',
       key: 'type',
-      width: '100px',
+      width: '70px',
+      className: 'align-middle w-[70px]',
       render: (type: string) => {
         const typeMap: Record<string, { label: string; color: string; icon: string }> = {
           post: { label: '일반', color: 'whitespace-nowrap bg-blue-100 text-blue-700 border-blue-200', icon: '📄' },
@@ -238,8 +321,8 @@ export default function AdminBlogPage() {
         };
         const config = typeMap[type] || typeMap.post;
         return (
-          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${config.color}`}>
-            {config.icon} {config.label}
+          <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs font-medium border ${config.color}`}>
+            <span className="hidden sm:inline">{config.icon}</span> {config.label}
           </span>
         );
       }
@@ -248,21 +331,16 @@ export default function AdminBlogPage() {
       title: '상태',
       dataIndex: 'status',
       key: 'status',
-      width: '100px',
+      width: '50px',
+      className: 'align-middle w-[50px]',
       render: (status: string) => {
         const actualStatus = status || 'draft';
         return (
-          <div className="flex items-center gap-2">
+          <div className="text-center">
             {actualStatus === 'published' ? (
-              <Badge className="bg-green-100 text-green-700 border border-green-200 whitespace-nowrap">
-                <Icon name="CheckCircle" size={12} className="mr-1" />
-                게시됨
-              </Badge>
+              <span className="inline-block w-2 h-2 bg-green-500 rounded-full" title="게시됨"></span>
             ) : (
-              <Badge className="bg-gray-100 text-gray-700 border border-gray-200 whitespace-nowrap">
-                <Icon name="Edit" size={12} className="mr-1" />
-                임시저장
-              </Badge>
+              <span className="inline-block w-2 h-2 bg-gray-400 rounded-full" title="임시저장"></span>
             )}
           </div>
         );
@@ -271,31 +349,18 @@ export default function AdminBlogPage() {
     {
       title: '통계',
       key: 'stats',
-      width: '150px',
-      render: (value: any, record: BlogData) => (
-        <div className="flex items-center gap-4 text-sm text-gray-500">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setViewStatsPost(record);
-            }}
-            className="flex items-center gap-1 hover:text-blue-600 transition-colors cursor-pointer"
-            title="조회 통계 보기"
-          >
-            <Icon name="Eye" size={14} />
-            <span>{(record?.views || 0).toLocaleString()}</span>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setLikeStatsPost(record);
-            }}
-            className="flex items-center gap-1 hover:text-pink-600 transition-colors cursor-pointer"
-            title="좋아요 통계 보기"
-          >
-            <Icon name="Heart" size={14} />
-            <span>{(record?.likeCount || 0).toLocaleString()}</span>
-          </button>
+      width: '60px',
+      className: 'align-middle w-[60px]',
+      render: (_value: any, record: BlogData) => (
+        <div className="flex flex-col gap-0.5 text-[10px] text-gray-500">
+          <div className="flex items-center gap-1">
+            <Icon name="Eye" size={10} />
+            <span>{record?.views || 0}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Icon name="Heart" size={10} />
+            <span>{record?.likeCount || 0}</span>
+          </div>
         </div>
       )
     },
@@ -303,60 +368,42 @@ export default function AdminBlogPage() {
       title: '작성일',
       dataIndex: 'createdTime',
       key: 'createdTime',
-      width: '140px',
+      width: '70px',
+      className: 'align-middle w-[70px]',
       render: (createdTime: string) => (
-        <div className="text-sm whitespace-nowrap">
-          <div className="text-[var(--text-color)]">
-            {new Date(createdTime).toLocaleDateString('ko-KR')}
-          </div>
-          <div className="text-[var(--text-color)] opacity-60">
-            {new Date(createdTime).toLocaleTimeString('ko-KR', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
-          </div>
+        <div className="text-[10px] text-gray-500">
+          {formatDateShort(createdTime)}
         </div>
       )
     },
     {
       title: '작업',
       key: 'actions',
-      width: '120px',
-      render: (value: any, record: BlogData) => (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePublishToggle(record);
-            }}
-            className="p-1 hover:bg-[var(--hover)] rounded transition-colors"
-            title={(record?.status || 'draft') === 'published' ? '비공개' : '게시'}
-          >
-            <Icon 
-              name={(record?.status || 'draft') === 'published' ? 'EyeOff' : 'Eye'} 
-              size={16} 
-              className="text-[var(--text-color)] opacity-60" 
-            />
-          </button>
+      width: '70px',
+      className: 'text-center align-middle w-[70px] min-w-[70px]',
+      render: (_value: any, record: BlogData) => (
+        <div className="flex items-center justify-center gap-0.5">
           <button
             onClick={(e) => {
               e.stopPropagation();
               setEditingPost(record);
             }}
-            className="p-1 hover:bg-[var(--hover)] rounded transition-colors"
+            className="p-1 sm:p-1.5 text-green-600 hover:bg-green-50 active:bg-green-100 rounded-lg touch-manipulation transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
             title="수정"
+            aria-label={`${record.title} 수정`}
           >
-            <Icon name="Edit" size={16} className="text-[var(--text-color)] opacity-60" />
+            <Icon name="Edit" size={12} />
           </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
               setDeletingPost(record);
             }}
-            className="p-1 hover:bg-red-50 rounded transition-colors"
+            className="p-1 sm:p-1.5 text-red-600 hover:bg-red-50 active:bg-red-100 rounded-lg touch-manipulation transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
             title="삭제"
+            aria-label={`${record.title} 삭제`}
           >
-            <Icon name="Trash2" size={16} className="text-red-500" />
+            <Icon name="Trash2" size={12} />
           </button>
         </div>
       )
@@ -365,23 +412,46 @@ export default function AdminBlogPage() {
 
   // Action buttons
   const actionButtons = (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 sm:gap-3">
       <button
         onClick={() => setIsCreateModalOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        className="flex items-center gap-1.5 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base whitespace-nowrap"
       >
         <Icon name="Plus" size={16} />
-        새 글 작성
+        <span className="hidden sm:inline">새 글 작성</span>
+        <span className="sm:hidden">작성</span>
       </button>
       <button
         onClick={() => pageActions.refresh()}
-        className="flex items-center gap-2 px-4 py-2 border border-[var(--border-color)] text-[var(--text-color)] rounded-lg hover:bg-[var(--hover)] transition-colors"
+        className="flex items-center gap-1.5 px-3 sm:px-4 py-2 border border-[var(--border-color)] text-[var(--text-color)] rounded-lg hover:bg-[var(--hover)] transition-colors text-sm sm:text-base"
       >
         <Icon name="RotateCcw" size={16} />
-        새로고침
+        <span className="hidden sm:inline">새로고침</span>
       </button>
     </div>
   );
+  
+  // Mobile actions for floating button
+  const mobileActions = [
+    {
+      label: '새 글 작성',
+      icon: 'FileText',
+      onClick: () => setIsCreateModalOpen(true),
+      variant: 'primary' as const
+    },
+    {
+      label: '새로고침',
+      icon: 'RotateCcw',
+      onClick: () => pageActions.refresh(),
+      variant: 'default' as const
+    },
+    {
+      label: '필터 초기화',
+      icon: 'FilterX',
+      onClick: () => pageActions.clearFilters(),
+      variant: 'default' as const
+    }
+  ];
 
   // Bulk action buttons
   const bulkActionButtons = pageState.selectedIds.length > 0 ? (
@@ -413,6 +483,7 @@ export default function AdminBlogPage() {
         filters={filters}
         columns={columns}
         actionButtons={actionButtons}
+        mobileActions={mobileActions}
         bulkActionButtons={bulkActionButtons}
         onRowClick={(record) => setEditingPost(record)}
         rowKey="uid"
@@ -435,9 +506,9 @@ export default function AdminBlogPage() {
           id: editingPost.uid,
           ...editingPost,
           status: editingPost.status || 'draft',
-          createdTime: editingPost.createdTime ? new Date(editingPost.createdTime).toLocaleString('ko-KR') : '',
-          updatedTime: editingPost.updatedTime ? new Date(editingPost.updatedTime).toLocaleString('ko-KR') : '',
-          publishedAt: editingPost.publishedAt ? new Date(editingPost.publishedAt).toLocaleString('ko-KR') : undefined
+          createdTime: editingPost.createdTime ? formatDateFull(editingPost.createdTime) : '',
+          updatedTime: editingPost.updatedTime ? formatDateFull(editingPost.updatedTime) : '',
+          publishedAt: editingPost.publishedAt ? formatDateFull(editingPost.publishedAt) : undefined
         } : null}
         onSuccess={() => {
           setEditingPost(null);

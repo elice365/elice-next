@@ -147,19 +147,16 @@ export default function AdminRolePageOptimized() {
     {
       key: 'userCount',
       title: '할당된 사용자',
-      className: 'text-left min-w-[140px]',
+      className: 'text-left min-w-[100px] md:min-w-[140px]',
       headerClassName: 'text-left',
       render: (_: any, role: Role) => (
-        <div className="flex items-center gap-3 py-3">
-          <div className="flex-shrink-0 p-2 rounded-lg border border-green-2000">
-            <Icon name="Users" size={18} className="text-green-600" />
+        <div className="flex items-center gap-1 md:gap-3 py-3">
+          <div className="flex-shrink-0 p-1 md:p-2 rounded-lg border border-green-200">
+            <Icon name="Users" size={14} className="text-green-600 md:w-[18px] md:h-[18px]" />
           </div>
           <div className="flex flex-col">
-            <div className="text-lg font-bold text-green-700">
+            <div className="text-sm md:text-lg font-bold text-green-700 whitespace-nowrap">
               {role.userCount}명
-            </div>
-            <div className="text-xs text-[var(--text-color)]">
-              사용자 할당됨
             </div>
           </div>
         </div>
@@ -168,19 +165,19 @@ export default function AdminRolePageOptimized() {
     {
       key: 'actions',
       title: '작업',
-      className: 'text-left min-w-[180px]',
+      className: 'text-left min-w-[140px] md:min-w-[180px]',
       headerClassName: 'text-left',
       render: (_: any, role: Role) => (
-        <div className="flex items-center gap-2 py-3">
+        <div className="flex items-center gap-1 md:gap-2 py-3 flex-nowrap">
           <button
             onClick={(e) => {
               e.stopPropagation();
               modalActions.openEditModal(role, e);
             }}
-            className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-[var(--hover-primary)] text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[40px] touch-manipulation"
+            className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1.5 md:py-2.5 bg-blue-600 hover:bg-[var(--hover-primary)] text-white text-xs md:text-sm font-medium rounded-lg transition-colors duration-200 min-h-[32px] md:min-h-[40px] touch-manipulation whitespace-nowrap"
             title="역할 편집"
           >
-            <Icon name="Edit" size={16} />
+            <Icon name="Edit" size={14} className="md:w-4 md:h-4" />
             <span>편집</span>
           </button>
           {!['admin', 'user'].includes(role.name.toLowerCase()) && (
@@ -189,10 +186,10 @@ export default function AdminRolePageOptimized() {
                 e.stopPropagation();
                 modalActions.openDeleteModal(role, e);
               }}
-              className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-[var(--hover-danger)] text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[40px] touch-manipulation"
+              className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1.5 md:py-2.5 bg-red-600 hover:bg-[var(--hover-danger)] text-white text-xs md:text-sm font-medium rounded-lg transition-colors duration-200 min-h-[32px] md:min-h-[40px] touch-manipulation whitespace-nowrap"
               title="역할 삭제"
             >
-              <Icon name="Trash2" size={16} />
+              <Icon name="Trash2" size={14} className="md:w-4 md:h-4" />
               <span>삭제</span>
             </button>
           )}
@@ -206,20 +203,20 @@ export default function AdminRolePageOptimized() {
     <>
       <button
         onClick={pageActions.refresh}
-        className="flex items-center gap-2 px-4 py-2.5 bg-[var(--background)] border border-[var(--border-color)]  text-[var(--text-color)] rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-all duration-200 hover:shadow-md hover:scale-105 min-h-[44px] touch-manipulation"
+        className="flex items-center gap-2 px-4 py-2.5 bg-[var(--background)] border border-[var(--border-color)]  text-[var(--text-color)] rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-colors duration-200 min-h-[44px] touch-manipulation"
       >
         <Icon name="RefreshCw" size={16} />
         <span className="hidden sm:inline">새로고침</span>
         <span className="sm:hidden">새로고침</span>
       </button>
-      <button className="flex items-center gap-2 px-4 py-2.5 bg-[var(--background)] border border-[var(--border-color)]  text-[var(--text-color)] rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-all duration-200 hover:shadow-md hover:scale-105 min-h-[44px] touch-manipulation">
+      <button className="flex items-center gap-2 px-4 py-2.5 bg-[var(--background)] border border-[var(--border-color)]  text-[var(--text-color)] rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-colors duration-200 min-h-[44px] touch-manipulation">
         <Icon name="Download" size={16} />
         <span className="hidden sm:inline">내보내기</span>
         <span className="sm:hidden">내보내기</span>
       </button>
       <button
         onClick={modalActions.openCreateModal}
-        className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-[var(--hover-primary)] text-white rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 min-h-[44px] touch-manipulation"
+        className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-[var(--hover-primary)] text-white rounded-lg text-sm font-medium transition-colors duration-200 min-h-[44px] touch-manipulation"
       >
         <Icon name="Plus" size={16} />
         <span className="hidden sm:inline">역할 추가</span>

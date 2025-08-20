@@ -179,7 +179,7 @@ export default function AdminSessionPageOptimized() {
       key: 'status',
       title: '상태',
       render: (_: any, session: Session) => (
-        <Badge className={`${getStatusBadge(session)} rounded-full shadow-sm flex items-center gap-1.5 px-3 py-1 whitespace-nowrap`}>
+        <Badge className={`${getStatusBadge(session)} rounded-full shadow-sm flex items-center gap-1.5 px-3 py-1 whitespace-nowrap admin-mobile-status`}>
           <Icon name={getStatusIcon(session)} size={12} />
           {getStatusText(session)}
         </Badge>
@@ -189,7 +189,7 @@ export default function AdminSessionPageOptimized() {
       key: 'loginType',
       title: '로그인 방식',
       render: (_: any, session: Session) => (
-        <Badge className={`${getLoginTypeBadge(session.loginType)} rounded-full shadow-sm px-3 py-1`}>
+        <Badge className={`${getLoginTypeBadge(session.loginType)} rounded-full shadow-sm px-3 py-1 admin-mobile-badge`}>
           {session.loginType.toUpperCase()}
         </Badge>
       )
@@ -232,19 +232,21 @@ export default function AdminSessionPageOptimized() {
       render: (_: any, session: Session) => (
         <div className="flex items-center space-x-2">
           <button
+            type="button"
             onClick={() => handleSessionClick(session)}
-            className="text-blue-600 hover:text-[var(--hover-primary)] text-xs px-3 py-1.5 border border-blue-300 hover:border-[var(--hover-primary)] rounded-full transition-all duration-200 hover:shadow-sm flex items-center gap-1 whitespace-nowrap"
+            className="inline-flex items-center gap-1 text-blue-600 hover:text-[var(--hover-primary)] text-xs px-3 py-1.5 border border-blue-300 hover:border-[var(--hover-primary)] rounded-full transition-all duration-200 hover:shadow-sm whitespace-nowrap cursor-pointer"
             title="세션 상세"
           >
             <Icon name="Eye" size={12} />
             상세
           </button>
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               handleTerminateUserSessions(session.user.id, e);
             }}
-            className="text-orange-600 hover:text-[var(--hover-warning)] text-xs px-3 py-1.5 border border-orange-300 hover:border-[var(--hover-warning)] rounded-full transition-all duration-200 hover:shadow-sm flex items-center gap-1 whitespace-nowrap"
+            className="inline-flex items-center gap-1 text-orange-600 hover:text-[var(--hover-warning)] text-xs px-3 py-1.5 border border-orange-300 hover:border-[var(--hover-warning)] rounded-full transition-all duration-200 hover:shadow-sm whitespace-nowrap cursor-pointer"
             title="사용자 세션 종료"
           >
             <Icon name="UserX" size={12} />
@@ -252,11 +254,12 @@ export default function AdminSessionPageOptimized() {
           </button>
           {session.active && !isExpired(session.expiresTime.toString()) && (
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 handleTerminateSession(session.sessionId, e);
               }}
-              className="text-yellow-600 hover:text-[var(--hover-warning)] text-xs px-3 py-1.5 border border-yellow-300 hover:border-[var(--hover-warning)] rounded-full transition-all duration-200 hover:shadow-sm flex items-center gap-1 whitespace-nowrap"
+              className="inline-flex items-center gap-1 text-yellow-600 hover:text-[var(--hover-warning)] text-xs px-3 py-1.5 border border-yellow-300 hover:border-[var(--hover-warning)] rounded-full transition-all duration-200 hover:shadow-sm whitespace-nowrap cursor-pointer"
               title="세션 종료"
             >
               <Icon name="Power" size={12} />
@@ -264,11 +267,12 @@ export default function AdminSessionPageOptimized() {
             </button>
           )}
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               handleDeleteSession(session.sessionId, e);
             }}
-            className="text-red-600 hover:text-[var(--hover-danger)] text-xs px-3 py-1.5 border border-red-300 hover:border-[var(--hover-danger)] rounded-full transition-all duration-200 hover:shadow-sm flex items-center gap-1 whitespace-nowrap"
+            className="inline-flex items-center gap-1 text-red-600 hover:text-[var(--hover-danger)] text-xs px-3 py-1.5 border border-red-300 hover:border-[var(--hover-danger)] rounded-full transition-all duration-200 hover:shadow-sm whitespace-nowrap cursor-pointer"
             title="세션 삭제"
           >
             <Icon name="Trash2" size={12} />
@@ -417,7 +421,7 @@ export default function AdminSessionPageOptimized() {
     } else {
       try {
         const { data } = await api.get<any>('/api/admin/session/stats');
-        console.log('Session stats response:', data); // 디버깅용
+
         setSessionStats(data.data);
         setIsStatsModalOpen(true);
       } catch (error) {

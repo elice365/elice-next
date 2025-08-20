@@ -12,21 +12,8 @@ export interface BlogCreateModalProps {
   onUpdate?: () => void;
 }
 
-export interface BlogData {
-  uid: string;
-  type: 'post' | 'product' | 'notice';
-  title: string;
-  description: string;
-  category?: Category;
-  tags: Array<{ uid: string; name: string }>;
-  images: string[] | Record<string, unknown>;
-  status: 'draft' | 'published';
-  publishedAt?: string;
-  views: number;
-  likeCount: number;
-  createdTime: string;
-  updatedTime: string;
-}
+// BlogData type moved to types/ui/modal.ts to avoid duplication
+import type { BlogData } from '../ui/modal';
 
 export interface BlogEditModalProps {
   post: BlogData | null;

@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useState, useMemo, useCallback } from "react";
-import type { TableColumn, TableSelectionConfig, TableProps } from "@/types/ui/table";
+import type { TableColumn, TableProps } from "@/types/ui/table";
 
 export const Table = memo(function Table<T = any>({
     columns,
@@ -95,7 +95,7 @@ export const Table = memo(function Table<T = any>({
                         disabled={checkboxProps.disabled}
                         onChange={(e) => handleSelectRow(record, e.target.checked)}
                         onClick={(e) => e.stopPropagation()}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-[var(--border-color)]  rounded focus:ring-blue-500 focus:ring-2"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-[var(--border-color)] rounded focus:ring-blue-500 focus:ring-2"
                     />
                 );
             }
@@ -117,96 +117,114 @@ export const Table = memo(function Table<T = any>({
 
     return (
         <div className={`bg-[var(--background)] overflow-hidden ${className}`}>
-            {/* Desktop Table View - Hidden on mobile */}
-            <div className="hidden md:block overflow-x-auto">
-                <table className="w-full" role="table" aria-label="데이터 테이블">
-                    <thead className="bg-[var(--color-header)] border-b-2 border-[var(--border-color)]">
-                        <tr>
-                            {finalColumns.map((column) => (
-                                <th
-                                    key={column.key}
-                                    className={`px-6 py-4 text-left text-sm font-semibold text-[var(--color-text-header)] tracking-wide ${column.headerClassName || ""}`}
-                                >
-                                    {column.key === 'selection' && rowSelection ? (
-                                        <input
-                                            type="checkbox"
-                                            checked={isAllSelected}
-                                            ref={(input) => {
-                                                if (input) input.indeterminate = isIndeterminate;
-                                            }}
-                                            onChange={(e) => handleSelectAll(e.target.checked)}
-                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-[var(--border-color)]  rounded focus:ring-blue-500 focus:ring-2 touch-manipulation"
-                                        />
-                                    ) : (
-                                        column.title
-                                    )}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[var(--border-color)]">
-                        {data.length === 0 ? (
+            {/* Screen reader announcements for scroll state */}
+            <output className="sr-only" aria-live="polite" aria-atomic="true">
+                테이블을 좌우로 스크롤할 수 있습니다. 화살표 키를 사용하여 탐색하세요.
+            </output>
+            
+            {/* Enhanced Responsive Table with Mobile Optimization */}
+            <section className="relative w-full" aria-label="스크롤 가능한 테이블">
+                {/* Scroll Indicator for Mobile */}
+                <div className="md:hidden absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[var(--background)] to-transparent pointer-events-none z-10 opacity-0 transition-opacity duration-300" id="scroll-indicator" aria-hidden="true" />
+                
+                {/* Scrollable Table Container */}
+                <div 
+                    className="overflow-x-auto admin-table-scroll"
+                    aria-label="테이블 컨테이너"
+                >
+                    <table className="w-full min-w-full admin-mobile-table" role="table" aria-label="데이터 테이블">
+                        <thead className="bg-[var(--color-header)] border-b-2 border-[var(--border-color)]">
                             <tr>
-                                <td
-                                    colSpan={finalColumns.length}
-                                    className="px-6 py-12 text-center text-[var(--text-color)] opacity-60"
-                                >
-                                    {emptyText}
-                                </td>
-                            </tr>
-                        ) : (
-                            data.map((record, index) => {
-                                const rowKeyValue = getRowKey(record, index);
-                                const isRowSelected = selectedRowKeys.includes(rowKeyValue);
-                                return (
-                                    <tr
-                                        key={rowKeyValue}
-                                        onClick={() => onRowClick?.(record, index)}
-                                        onKeyDown={(e) => {
-                                            if ((e.key === 'Enter' || e.key === ' ') && onRowClick) {
-                                                e.preventDefault();
-                                                onRowClick(record, index);
-                                            }
-                                        }}
-                                        aria-pressed={isRowSelected}
-                                        aria-label={onRowClick ? `행 ${index + 1} 선택` : undefined}
-                                        className={(() => {
-                                            const baseClasses = 'transition-all duration-200';
-                                            const clickableClasses = onRowClick 
-                                                ? 'hover:bg-[var(--hover)] hover:text-[var(--hover-text)] hover:shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--hover-primary)] focus:ring-inset' 
-                                                : '';
-                                            const selectedClasses = isRowSelected 
-                                                ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' 
-                                                : '';
-                                            
-                                            return `${baseClasses} ${clickableClasses} ${selectedClasses}`.trim();
-                                        })()}
+                                {finalColumns.map((column) => (
+                                    <th
+                                        key={column.key}
+                                        className={`px-2 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-semibold text-[var(--color-text-header)] whitespace-nowrap ${column.headerClassName || column.className || ""}`}
+                                        style={column.width ? { width: column.width } : undefined}
                                     >
-                                        {finalColumns.map((column) => {
-                                            const value = getValue(record, column.key);
-                                            const content = column.render
-                                                ? column.render(value, record, index)
-                                                : value;
+                                        {column.key === 'selection' && rowSelection ? (
+                                            <input
+                                                type="checkbox"
+                                                checked={isAllSelected}
+                                                ref={(input) => {
+                                                    if (input) input.indeterminate = isIndeterminate;
+                                                }}
+                                                onChange={(e) => handleSelectAll(e.target.checked)}
+                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-[var(--border-color)] rounded focus:ring-blue-500 focus:ring-2 touch-manipulation"
+                                            />
+                                        ) : (
+                                            column.title
+                                        )}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--border-color)]">
+                            {data.length === 0 ? (
+                                <tr>
+                                    <td
+                                        colSpan={finalColumns.length}
+                                        className="px-6 py-12 text-center text-[var(--text-color)] opacity-60"
+                                    >
+                                        {emptyText}
+                                    </td>
+                                </tr>
+                            ) : (
+                                data.map((record, index) => {
+                                    const rowKeyValue = getRowKey(record, index);
+                                    const isRowSelected = selectedRowKeys.includes(rowKeyValue);
+                                    return (
+                                        <tr
+                                            key={rowKeyValue}
+                                            onClick={() => onRowClick?.(record, index)}
+                                            onKeyDown={(e) => {
+                                                if ((e.key === 'Enter' || e.key === ' ') && onRowClick) {
+                                                    e.preventDefault();
+                                                    onRowClick(record, index);
+                                                }
+                                            }}
+                                            tabIndex={onRowClick ? 0 : undefined}
+                                            role={onRowClick ? "button" : undefined}
+                                            aria-pressed={onRowClick ? isRowSelected : undefined}
+                                            aria-label={onRowClick ? `행 ${index + 1} 선택` : undefined}
+                                            className={(() => {
+                                                const baseClasses = 'transition-all duration-200';
+                                                const clickableClasses = onRowClick 
+                                                    ? 'hover:bg-[var(--hover)] hover:text-[var(--hover-text)] hover:shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--hover-primary)] focus:ring-inset' 
+                                                    : '';
+                                                const selectedClasses = isRowSelected 
+                                                    ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' 
+                                                    : '';
+                                                
+                                                return `${baseClasses} ${clickableClasses} ${selectedClasses}`.trim();
+                                            })()}
+                                        >
+                                            {finalColumns.map((column) => {
+                                                const value = getValue(record, column.key);
+                                                const content = column.render
+                                                    ? column.render(value, record, index)
+                                                    : value;
 
-                                            return (
-                                                <td
-                                                    key={column.key}
-                                                    className={`px-6 py-4 text-[var(--text-color)] ${column.className || ""}`}
-                                                >
-                                                    {content}
-                                                </td>
-                                            );
-                                        })}
-                                    </tr>
-                                );
-                            })
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                                                return (
+                                                    <td
+                                                        key={column.key}
+                                                        className={`px-2 py-2 text-[10px] sm:text-xs text-[var(--text-color)] ${column.className || ""}`}
+                                                        style={column.width ? { width: column.width } : undefined}
+                                                    >
+                                                        {content}
+                                                    </td>
+                                                );
+                                            })}
+                                        </tr>
+                                    );
+                                })
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-            {/* Mobile Card View - Shown only on mobile */}
-            <div className="md:hidden">
+            {/* Mobile Card View - Now Optional (Hidden by default) */}
+            <div className="hidden" data-mobile-card-view>
                 {/* Mobile header with selection controls */}
                 {rowSelection && data.length > 0 && (
                     <div className="p-4 border-b border-[var(--border-color)] bg-[var(--color-header)]">
@@ -219,7 +237,7 @@ export const Table = memo(function Table<T = any>({
                                         if (input) input.indeterminate = isIndeterminate;
                                     }}
                                     onChange={(e) => handleSelectAll(e.target.checked)}
-                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-[var(--border-color)]  rounded focus:ring-blue-500 focus:ring-2 touch-manipulation"
+                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-[var(--border-color)] rounded focus:ring-blue-500 focus:ring-2 touch-manipulation"
                                 />
                                 <span className="text-sm font-medium text-[var(--color-text-header)]">
                                     전체 선택
@@ -246,117 +264,67 @@ export const Table = memo(function Table<T = any>({
                             const isRowSelected = selectedRowKeys.includes(rowKeyValue);
 
                             return (
-                                onRowClick ? (
-                                    <button
-                                        key={rowKeyValue}
-                                        type="button"
-                                        onClick={() => onRowClick(record, index)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault();
-                                                onRowClick(record, index);
-                                            }
-                                        }}
-                                        aria-pressed={isRowSelected}
-                                        aria-label={`항목 ${index + 1} 선택`}
-                                        className={`w-full p-4 text-left bg-transparent border-none cursor-pointer active:bg-[var(--hover)] active:text-[var(--hover-text)] focus:outline-none focus:ring-2 focus:ring-[var(--hover-primary)] focus:ring-inset ${isRowSelected ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' : ''} touch-manipulation transition-all duration-200`}
-                                    >
-                                        {/* Button content for clickable rows */}
-                                        {rowSelection && (
-                                            <div className="flex items-center justify-between mb-3 pb-3 border-b border-[var(--border-color)]">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={isRowSelected}
-                                                    disabled={rowSelection.getCheckboxProps?.(record)?.disabled}
-                                                    onChange={(e) => {
-                                                        e.stopPropagation();
-                                                        handleSelectRow(record, e.target.checked);
-                                                    }}
-                                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-[var(--border-color)] rounded focus:ring-blue-500 focus:ring-2 touch-manipulation"
-                                                />
-                                                <span className="text-xs text-muted-foreground">
-                                                    항목 {index + 1}
-                                                </span>
-                                            </div>
-                                        )}
-
-                                        <div className="space-y-3">
-                                            {finalColumns
-                                                .filter(column => column.key !== 'selection')
-                                                .map((column) => {
-                                                    const value = getValue(record, column.key);
-                                                    const content = column.render
-                                                        ? column.render(value, record, index)
-                                                        : value;
-
-                                                    if (!content && content !== 0) return null;
-
-                                                    return (
-                                                        <div key={column.key} className="flex flex-col gap-1">
-                                                            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                                                {column.title}
-                                                            </div>
-                                                            <div className="text-sm text-[var(--text-color)]">
-                                                                {content}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })
-                                            }
+                                <div
+                                    key={rowKeyValue}
+                                    className={`relative w-full p-4 text-left ${isRowSelected ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' : ''} touch-manipulation transition-all duration-200`}
+                                >
+                                    {/* Selection checkbox for mobile */}
+                                    {rowSelection && (
+                                        <div className="flex items-center justify-between mb-3 pb-3 border-b border-[var(--border-color)]">
+                                            <input
+                                                type="checkbox"
+                                                checked={isRowSelected}
+                                                disabled={rowSelection.getCheckboxProps?.(record)?.disabled}
+                                                onChange={(e) => {
+                                                    e.stopPropagation();
+                                                    handleSelectRow(record, e.target.checked);
+                                                }}
+                                                className="w-5 h-5 text-blue-600 bg-gray-100 border-[var(--border-color)] rounded focus:ring-blue-500 focus:ring-2 touch-manipulation"
+                                            />
+                                            <span className="text-xs text-muted-foreground">
+                                                항목 {index + 1}
+                                            </span>
                                         </div>
-                                    </button>
-                                ) : (
-                                    <div
-                                        key={rowKeyValue}
-                                        className={`p-4 text-left ${isRowSelected ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' : ''} touch-manipulation transition-all duration-200`}
-                                    >
-                                        {/* Selection checkbox for mobile */}
-                                        {rowSelection && (
-                                            <div className="flex items-center justify-between mb-3 pb-3 border-b border-[var(--border-color)] ">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={isRowSelected}
-                                                    disabled={rowSelection.getCheckboxProps?.(record)?.disabled}
-                                                    onChange={(e) => {
-                                                        e.stopPropagation();
-                                                        handleSelectRow(record, e.target.checked);
-                                                    }}
-                                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-[var(--border-color)]  rounded focus:ring-blue-500 focus:ring-2 touch-manipulation"
-                                                />
-                                                <span className="text-xs text-muted-foreground">
-                                                    항목 {index + 1}
-                                                </span>
-                                            </div>
-                                        )}
+                                    )}
 
-                                        {/* Mobile card content */}
-                                        <div className="space-y-3">
-                                            {finalColumns
-                                                .filter(column => column.key !== 'selection')
-                                                .map((column) => {
-                                                    const value = getValue(record, column.key);
-                                                    const content = column.render
-                                                        ? column.render(value, record, index)
-                                                        : value;
+                                    {/* Mobile card content */}
+                                    <div className="space-y-3">
+                                        {finalColumns
+                                            .filter(column => column.key !== 'selection')
+                                            .map((column) => {
+                                                const value = getValue(record, column.key);
+                                                const content = column.render
+                                                    ? column.render(value, record, index)
+                                                    : value;
 
-                                                    // Skip empty content
-                                                    if (!content && content !== 0) return null;
+                                                // Skip empty content
+                                                if (!content && content !== 0) return null;
 
-                                                    return (
-                                                        <div key={column.key} className="flex flex-col gap-1">
-                                                            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                                                {column.title}
-                                                            </div>
-                                                            <div className="text-sm text-[var(--text-color)]">
-                                                                {content}
-                                                            </div>
+                                                return (
+                                                    <div key={column.key} className="flex flex-col gap-1">
+                                                        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                                            {column.title}
                                                         </div>
-                                                    );
-                                                })
-                                            }
-                                        </div>
+                                                        <div className="text-sm text-[var(--text-color)] mobile-table-content">
+                                                            {content}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        }
                                     </div>
-                                )
+
+                                    {/* Row click handler - overlay button to avoid button nesting */}
+                                    {onRowClick && (
+                                        <button
+                                            type="button"
+                                            onClick={() => onRowClick(record, index)}
+                                            aria-pressed={isRowSelected}
+                                            aria-label={`항목 ${index + 1} 선택`}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--hover-primary)] focus:ring-inset hover:bg-[var(--hover)] hover:bg-opacity-10"
+                                        />
+                                    )}
+                                </div>
                             );
                         })
                     )}

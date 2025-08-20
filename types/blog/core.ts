@@ -132,12 +132,12 @@ export interface BlogFiltersProps {
 }
 
 export interface BlogHeaderProps {
-  title?: string;
-  subtitle?: string;
-  showSearch?: boolean;
-  showFilters?: boolean;
-  onSearch?: (query: string) => void;
-  className?: string;
+  readonly title?: string;
+  readonly subtitle?: string;
+  readonly showSearch?: boolean;
+  readonly showFilters?: boolean;
+  readonly onSearch?: (query: string) => void;
+  readonly className?: string;
 }
 
 // ==========================================

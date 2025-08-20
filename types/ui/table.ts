@@ -14,18 +14,12 @@ export interface PaginationProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export interface Column<T> {
-  key: keyof T | string;
-  title: string;
-  width?: string;
-  align?: 'left' | 'center' | 'right';
-  sortable?: boolean;
-  render?: (value: any, record: T, index: number) => ReactNode;
-}
-
 export interface TableColumn<T = any> {
-    key: string;
+    key: keyof T | string;
     title: string;
+    width?: string;
+    align?: 'left' | 'center' | 'right';
+    sortable?: boolean;
     render?: (value: any, record: T, index: number) => ReactNode;
     className?: string;
     headerClassName?: string;
@@ -53,7 +47,7 @@ export interface TableProps<T = any> {
 }
 
 export interface DataTableProps<T> {
-  readonly columns: readonly Column<T>[];
+  readonly columns: readonly TableColumn<T>[];
   readonly data: readonly T[];
   loading?: boolean;
   pagination?: {

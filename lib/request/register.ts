@@ -6,7 +6,7 @@ import { APIResult } from "@/types/api";
 import { findUserByEmail, createUser } from "@/lib/db/user";
 import { setUserRole, searchRole } from "@/lib/db/roles";
 import { registerSchema, validateApiRequest } from "@/lib/validation/schemas";
-import { logger } from "@/utils/logger";
+import { logger } from "@/lib/services/logger";
 import * as argon2 from 'argon2';
 import { randomUUID } from "crypto";
 // 회원가입
@@ -20,7 +20,7 @@ export const register = async (request: NextRequest): Promise<APIResult> => {
     // Validate request body using Zod schema
     const validation = await validateApiRequest(registerSchema, request);
     if (!validation.success) {
-      logger.auth.warn('Registration validation failed', validation.errors);
+      logger.warn('Registration validation failed', 'AUTH', validation.errors);
       return await setMessage('InvalidField', validation.errors, 400);
     }
 
@@ -60,7 +60,7 @@ export const register = async (request: NextRequest): Promise<APIResult> => {
     if (userRole) {
       await setUserRole(newUser.id, userRole.id);
     } else {
-      logger.auth.warn("Default 'user' role not found. User created without a role.", { userId: newUser.id });
+      logger.warn("Default 'user' role not found. User created without a role.", 'AUTH', { userId: newUser.id });
     }
 
     // 이메일 인증 URL 생성
@@ -76,7 +76,7 @@ export const register = async (request: NextRequest): Promise<APIResult> => {
         html: emailContent.html
       });
     } catch (error) {
-      logger.email.error('Email sending failed during registration', { 
+      logger.error('Email sending failed during registration', 'EMAIL', { 
         email, 
         userId: newUser.id, 
         error 
@@ -86,7 +86,7 @@ export const register = async (request: NextRequest): Promise<APIResult> => {
 
     return await setMessage('emailVerification', { emailVerification: true }, 200);
   } catch (error) {
-    logger.auth.error('Registration failed', { error });
+    logger.error('Registration failed', 'AUTH', { error });
     return await setMessage('UnknownError', null, 500);
   }
 };

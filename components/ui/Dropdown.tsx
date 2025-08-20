@@ -66,7 +66,7 @@ export function Dropdown({
                   {option.content && option.date && (
                     <div className='flex flex-col text-xs text-gray-400 mt-0.5'>
                       <span className="truncate whitespace-pre-line">{option.content}</span>
-                      <span className="truncate">{option.date.toLocaleString()}</span>
+                      <span className="truncate">{typeof option.date === 'string' ? option.date : option.date.toISOString()}</span>
                     </div>
                   )}
                 </div>

@@ -33,7 +33,7 @@ class Logger {
     level: LogLevel,
     context: LogContext,
     message: string,
-    data?: any
+    data?: unknown
   ): LogEntry {
     return {
       level,
@@ -67,19 +67,19 @@ class Logger {
     }
   }
 
-  debug(message: string, context: LogContext = 'GENERAL', data?: any): void {
+  debug(message: string, context: LogContext = 'GENERAL', data?: unknown): void {
     this.writeLog(this.createLogEntry('debug', context, message, data));
   }
 
-  info(message: string, context: LogContext = 'GENERAL', data?: any): void {
+  info(message: string, context: LogContext = 'GENERAL', data?: unknown): void {
     this.writeLog(this.createLogEntry('info', context, message, data));
   }
 
-  warn(message: string, context: LogContext = 'GENERAL', data?: any): void {
+  warn(message: string, context: LogContext = 'GENERAL', data?: unknown): void {
     this.writeLog(this.createLogEntry('warn', context, message, data));
   }
 
-  error(message: string, context: LogContext = 'GENERAL', data?: any): void {
+  error(message: string, context: LogContext = 'GENERAL', data?: unknown): void {
     this.writeLog(this.createLogEntry('error', context, message, data));
   }
 

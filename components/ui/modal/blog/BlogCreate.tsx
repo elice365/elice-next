@@ -20,11 +20,13 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
     type: 'post',
     title: '',
     description: '',
+    url: '',
     categoryId: '',
     tags: [] as string[],
     images: [] as string[],
     status: 'draft',
-    language: 'ko'
+    language: 'ko',
+    publishedAt: ''
   });
 
   // Load categories
@@ -85,17 +87,27 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
     }
   };
 
+  // Generate slug from title
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9가-힣]+/g, '-')
+      .replace(/(^-+)|(-+$)/g, '');
+  };
+
   // Reset form
   const resetForm = () => {
     setFormData({
       type: 'post',
       title: '',
       description: '',
+      url: '',
       categoryId: '',
       tags: [],
       images: [],
       status: 'draft',
-      language: 'ko'
+      language: 'ko',
+      publishedAt: ''
     });
     setImagePreview('');
   };
@@ -123,9 +135,20 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
       return;
     }
 
+    // Auto-generate slug if not provided
+    let submitData = { ...formData };
+    if (!submitData.url && submitData.title) {
+      submitData.url = generateSlug(submitData.title);
+    }
+
+    // Convert publishedAt to ISO string if provided
+    if (submitData.publishedAt) {
+      submitData.publishedAt = new Date(submitData.publishedAt).toISOString();
+    }
+
     setLoading(true);
     try {
-      const { data } = await api.post<APIResult>('/api/admin/blog', formData);
+      const { data } = await api.post<APIResult>('/api/admin/blog', submitData);
       
       if (data.success) {
         handleSuccess(data);
@@ -191,7 +214,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
           type="submit"
           form="blog-create-form"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="modal-button-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {loading ? (
             <>
@@ -221,7 +244,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
       footer={footer}
       loading={loading}
     >
-      <form id="blog-create-form" onSubmit={handleSubmit} className="p-6 space-y-6">
+      <form id="blog-create-form" onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-6 overflow-x-hidden">
         {/* Type selection */}
         <fieldset className="space-y-2">
           <legend className="block text-sm font-medium text-[var(--text-color)]">
@@ -268,7 +291,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
             onChange={(e) => handleFieldChange('title', e.target.value)}
             placeholder="블로그 글 제목을 입력하세요"
             required
-            className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full modal-input px-4 py-2.5 border border-[var(--modal-input-border)] rounded-lg bg-[var(--modal-input-bg)] focus:border-[var(--modal-input-focus)] focus:ring-2 focus:ring-[var(--modal-input-focus)]/20 transition-all duration-200"
           />
         </div>
 
@@ -287,8 +310,41 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
             placeholder="글에 대한 간단한 설명을 입력하세요"
             rows={3}
             required
-            className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            className="w-full modal-input px-4 py-2.5 resize-none border border-[var(--modal-input-border)] rounded-lg bg-[var(--modal-input-bg)] focus:border-[var(--modal-input-focus)] focus:ring-2 focus:ring-[var(--modal-input-focus)]/20 transition-all duration-200"
           />
+        </div>
+
+        {/* URL Slug */}
+        <div className="space-y-2">
+          <label htmlFor="blog-url" className="block text-sm font-medium text-[var(--text-color)]">
+            URL Slug
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="blog-url"
+              type="text"
+              value={formData.url}
+              onChange={(e) => handleFieldChange('url', e.target.value)}
+              placeholder="url-slug-for-post"
+              className="flex-1 modal-input px-4 py-2.5 border border-[var(--modal-input-border)] rounded-lg bg-[var(--modal-input-bg)] focus:border-[var(--modal-input-focus)] focus:ring-2 focus:ring-[var(--modal-input-focus)]/20 transition-all duration-200"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const slug = generateSlug(formData.title);
+                handleFieldChange('url', slug);
+              }}
+              disabled={!formData.title}
+              className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+            >
+              자동 생성
+            </button>
+          </div>
+          {formData.url && (
+            <p className="text-xs text-[var(--text-color)] opacity-70">
+              URL: /blog/{formData.url}
+            </p>
+          )}
         </div>
 
         {/* Category */}
@@ -308,7 +364,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
               id="blog-category"
               value={formData.categoryId}
               onChange={(e) => handleFieldChange('categoryId', e.target.value)}
-              className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full modal-input px-4 py-2.5 border border-[var(--modal-input-border)] rounded-lg bg-[var(--modal-input-bg)] focus:border-[var(--modal-input-focus)] focus:ring-2 focus:ring-[var(--modal-input-focus)]/20 transition-all duration-200"
               required
             >
               <option value="">카테고리 선택</option>
@@ -331,14 +387,14 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
             type="text"
             onKeyDown={handleTagInput}
             placeholder="태그를 입력하고 Enter를 누르세요"
-            className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full modal-input px-4 py-2.5 border border-[var(--modal-input-border)] rounded-lg bg-[var(--modal-input-bg)] focus:border-[var(--modal-input-focus)] focus:ring-2 focus:ring-[var(--modal-input-focus)]/20 transition-all duration-200"
           />
           {formData.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
               {formData.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--modal-button-primary)]/10 text-[var(--modal-button-primary)] rounded-full text-sm transition-all duration-200 hover:bg-[var(--modal-button-primary)]/20"
                 >
                   {tag}
                   <button
@@ -357,44 +413,81 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
         {/* Images */}
         <div className="space-y-2">
           <label htmlFor="blog-image" className="block text-sm font-medium text-[var(--text-color)]">
-            이미지 URL들 (첫 번째가 대표 이미지)
+            이미지 (첫 번째가 대표 이미지)
           </label>
-          <input
-            id="blog-image"
-            type="url"
-            value=""
-            onChange={(e) => {
-              const url = e.target.value;
-              if (url && !formData.images.includes(url)) {
-                setFormData(prev => ({ 
-                  ...prev, 
-                  images: [...prev.images, url]
-                }));
-                if (formData.images.length === 0) {
-                  setImagePreview(url);
-                }
-                e.target.value = '';
-              }
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                const url = e.currentTarget.value;
-                if (url && !formData.images.includes(url)) {
-                  setFormData(prev => ({ 
-                    ...prev, 
-                    images: [...prev.images, url]
-                  }));
-                  if (formData.images.length === 0) {
-                    setImagePreview(url);
+          
+          {/* Image Upload Options */}
+          <div className="space-y-3">
+            {/* File Upload Button */}
+            <div className="flex gap-2">
+              <label className="flex-1">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={async (e) => {
+                    const files = e.target.files;
+                    if (files) {
+                      // Note: 실제 파일 업로드 로직은 Cloudflare R2 연동 후 구현 예정
+                      // 현재는 파일 선택만 가능하도록 처리
+                      alert('파일 업로드 기능은 Cloudflare R2 연동 후 사용 가능합니다.\n현재는 URL 입력만 지원됩니다.');
+                    }
+                  }}
+                />
+                <div className="w-full px-4 py-2.5 border-2 border-dashed border-[var(--border-color)] rounded-lg bg-[var(--modal-input-bg)] hover:border-[var(--modal-input-focus)] transition-all duration-200 cursor-pointer text-center">
+                  <Icon name="Upload" size={20} className="inline-block mb-1" />
+                  <span className="block text-sm text-[var(--text-color)]">
+                    이미지 파일 선택 (준비 중)
+                  </span>
+                  <span className="block text-xs text-[var(--text-color)] opacity-60 mt-1">
+                    클릭하여 파일 선택 또는 드래그 앤 드롭
+                  </span>
+                </div>
+              </label>
+            </div>
+
+            {/* URL Input */}
+            <div className="relative">
+              <input
+                id="blog-image"
+                type="url"
+                value=""
+                onChange={(e) => {
+                  const url = e.target.value;
+                  if (url && !formData.images.includes(url)) {
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      images: [...prev.images, url]
+                    }));
+                    if (formData.images.length === 0) {
+                      setImagePreview(url);
+                    }
+                    e.target.value = '';
                   }
-                  e.currentTarget.value = '';
-                }
-              }
-            }}
-            placeholder="https://example.com/image.jpg (Enter를 눌러 추가)"
-            className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const url = e.currentTarget.value;
+                    if (url && !formData.images.includes(url)) {
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        images: [...prev.images, url]
+                      }));
+                      if (formData.images.length === 0) {
+                        setImagePreview(url);
+                      }
+                      e.currentTarget.value = '';
+                    }
+                  }
+                }}
+                placeholder="https://example.com/image.jpg (Enter를 눌러 추가)"
+                className="w-full modal-input px-4 py-2.5 border border-[var(--modal-input-border)] rounded-lg bg-[var(--modal-input-bg)] focus:border-[var(--modal-input-focus)] focus:ring-2 focus:ring-[var(--modal-input-focus)]/20 transition-all duration-200"
+              />
+              <Icon name="Link" size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-color)] opacity-50" />
+            </div>
+          </div>
           
           {/* Image List */}
           {formData.images.length > 0 && (
@@ -472,7 +565,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
             id="blog-language"
             value={formData.language}
             onChange={(e) => setFormData(prev => ({ ...prev, language: e.target.value }))}
-            className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] text-[var(--text-color)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full modal-input px-4 py-2.5 border border-[var(--modal-input-border)] rounded-lg bg-[var(--modal-input-bg)] focus:border-[var(--modal-input-focus)] focus:ring-2 focus:ring-[var(--modal-input-focus)]/20 transition-all duration-200"
           >
             <option value="ko">🇰🇷 한국어</option>
             <option value="en">🇺🇸 English</option>
@@ -512,14 +605,36 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
           </div>
         </fieldset>
 
+        {/* Published Date (optional for scheduled posts) */}
+        {formData.status === 'published' && (
+          <div className="space-y-2">
+            <label htmlFor="blog-published-date" className="block text-sm font-medium text-[var(--text-color)]">
+              게시 일시 (선택사항 - 예약 게시)
+            </label>
+            <input
+              id="blog-published-date"
+              type="datetime-local"
+              value={formData.publishedAt}
+              onChange={(e) => handleFieldChange('publishedAt', e.target.value)}
+              className="w-full modal-input px-4 py-2.5 border border-[var(--modal-input-border)] rounded-lg bg-[var(--modal-input-bg)] focus:border-[var(--modal-input-focus)] focus:ring-2 focus:ring-[var(--modal-input-focus)]/20 transition-all duration-200"
+            />
+            {formData.publishedAt && (
+              <p className="text-xs text-[var(--text-color)] opacity-70">
+                {new Date(formData.publishedAt) > new Date() ? '예약 게시로 설정됩니다.' : '지정된 일시로 게시됩니다.'}
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Notice */}
         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <div className="flex items-start gap-3">
             <Icon name="Info" size={20} className="text-blue-600 mt-0.5" />
             <div className="text-sm text-blue-700 dark:text-blue-300">
-              <p>글 내용은 생성 후 콘텐츠 에디터에서 작성할 수 있습니다.</p>
-              <p className="mt-1">콘텐츠 에디터에서는 제품 정보, 작성자 정보, 본문 내용을 구조화된 형식으로 작성할 수 있습니다.</p>
-              <p className="mt-1">이미지는 추후 Cloudflare R2 업로드 기능이 추가될 예정입니다.</p>
+              <p>• 글 내용은 생성 후 콘텐츠 에디터에서 작성할 수 있습니다.</p>
+              <p className="mt-1">• URL Slug는 자동 생성되거나 직접 입력할 수 있습니다.</p>
+              <p className="mt-1">• 이미지 파일 업로드는 Cloudflare R2 연동 후 사용 가능합니다.</p>
+              <p className="mt-1">• 게시 일시를 미래로 설정하면 예약 게시가 가능합니다.</p>
             </div>
           </div>
         </div>

@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '@/components/ui/Icon';
-import { PostType } from '@/types/blog/post';
 import type { 
   CardContentProps, 
   CardTitleProps, 
@@ -108,7 +107,7 @@ const StatsItems = memo(function StatsItems({ post, mobile }: StatsItemsProps) {
     <div className={containerClassName}>
       <StatItem 
         icon="Eye" 
-        value={post.views.toLocaleString()} 
+        value={(post.views || 0).toLocaleString()} 
         mobile={mobile} 
       />
       <StatItem 

@@ -29,5 +29,6 @@ export function getMainImage(images: string[] | string | { main?: string; thumbn
     if (imageObj.thumbnail) return imageObj.thumbnail;
   }
   
-  return "https://via.placeholder.com/800x400/f3f4f6/9ca3af?text=Blog+Post";
+  // Return a data URL fallback image
+  return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'%3E%3Crect width='800' height='400' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui' font-size='24' fill='%239ca3af'%3EBlog Post%3C/text%3E%3C/svg%3E";
 }

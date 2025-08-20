@@ -179,7 +179,7 @@ export function BaseModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4">
+    <div className="fixed inset-0 modal-overlay flex items-center justify-center z-50 p-4">
       <button
         onClick={handleBackdropClick}
         onKeyDown={(e) => {
@@ -194,24 +194,25 @@ export function BaseModal({
       <dialog
         open
         aria-modal="true"
-        className={`bg-[var(--color-modal)] rounded-xl shadow-xl w-full ${getModalSizeClass()} max-h-[95vh] sm:max-h-[90vh] overflow-hidden transform transition-all duration-200 scale-100 ${className} border-0 p-0 m-0 relative z-10 flex flex-col`}
+        className={`modal-content rounded-xl w-full ${getModalSizeClass()} max-h-[90vh] overflow-hidden ${className} border-0 p-0 m-0 relative z-10 flex flex-col`}
+        style={{ maxWidth: 'calc(100vw - 2rem)' }}
         aria-labelledby="modal-title"
         aria-describedby={subtitle ? "modal-subtitle" : undefined}
       >
         {/* 헤더 */}
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[var(--modal-border)] bg-[var(--modal-header-bg)] flex-shrink-0">
-          <div className="flex items-center gap-3">
+        <div className="modal-header flex items-center justify-between p-4 sm:p-6 flex-shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
             {icon && (
-              <div className={`p-2 rounded-lg bg-opacity-10 ${getIconBgColor()}`}>
+              <div className={`p-2.5 rounded-lg bg-opacity-15 ${getIconBgColor()} flex-shrink-0`}>
                 <Icon name={icon} size={20} className={getVariantIconColor()} />
               </div>
             )}
-            <div>
-              <h2 id="modal-title" className="text-lg sm:text-xl font-semibold text-[var(--title)]">
+            <div className="min-w-0">
+              <h2 id="modal-title" className="text-lg sm:text-xl font-semibold text-[var(--title)] truncate">
                 {title}
               </h2>
               {subtitle && (
-                <p id="modal-subtitle" className="text-sm text-[var(--text-color)] opacity-70 mt-1">
+                <p id="modal-subtitle" className="text-sm text-[var(--text-color)] opacity-70 mt-1 truncate">
                   {subtitle}
                 </p>
               )}
@@ -220,31 +221,31 @@ export function BaseModal({
           <button
             onClick={onClose}
             disabled={loading}
-            className="p-2 hover:bg-[var(--hover)] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] min-w-[44px] touch-manipulation flex items-center justify-center"
+            className="p-2 hover:bg-[var(--hover)] rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] min-w-[44px] touch-manipulation flex items-center justify-center group"
             aria-label="모달 닫기"
           >
-            <Icon name="X" size={20} className="text-[var(--text-color)]" />
+            <Icon name="X" size={20} className="text-[var(--text-color)] group-hover:rotate-90 transition-transform duration-200" />
           </button>
         </div>
 
         {/* 콘텐츠 */}
-        <div className="flex-1 overflow-y-auto bg-[var(--color-modal)] min-h-0">
+        <div className="flex-1 overflow-y-auto bg-[var(--modal-bg)] min-h-0">
           {children}
         </div>
 
         {/* 푸터 */}
         {footer && (
-          <div className="bg-[var(--modal-footer-bg)] border-t border-[var(--modal-border)] p-3 flex-shrink-0">
+          <div className="modal-footer p-4 sm:p-6 flex-shrink-0">
             {footer}
           </div>
         )}
 
         {/* 로딩 오버레이 */}
         {loading && (
-          <div className="absolute inset-0 bg-[var(--color-modal)] bg-opacity-75 flex items-center justify-center backdrop-blur-sm rounded-xl">
-            <div className="flex items-center gap-3">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--hover-primary)]"></div>
-              <span className="text-[var(--text-color)]">{loadingMessage}</span>
+          <div className="absolute inset-0 bg-[var(--modal-bg)] bg-opacity-90 flex items-center justify-center backdrop-blur-sm rounded-xl">
+            <div className="flex flex-col items-center gap-3">
+              <div className="animate-spin rounded-full h-8 w-8 border-3 border-[var(--modal-button-primary)] border-t-transparent"></div>
+              <span className="text-[var(--text-color)] font-medium">{loadingMessage}</span>
             </div>
           </div>
         )}

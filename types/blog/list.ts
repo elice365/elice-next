@@ -4,20 +4,20 @@ import { Post, Category, Tag } from './post';
 
 // List item sub-component props
 export interface ListItemContentProps {
-  title: string;
-  description: string;
-  tags?: Tag[];
-  category?: Category;
-  author?: string;
-  createdAt: string | Date;
-  className?: string;
+  readonly title: string;
+  readonly description: string;
+  readonly tags?: readonly Tag[];
+  readonly category?: Category;
+  readonly author?: string;
+  readonly createdAt: string | Date;
+  readonly className?: string;
 }
 
 export interface ListItemImageProps {
-  imageUrl?: string;
-  title: string;
-  category?: Category;
-  className?: string;
+  readonly imageUrl?: string;
+  readonly title: string;
+  readonly category?: Category;
+  readonly className?: string;
 }
 
 export interface ListItemMetaProps {

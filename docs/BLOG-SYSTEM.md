@@ -164,7 +164,7 @@ export interface BlogState {
 }
 ```
 
-#### `types/adminBlog.ts` (31 lines)
+#### `types/admin/blog.ts`
 
 ```typescript
 export interface BlogContent {
@@ -529,7 +529,7 @@ const posts = await prisma.post.findMany({
 
 ### Adding New Features
 
-1. **Define Types**: Add to `types/blog.ts` or `types/adminBlog.ts`
+1. **Define Types**: Add to `types/blog.ts` or `types/admin/blog.ts`
 2. **Create API Route**: Add to appropriate directory under `app/api/`
 3. **Update Database**: Add functions to `lib/db/blog.ts`
 4. **Add Component**: Create in `components/features/blog/`

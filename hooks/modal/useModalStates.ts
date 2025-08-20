@@ -142,11 +142,12 @@ export function useAdminModals<T = any>(): [any, any] {
   // Create actions object with expected methods
   const actions = {
     openCreateModal: () => modalStates.openModal('create'),
-    openEditModal: (item: T, event?: any) => modalStates.openModal('edit', item),
-    openDeleteModal: (item: T, event?: any) => modalStates.openModal('delete', item),
-    openViewModal: (item: T, event?: any) => modalStates.openModal('view', item),
-    openManageModal: (item: T, event?: any) => modalStates.openModal('manage', item),
+    openEditModal: (item: T, event?: React.MouseEvent) => modalStates.openModal('edit', item),
+    openDeleteModal: (item: T, event?: React.MouseEvent) => modalStates.openModal('delete', item),
+    openViewModal: (item: T, event?: React.MouseEvent) => modalStates.openModal('view', item),
+    openManageModal: (item: T, event?: React.MouseEvent) => modalStates.openModal('manage', item),
     closeModals: () => modalStates.closeAllModals(),
+    setSelectedRecord: (item: T | null) => modalStates.setSelectedItem(item),
   };
   
   return [state, actions];
@@ -155,12 +156,12 @@ export function useAdminModals<T = any>(): [any, any] {
 // Enhanced hook with loading and error state for better UX
 export interface UseModalStateOptions {
   modalNames: string[];
-  fetchData?: (item?: any) => Promise<any>;
-  onSuccess?: (result: any) => void;
-  onError?: (error: any) => void;
+  fetchData?: <R = unknown>(item?: unknown) => Promise<R>;
+  onSuccess?: <R = unknown>(result: R) => void;
+  onError?: (error: Error | unknown) => void;
 }
 
-export function useModalState<T = any>({ 
+export function useModalState<T = unknown>({ 
   modalNames, 
   fetchData,
   onSuccess,

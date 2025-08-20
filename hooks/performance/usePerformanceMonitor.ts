@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 import type { PerformanceMetrics } from '@/types/hooks/performance';
+import { logger } from '@/lib/services/logger';
 
 export function usePerformanceMonitor(label: string, enabled: boolean = true) {
   const metricsRef = useRef<PerformanceMetrics | null>(null);
@@ -27,7 +28,7 @@ export function usePerformanceMonitor(label: string, enabled: boolean = true) {
     
     // Log performance metrics in development
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[Performance] ${label}: ${duration.toFixed(2)}ms`, {
+      logger.debug(`${label}: ${duration.toFixed(2)}ms`, 'PERFORMANCE', {
         startTime: metricsRef.current.startTime,
         endTime,
         duration,
@@ -57,7 +58,7 @@ export function usePerformanceMonitor(label: string, enabled: boolean = true) {
 }
 
 // Hook for component render performance
-export function useRenderPerformance(componentName: string, dependencies?: any[]) {
+export function useRenderPerformance(componentName: string, dependencies?: React.DependencyList) {
   const renderCount = useRef(0);
   const lastRender = useRef<number>(0);
   
@@ -67,7 +68,7 @@ export function useRenderPerformance(componentName: string, dependencies?: any[]
     
     if (process.env.NODE_ENV === 'development') {
       const timeSinceLastRender = now - lastRender.current;
-      console.log(`[Render] ${componentName} - Count: ${renderCount.current}, Time since last: ${timeSinceLastRender.toFixed(2)}ms`);
+      logger.debug(`${componentName} - Count: ${renderCount.current}, Time since last: ${timeSinceLastRender.toFixed(2)}ms`, 'RENDER');
     }
     
     lastRender.current = now;
@@ -83,12 +84,12 @@ export function useRenderPerformance(componentName: string, dependencies?: any[]
 export function useApiPerformance() {
   const trackApiCall = useCallback((url: string, method: string, duration: number, success: boolean) => {
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[API] ${method} ${url} - ${duration.toFixed(2)}ms - ${success ? 'Success' : 'Failed'}`);
+      logger.info(`${method} ${url} - ${duration.toFixed(2)}ms - ${success ? 'Success' : 'Failed'}`, 'API');
     }
     
     // In production, you might want to send this to an analytics service
     if (process.env.NODE_ENV === 'production' && duration > 1000) {
-      console.warn(`[API] Slow request: ${method} ${url} took ${duration.toFixed(2)}ms`);
+      logger.warn(`Slow request: ${method} ${url} took ${duration.toFixed(2)}ms`, 'API');
     }
   }, []);
   

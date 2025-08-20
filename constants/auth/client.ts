@@ -40,12 +40,12 @@ export const authConfig = {
   security: {
     maxLoginAttempts: 5,
     lockoutDuration: 15 * 60 * 1000, // 15분
-    sessionTimeout: 60 * 60 * 1000, // 1시간
-    refreshThreshold: 5 * 60 * 1000, // 5분
+    sessionTimeout: 2 * 60 * 60 * 1000, // 2시간 (연장)
+    refreshThreshold: 10 * 60 * 1000, // 10분 (연장)
     passwordMinLength: 8,
-    accessToken: 15 * 60 * 1000, // 15분 (밀리초)
-    refreshToken: 7 * 24 * 60 * 60 * 1000, // 7일 (밀리초)
-    tokenRefresh: 5 * 60 * 1000, // 5분 전 갱신 (밀리초)
+    accessToken: 30 * 60 * 1000, // 30분 (연장)
+    refreshToken: 30 * 24 * 60 * 60 * 1000, // 30일 (연장)
+    tokenRefresh: 10 * 60 * 1000, // 10분 전 갱신 (연장)
   },
   
   // 보호된 경로

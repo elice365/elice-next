@@ -3,10 +3,11 @@ import { PostType } from '@/types/blog/post';
 import { useAppDispatch, useAppSelector } from '@/stores/hook';
 import { togglePostLike } from '@/stores/slice/blog';
 
+// Use data URLs for fallback images to avoid external dependencies
 const DEFAULT_POST_IMAGES = [
-  "https://via.placeholder.com/400x300/f3f4f6/9ca3af?text=Blog+Post+1",
-  "https://via.placeholder.com/400x300/e5e7eb/6b7280?text=Blog+Post+2",
-  "https://via.placeholder.com/400x300/d1d5db/4b5563?text=Blog+Post+3"
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui' font-size='20' fill='%239ca3af'%3EBlog Post 1%3C/text%3E%3C/svg%3E",
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui' font-size='20' fill='%236b7280'%3EBlog Post 2%3C/text%3E%3C/svg%3E",
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23d1d5db'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui' font-size='20' fill='%234b5563'%3EBlog Post 3%3C/text%3E%3C/svg%3E"
 ];
 
 export const useListItem = (post: PostType, mobile: boolean) => {
@@ -66,12 +67,20 @@ export const useListItem = (post: PostType, mobile: boolean) => {
     }
   }, [dispatch, post.uid, post.isLiked, isLiking]);
 
-  const formatDate = useCallback((date: Date) => {
+  const formatDate = useCallback((date: Date | string) => {
+    // Validate the date before formatting
+    const dateObject = date instanceof Date ? date : new Date(date);
+    
+    // Check if the date is valid
+    if (isNaN(dateObject.getTime())) {
+      return ''; // Return empty string for invalid dates
+    }
+    
     return new Intl.DateTimeFormat('ko-KR', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
-    }).format(new Date(date));
+    }).format(dateObject);
   }, []);
 
   return { getPostImages, handleLike, formatDate, isLikeAnimating };

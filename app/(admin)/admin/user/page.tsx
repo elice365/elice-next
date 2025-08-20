@@ -111,6 +111,8 @@ export default function AdminUserPageOptimized() {
     {
       key: 'user',
       title: '사용자',
+      width: '200px',
+      headerClassName: 'min-w-[150px]',
       render: (_: any, user: User) => (
         <div>
           <div className="font-medium text-[var(--text-color)]">
@@ -131,7 +133,7 @@ export default function AdminUserPageOptimized() {
       key: 'status',
       title: '상태',
       render: (_: any, user: User) => (
-        <Badge className={`${getBadgeStyle('status', user.status)} rounded-full shadow-sm flex items-center gap-1.5 px-3 py-1`}>
+        <Badge className={`${getBadgeStyle('status', user.status)} rounded-full shadow-sm flex items-center gap-1.5 px-3 py-1 admin-mobile-status`}>
           <Icon name={getBadgeIcon('status', user.status)} size={12} />
           {getBadgeText('status', user.status)}
         </Badge>
@@ -142,10 +144,10 @@ export default function AdminUserPageOptimized() {
       title: '역할',
       className: 'text-sm text-[var(--text-color)]',
       render: (_: any, user: User) => (
-        <div className="flex flex-wrap gap-1 max-w-48">
+        <div className="flex flex-wrap gap-1 max-w-48 md:flex-wrap md:max-w-48 admin-mobile-roles">
           {user.roles.length > 0 ? (
             user.roles.map((role) => (
-              <Badge key={`role-${user.id}-${role}`} className={`${getBadgeStyle('role', role)} rounded-full shadow-sm px-2 py-1 text-xs`}>
+              <Badge key={`role-${user.id}-${role}`} className={`${getBadgeStyle('role', role)} rounded-full shadow-sm px-2 py-1 text-xs admin-mobile-badge`}>
                 {getBadgeText('role', role)}
               </Badge>
             ))
@@ -160,14 +162,16 @@ export default function AdminUserPageOptimized() {
       title: '관리',
       render: (_: any, user: User) => (
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             handleRoleManagement(user, e);
           }}
-          className="text-blue-600 hover:text-[var(--hover-primary)] text-xs px-3 py-1.5 border border-blue-300 hover:border-[var(--hover-primary)] rounded-full transition-all duration-200 hover:shadow-sm flex items-center gap-1"
+          className="admin-role-button inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-xs px-2 py-1 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer group"
+          title="사용자 역할 관리"
         >
-          <Icon name="Settings" size={12} />
-          역할
+          <Icon name="Settings" size={12} className="group-hover:rotate-45 transition-transform duration-200" />
+          <span className="hidden sm:inline">역할</span>
         </button>
       )
     },
@@ -274,7 +278,7 @@ export default function AdminUserPageOptimized() {
     <>
       <button
         onClick={pageActions.refresh}
-        className="bg-button text-[var(--button-text)] flex items-center gap-2 px-4 py-2 border border-[var(--border-color)]  rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-all duration-200 hover:shadow-md hover:scale-105"
+        className="bg-button text-[var(--button-text)] flex items-center gap-2 px-4 py-2 border border-[var(--border-color)]  rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-colors duration-200"
       >
         <Icon name="RefreshCw" size={16} />
         새로고침
@@ -295,7 +299,7 @@ export default function AdminUserPageOptimized() {
     <div className="flex items-center gap-2">
       <button
         onClick={handleSelectActiveUsers}
-        className="flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-lg hover:scale-105"
+        className="flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors duration-200"
         title="활성 상태인 사용자만 선택"
       >
         <Icon name="UserCheck" size={16} />
@@ -304,7 +308,7 @@ export default function AdminUserPageOptimized() {
       <button
         onClick={handleBulkExportUsers}
         disabled={pageState.bulkActionLoading}
-        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {pageState.bulkActionLoading ? (
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

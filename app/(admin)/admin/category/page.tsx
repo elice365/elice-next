@@ -11,17 +11,7 @@ import { CategoryEditModal } from "@/components/ui/modal/category/CategoryEdit";
 import { DeleteModal } from "@/components/ui/modal/common/DeleteModal";
 import { api } from "@/lib/fetch";
 import { APIResult } from "@/types/api";
-import Image from "next/image";
-import "@/styles/admin-category.css";
 import { CategoryData } from "@/types/admin/pages";
-
-// Default placeholder images
-const DEFAULT_CATEGORY_IMAGE = "https://placehold.co/100x100.png?text=Category&w=1080&q=75";
-const DEFAULT_IMAGES = [
-  "https://placehold.co/100x100.png?text=1&w=1080&q=75",
-  "https://placehold.co/100x100.png?text=2&w=1080&q=75",
-  "https://placehold.co/100x100.png?text=3&w=1080&q=75"
-];
 
 // Category management page main component
 export default function AdminCategoryPage() {
@@ -29,9 +19,6 @@ export default function AdminCategoryPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryData | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<CategoryData | null>(null);
-  
-  // Sequential image display states
-  const [visibleImages, setVisibleImages] = useState<{ [key: string]: boolean }>({});
   
   // Page state management
   const [pageState, pageActions] = useAdminPage<CategoryData>({
@@ -159,95 +146,27 @@ export default function AdminCategoryPage() {
       dataIndex: 'name',
       key: 'name',
       render: (name: string, record: CategoryData) => {
-        const categoryImages = record.images?.length ? record.images : DEFAULT_IMAGES;
-        const showSequential = visibleImages[record.uid] || false;
-        
         return (
           <div className="flex items-center gap-2 relative group">
             {/* Hover gradient effect */}
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--hover)]/30 to-transparent transform -translate-x-full opacity-0 transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-hover:translate-x-full z-10"></span>
             
-            <div className="relative overflow-visible">
-              <div className="relative w-12 h-12 md:w-16 md:h-16 mr-2 overflow-hidden rounded-lg">
-                <Image
-                  src={record.image || DEFAULT_CATEGORY_IMAGE}
-                  alt={name}
-                  fill
-                  className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
-                {/* Sequential image toggle button */}
-                {categoryImages.length > 1 && (
-                  <button
-                    type="button"
-                    className={`absolute border-r border-b border-[var(--border-color)] bottom-0 right-0 w-6 h-6 bg-black/80 text-white flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 ${showSequential ? 'rotate-45' : ''}`}
-                    onMouseEnter={() => {
-                      setVisibleImages({ ...visibleImages, [record.uid]: true });
-                    }}
-                    onMouseLeave={() => {
-                      setVisibleImages({ ...visibleImages, [record.uid]: false });
-                    }}
-                    onClick={() => {
-                      setVisibleImages({ ...visibleImages, [record.uid]: !visibleImages[record.uid] });
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setVisibleImages({ ...visibleImages, [record.uid]: !visibleImages[record.uid] });
-                      }
-                    }}
-                    aria-label={`이미지 갤러리 토글 (${categoryImages.length}개 이미지)`}
-                  >
-                    <Icon name="Plus" size={12} />
-                  </button>
-                )}
-              </div>
-              
-              {/* Sequential images container */}
-              {categoryImages.length > 1 && (
-                <div
-                  className={`absolute left-full top-0 flex gap-1 ml-2 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] z-20 ${
-                    showSequential ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
-                  }`}
-                >
-                  {categoryImages.slice(1, 4).map((img, index) => (
-                    <div
-                      key={`category-img-${img}-${index}`}
-                      className={`relative w-12 h-12 md:w-14 md:h-14 overflow-hidden rounded-lg transition-all duration-500 ${showSequential ? 'scale-100' : 'scale-0'}`}
-                      style={{
-                        transitionDelay: `${index * 100}ms`
-                      }}
-                    >
-                      <Image
-                        src={img}
-                        alt={`${name} ${index + 2}`}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent"></div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          
             <div style={{ paddingLeft: `${record.level * 16}px` }} className="flex items-center gap-2">
-            {record.level > 0 && (
+              {record.level > 0 && (
+                <Icon 
+                  name="CornerDownRight" 
+                  size={14} 
+                  className="text-[var(--text-color)] opacity-40 transition-transform duration-300 group-hover:translate-x-1" 
+                />
+              )}
               <Icon 
-                name="CornerDownRight" 
-                size={14} 
-                className="text-[var(--text-color)] opacity-40 transition-transform duration-300 group-hover:translate-x-1" 
+                name={(record._count?.children || 0) > 0 ? "FolderOpen" : "Folder"} 
+                size={16} 
+                className="text-[var(--text-color)] opacity-60 transition-transform duration-300 group-hover:scale-110" 
               />
-            )}
-            <Icon 
-              name={(record._count?.children || 0) > 0 ? "FolderOpen" : "Folder"} 
-              size={16} 
-              className="text-[var(--text-color)] opacity-60 transition-transform duration-300 group-hover:scale-110" 
-            />
-            <span className="font-medium text-[var(--text-color)] transition-colors duration-300 group-hover:text-[var(--hover-primary)]">
-              {name}
-            </span>
+              <span className="font-medium text-[var(--text-color)] transition-colors duration-300 group-hover:text-[var(--hover-primary)]">
+                {name}
+              </span>
             </div>
           </div>
         );
@@ -331,20 +250,30 @@ export default function AdminCategoryPage() {
       title: '작업',
       key: 'actions',
       width: '100px',
-      render: (record: CategoryData) => (
+      render: (_value: any, record: CategoryData) => (
         <div className="flex items-center gap-2 group">
           <button
-            onClick={() => setEditingCategory(record)}
-            className="p-2 hover:bg-[var(--hover)] rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-md relative overflow-hidden"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingCategory(record);
+            }}
+            className="p-2 hover:bg-[var(--hover)] rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-md relative overflow-hidden cursor-pointer"
             title="수정"
+            aria-label="카테고리 수정"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent transform -translate-x-full opacity-0 transition-all duration-700 hover:opacity-100 hover:translate-x-full"></span>
             <Icon name="Edit" size={16} className="text-[var(--text-color)] opacity-60 hover:opacity-100 relative z-10" />
           </button>
           <button
-            onClick={() => setDeletingCategory(record)}
-            className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-md relative overflow-hidden"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDeletingCategory(record);
+            }}
+            className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-md relative overflow-hidden cursor-pointer"
             title="삭제"
+            aria-label="카테고리 삭제"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-red-300/50 to-transparent transform -translate-x-full opacity-0 transition-all duration-700 hover:opacity-100 hover:translate-x-full"></span>
             <Icon name="Trash2" size={16} className="text-red-500 relative z-10" />
@@ -374,6 +303,28 @@ export default function AdminCategoryPage() {
       </button>
     </div>
   );
+
+  // Mobile actions for floating button
+  const mobileActions = [
+    {
+      label: '새 카테고리',
+      icon: 'FolderPlus',
+      onClick: () => setIsCreateModalOpen(true),
+      variant: 'primary' as const
+    },
+    {
+      label: '새로고침',
+      icon: 'RotateCcw',
+      onClick: () => pageActions.refresh(),
+      variant: 'default' as const
+    },
+    {
+      label: '필터 초기화',
+      icon: 'FilterX',
+      onClick: () => pageActions.clearFilters(),
+      variant: 'default' as const
+    }
+  ];
 
   // Enhanced bulk action buttons
   const bulkActionButtons = pageState.selectedIds.length > 0 ? (
@@ -406,6 +357,7 @@ export default function AdminCategoryPage() {
         filters={filters}
         columns={columns}
         actionButtons={actionButtons}
+        mobileActions={mobileActions}
         bulkActionButtons={bulkActionButtons}
         onRowClick={(record) => setEditingCategory(record)}
         rowKey="uid"

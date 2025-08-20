@@ -1,5 +1,229 @@
 @import "tailwindcss";
 
+/* Global Reset and Overflow Control */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  /* Disable pull-to-refresh on mobile */
+  overscroll-behavior-y: contain;
+}
+
+/* Navigation Loading - Hide on Mobile */
+@media (max-width: 768px) {
+  .navigation-skeleton {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  
+  /* Blog Post Mobile Optimization */
+  article.blog-post {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    /* Disable pull-to-refresh on blog posts */
+    overscroll-behavior-y: none;
+    touch-action: pan-y;
+  }
+  
+  article.blog-post > *:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  /* Disable pull-to-refresh on blog pages */
+  .blog-container {
+    overscroll-behavior-y: none;
+    position: relative;
+  }
+}
+
+/* Modal specific overflow control */
+.modal-content {
+  max-width: min(100vw - 2rem, var(--modal-max-width, 48rem));
+  overflow-x: hidden;
+}
+
+.modal-content > * {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Mobile Table Optimization for all themes */
+@media (max-width: 768px) {
+  /* Enhanced mobile table scrolling */
+  .admin-table-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    position: relative;
+  }
+  
+  /* Mobile-optimized checkbox sizing */
+  .admin-mobile-table input[type="checkbox"] {
+    width: 14px !important;
+    height: 14px !important;
+    min-width: 14px !important;
+    min-height: 14px !important;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  
+  /* Mobile badge optimization - prevent wrapping */
+  .admin-mobile-badge {
+    display: inline-flex !important;
+    white-space: nowrap !important;
+    font-size: 10px !important;
+    padding: 2px 6px !important;
+    line-height: 1.2 !important;
+    max-width: none !important;
+  }
+  
+  /* Mobile role badges container */
+  .admin-mobile-roles {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 2px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    max-width: 120px !important;
+  }
+  
+  .admin-mobile-roles::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Mobile table cell adjustments */
+  .admin-mobile-table td {
+    vertical-align: middle !important;
+  }
+  
+  /* Sticky column for actions on mobile */
+  .admin-mobile-table td.sticky,
+  .admin-mobile-table th.sticky {
+    position: sticky !important;
+    z-index: 10;
+  }
+  
+  /* Right sticky column styling */
+  .admin-mobile-table td.sticky.right-0,
+  .admin-mobile-table th.sticky.right-0 {
+    right: 0 !important;
+    background: var(--background) !important;
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Left sticky column styling */
+  .admin-mobile-table td.sticky.left-0,
+  .admin-mobile-table th.sticky.left-0 {
+    left: 0 !important;
+    background: var(--background) !important;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Subtle sticky column indicators for mobile tables */
+  .admin-sticky-column {
+    background: var(--background);
+    position: relative;
+  }
+  
+  /* Table shadows completely removed for cleaner appearance */
+  .admin-sticky-column::after {
+    display: none !important;
+  }
+  
+  /* Remove all table shadow effects */
+  .admin-table-scroll[data-scrolled="true"] .admin-sticky-column::after {
+    display: none !important;
+  }
+  
+  /* Table row hover states optimized for touch */
+  .admin-mobile-table tr {
+    transition: background-color 0.2s ease;
+    height: auto !important;
+  }
+  
+  .admin-mobile-table tbody tr {
+    min-height: 44px !important;
+  }
+  
+  .admin-mobile-table tbody tr:active {
+    background-color: var(--hover);
+  }
+  
+  /* Prevent text wrapping in specific columns */
+  .admin-mobile-table .text-nowrap {
+    white-space: nowrap !important;
+  }
+  
+  /* Mobile-optimized status badges */
+  .admin-mobile-status {
+    display: inline-flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    font-size: 10px !important;
+    padding: 3px 8px !important;
+  }
+  
+  /* Ensure action buttons are always visible on mobile */
+  .admin-mobile-table button {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-flex !important;
+  }
+  
+  /* Mobile table min width for scroll */
+  .admin-mobile-table {
+    min-width: 500px !important; /* Reduced minimum width for better mobile experience */
+    table-layout: fixed !important;
+  }
+  
+  /* 모바일에서 작업 버튼 강제 표시 */
+  @media (max-width: 768px) {
+    /* 테이블 스크롤 영역 */
+    .admin-table-scroll {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* 작업 열 항상 표시 */
+    .admin-mobile-table th:last-child,
+    .admin-mobile-table td:last-child {
+      display: table-cell !important;
+      visibility: visible !important;
+      min-width: 80px !important;
+    }
+    
+    /* 이미지 열 최적화 */
+    .admin-mobile-table th:first-child,
+    .admin-mobile-table td:first-child {
+      width: 60px !important;
+      min-width: 60px !important;
+    }
+    
+    /* 글 정보 열 최적화 */
+    .admin-mobile-table th:nth-child(2),
+    .admin-mobile-table td:nth-child(2) {
+      min-width: 150px !important;
+    }
+    
+    /* Sticky actions column */
+    .admin-mobile-table .sticky {
+      position: sticky !important;
+      background: var(--background) !important;
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1) !important;
+      z-index: 10 !important;
+    }
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -20,6 +244,16 @@
   --modal-header-bg: #f9fafb;
   --modal-footer-bg: #f9fafb;
   --modal-border: #e5e7eb;
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --modal-input-bg: #ffffff;
+  --modal-input-border: #d1d5db;
+  --modal-input-focus: #2563eb;
+  --modal-button-primary: #2563eb;
+  --modal-button-primary-hover: #1d4ed8;
+  --modal-button-secondary: #6b7280;
+  --modal-button-secondary-hover: #4b5563;
   
   /* Hover states */
   --hover-primary: #2563eb;
@@ -30,6 +264,29 @@
   
   /* Card hover state */
   --card-hover: #ebebeb;
+  
+  /* Admin Design System - Default */
+  --admin-sidebar-bg: #ffffff;
+  --admin-sidebar-text: #6b7280;
+  --admin-sidebar-hover: #f3f4f6;
+  --admin-sidebar-active: #e5e7eb;
+  --admin-header-bg: #ffffff;
+  --admin-header-border: #e5e7eb;
+  --admin-table-header: #f9fafb;
+  --admin-table-border: #e5e7eb;
+  --admin-table-hover: #f9fafb;
+  --admin-badge-default: #e5e7eb;
+  --admin-badge-success: #d1fae5;
+  --admin-badge-warning: #fed7aa;
+  --admin-badge-danger: #fee2e2;
+  --admin-badge-info: #dbeafe;
+  --admin-card-bg: #ffffff;
+  --admin-card-border: #e5e7eb;
+  --admin-card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  --admin-primary: #3b82f6;
+  --admin-primary-hover: #2563eb;
+  --admin-secondary: #6b7280;
+  --admin-secondary-hover: #4b5563;
 }
 
 /* Tailwind CSS v4 theme configuration - Valid v4 syntax, ignore SonarCloud warnings */
@@ -57,6 +314,7 @@
 
 html.light {
   --background: #ffffff;
+  --background-rgb: 255, 255, 255;
   --foreground: #171717;
   --hover: #c6c6c6;
   --hover-text: #959595;
@@ -99,9 +357,19 @@ html.light {
   --card-hover: #ebebeb;
   
   /* Modal specific */
-  --modal-header-bg: #f9fafb;
-  --modal-footer-bg: #f9fafb;
-  --modal-border: #e5e7eb;
+  --modal-header-bg: #faf8f5;
+  --modal-footer-bg: #faf8f5;
+  --modal-border: #e3e1e1;
+  --modal-bg: #fefefe;
+  --modal-overlay: rgba(0, 0, 0, 0.4);
+  --modal-shadow: 0 25px 50px -12px rgba(92, 80, 73, 0.25);
+  --modal-input-bg: #ffffff;
+  --modal-input-border: #d9d6d3;
+  --modal-input-focus: #5c5049;
+  --modal-button-primary: #5c5049;
+  --modal-button-primary-hover: #4a3f39;
+  --modal-button-secondary: #6b5b52;
+  --modal-button-secondary-hover: #5a4a42;
   
   /* Hover states */
   --hover-primary: #1d4ed8;
@@ -109,10 +377,49 @@ html.light {
   --hover-warning: #c2410c;
   --hover-danger: #b91c1c;
   --hover-info: #0e7490;
+  
+  /* Admin Design System - Light Theme */
+  --admin-sidebar-bg: #fafafa;
+  --admin-sidebar-text: #4b5563;
+  --admin-sidebar-hover: #f3f4f6;
+  --admin-sidebar-active: #e5e7eb;
+  --admin-sidebar-border: #e5e7eb;
+  --admin-header-bg: rgba(255, 255, 255, 0.9);
+  --admin-header-border: #e5e7eb;
+  --admin-header-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --admin-table-header: #f9fafb;
+  --admin-table-border: #e5e7eb;
+  --admin-table-hover: #f3f4f6;
+  --admin-table-selected: #eff6ff;
+  --admin-badge-default: #f3f4f6;
+  --admin-badge-success: #d1fae5;
+  --admin-badge-warning: #fed7aa;
+  --admin-badge-danger: #fee2e2;
+  --admin-badge-info: #dbeafe;
+  --admin-card-bg: #ffffff;
+  --admin-card-border: #e5e7eb;
+  --admin-card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  --admin-card-hover-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --admin-primary: #5c5049;
+  --admin-primary-hover: #4a3f39;
+  --admin-secondary: #6b5b52;
+  --admin-secondary-hover: #5a4a42;
+  --admin-accent: #8b7355;
+  --admin-accent-hover: #7a6348;
+  --admin-success: #16a34a;
+  --admin-warning: #ea580c;
+  --admin-danger: #dc2626;
+  --admin-info: #0891b2;
+  --admin-stat-bg: #fefefe;
+  --admin-stat-border: #f0f0f0;
+  --admin-input-bg: #ffffff;
+  --admin-input-border: #d1d5db;
+  --admin-input-focus: #5c5049;
 }
 
 html.dark {
   --background: #000000;
+  --background-rgb: 0, 0, 0;
   --foreground: #ffffff;
   --hover: #3b3b3b;
   --hover-text: #cfcfcf;
@@ -155,9 +462,19 @@ html.dark {
   --card-hover: #404040;
   
   /* Modal specific */
-  --modal-header-bg: #141414;
-  --modal-footer-bg: #141414;
+  --modal-header-bg: #1a1a1a;
+  --modal-footer-bg: #1a1a1a;
   --modal-border: #374151;
+  --modal-bg: #242424;
+  --modal-overlay: rgba(0, 0, 0, 0.7);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --modal-input-bg: #1a1a1a;
+  --modal-input-border: #374151;
+  --modal-input-focus: #6b7280;
+  --modal-button-primary: #6b7280;
+  --modal-button-primary-hover: #9ca3af;
+  --modal-button-secondary: #4b5563;
+  --modal-button-secondary-hover: #6b7280;
   
   /* Hover states */
   --hover-primary: #3b82f6;
@@ -165,9 +482,48 @@ html.dark {
   --hover-warning: #f59e0b;
   --hover-danger: #ef4444;
   --hover-info: #06b6d4;
+  
+  /* Admin Design System - Dark Theme */
+  --admin-sidebar-bg: #1a1a1a;
+  --admin-sidebar-text: #9ca3af;
+  --admin-sidebar-hover: #2a2a2a;
+  --admin-sidebar-active: #374151;
+  --admin-sidebar-border: #374151;
+  --admin-header-bg: rgba(26, 26, 26, 0.9);
+  --admin-header-border: #374151;
+  --admin-header-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --admin-table-header: #1f2937;
+  --admin-table-border: #374151;
+  --admin-table-hover: #1f2937;
+  --admin-table-selected: #1e3a8a;
+  --admin-badge-default: #374151;
+  --admin-badge-success: #064e3b;
+  --admin-badge-warning: #78350f;
+  --admin-badge-danger: #7f1d1d;
+  --admin-badge-info: #164e63;
+  --admin-card-bg: #1a1a1a;
+  --admin-card-border: #374151;
+  --admin-card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5);
+  --admin-card-hover-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.7);
+  --admin-primary: #6b7280;
+  --admin-primary-hover: #9ca3af;
+  --admin-secondary: #4b5563;
+  --admin-secondary-hover: #6b7280;
+  --admin-accent: #8b9dc3;
+  --admin-accent-hover: #a8b8d8;
+  --admin-success: #22c55e;
+  --admin-warning: #f59e0b;
+  --admin-danger: #ef4444;
+  --admin-info: #06b6d4;
+  --admin-stat-bg: #0f0f0f;
+  --admin-stat-border: #2a2a2a;
+  --admin-input-bg: #0f0f0f;
+  --admin-input-border: #374151;
+  --admin-input-focus: #6b7280;
 }
 html.deepblue {
-  --background: #1e2530;   
+  --background: #1e2530;
+  --background-rgb: 30, 37, 48;   
   --foreground: #e2e8f0;
   --hover: #3b4758;
   --hover-text: #cbd5e1;
@@ -210,9 +566,19 @@ html.deepblue {
   --card-hover: #3e4a5f;
   
   /* Modal specific */
-  --modal-header-bg: #262d38;
-  --modal-footer-bg: #262d38;
-  --modal-border: #454c55;
+  --modal-header-bg: #2a3441;
+  --modal-footer-bg: #2a3441;
+  --modal-border: #475569;
+  --modal-bg: #2f3845;
+  --modal-overlay: rgba(15, 23, 42, 0.8);
+  --modal-shadow: 0 25px 50px -12px rgba(30, 37, 48, 0.5);
+  --modal-input-bg: #252d3a;
+  --modal-input-border: #475569;
+  --modal-input-focus: #4a90e2;
+  --modal-button-primary: #4a90e2;
+  --modal-button-primary-hover: #357abd;
+  --modal-button-secondary: #5b9bd5;
+  --modal-button-secondary-hover: #4a8bc5;
   
   /* Hover states */
   --hover-primary: #60a5fa;
@@ -220,10 +586,49 @@ html.deepblue {
   --hover-warning: #fbbf24;
   --hover-danger: #f87171;
   --hover-info: #38bdf8;
+  
+  /* Admin Design System - Deep Blue Theme */
+  --admin-sidebar-bg: #252d3a;
+  --admin-sidebar-text: #94a3b8;
+  --admin-sidebar-hover: #2f3845;
+  --admin-sidebar-active: #3e4a5f;
+  --admin-sidebar-border: #334155;
+  --admin-header-bg: rgba(37, 45, 58, 0.9);
+  --admin-header-border: #334155;
+  --admin-header-shadow: 0 1px 2px 0 rgb(30 37 48 / 0.5);
+  --admin-table-header: #2a3441;
+  --admin-table-border: #334155;
+  --admin-table-hover: #2f3845;
+  --admin-table-selected: #1e40af;
+  --admin-badge-default: #334155;
+  --admin-badge-success: #064e3b;
+  --admin-badge-warning: #78350f;
+  --admin-badge-danger: #7f1d1d;
+  --admin-badge-info: #0c4a6e;
+  --admin-card-bg: #2a3441;
+  --admin-card-border: #334155;
+  --admin-card-shadow: 0 1px 3px 0 rgb(30 37 48 / 0.4);
+  --admin-card-hover-shadow: 0 10px 15px -3px rgb(30 37 48 / 0.6);
+  --admin-primary: #4a90e2;
+  --admin-primary-hover: #357abd;
+  --admin-secondary: #5b9bd5;
+  --admin-secondary-hover: #4a8bc5;
+  --admin-accent: #7fb3e8;
+  --admin-accent-hover: #6ca3d8;
+  --admin-success: #4ade80;
+  --admin-warning: #fbbf24;
+  --admin-danger: #f87171;
+  --admin-info: #38bdf8;
+  --admin-stat-bg: #1e2530;
+  --admin-stat-border: #2f3845;
+  --admin-input-bg: #1e2530;
+  --admin-input-border: #334155;
+  --admin-input-focus: #4a90e2;
 }
 
 html.brown {
   --background: #fffbf7;
+  --background-rgb: 255, 251, 247;
   --foreground: #3d2914;
   --hover: #f5e6d3;
   --hover-text: #5c3d1f;
@@ -266,9 +671,19 @@ html.brown {
   --card-hover: #f5e6d3;
   
   /* Modal specific */
-  --modal-header-bg: #f9fafb;
-  --modal-footer-bg: #f9fafb;
-  --modal-border: #e5e7eb;
+  --modal-header-bg: #faf8f5;
+  --modal-footer-bg: #faf8f5;
+  --modal-border: #e8dfd6;
+  --modal-bg: #fffdfb;
+  --modal-overlay: rgba(61, 41, 20, 0.4);
+  --modal-shadow: 0 25px 50px -12px rgba(139, 99, 49, 0.25);
+  --modal-input-bg: #ffffff;
+  --modal-input-border: #e8dfd6;
+  --modal-input-focus: #8b6331;
+  --modal-button-primary: #8b6331;
+  --modal-button-primary-hover: #7a5429;
+  --modal-button-secondary: #a67c52;
+  --modal-button-secondary-hover: #946b47;
   
   /* Hover states */
   --hover-primary: #7a5429;
@@ -276,6 +691,44 @@ html.brown {
   --hover-warning: #c2410c;
   --hover-danger: #b91c1c;
   --hover-info: #0e7490;
+  
+  /* Admin Design System - Brown Theme */
+  --admin-sidebar-bg: #faf8f5;
+  --admin-sidebar-text: #6b5444;
+  --admin-sidebar-hover: #f5e6d3;
+  --admin-sidebar-active: #e8dfd6;
+  --admin-sidebar-border: #e8dfd6;
+  --admin-header-bg: rgba(255, 251, 247, 0.95);
+  --admin-header-border: #e8dfd6;
+  --admin-header-shadow: 0 1px 2px 0 rgb(139 99 49 / 0.08);
+  --admin-table-header: #faf8f5;
+  --admin-table-border: #e8dfd6;
+  --admin-table-hover: #f5e6d3;
+  --admin-table-selected: #fef3c7;
+  --admin-badge-default: #f5e6d3;
+  --admin-badge-success: #d1fae5;
+  --admin-badge-warning: #fed7aa;
+  --admin-badge-danger: #fee2e2;
+  --admin-badge-info: #dbeafe;
+  --admin-card-bg: #fffefb;
+  --admin-card-border: #e8dfd6;
+  --admin-card-shadow: 0 1px 3px 0 rgb(139 99 49 / 0.1);
+  --admin-card-hover-shadow: 0 10px 15px -3px rgb(139 99 49 / 0.15);
+  --admin-primary: #8b6331;
+  --admin-primary-hover: #7a5429;
+  --admin-secondary: #a67c52;
+  --admin-secondary-hover: #946b47;
+  --admin-accent: #b8935f;
+  --admin-accent-hover: #a68355;
+  --admin-success: #16a34a;
+  --admin-warning: #ea580c;
+  --admin-danger: #dc2626;
+  --admin-info: #0891b2;
+  --admin-stat-bg: #fffdfb;
+  --admin-stat-border: #f5e6d3;
+  --admin-input-bg: #ffffff;
+  --admin-input-border: #e8dfd6;
+  --admin-input-focus: #8b6331;
 }
 
 
@@ -377,4 +830,339 @@ body {
 /* sonar-disable-next-line css:S4662 */
 @utility animate-scale-in {
   animation: scaleIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Admin-specific animations */
+@keyframes adminPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes adminSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes adminRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes adminBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Admin utility classes */
+/* sonar-disable-next-line css:S4662 */
+@utility admin-card {
+  background: var(--admin-card-bg);
+  border: 1px solid var(--admin-card-border);
+  border-radius: 0.75rem;
+  box-shadow: var(--admin-card-shadow);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* sonar-disable-next-line css:S4662 */
+@utility admin-card-hover {
+  box-shadow: var(--admin-card-hover-shadow);
+  transform: translateY(-2px);
+}
+
+/* sonar-disable-next-line css:S4662 */
+@utility admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--admin-card-bg);
+  border: 1px solid var(--admin-table-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* sonar-disable-next-line css:S4662 */
+@utility admin-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+/* sonar-disable-next-line css:S4662 */
+@utility admin-input {
+  background: var(--admin-input-bg);
+  border: 1px solid var(--admin-input-border);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s;
+  outline: none;
+}
+
+/* sonar-disable-next-line css:S4662 */
+@utility admin-input-focus {
+  border-color: var(--admin-input-focus);
+  box-shadow: 0 0 0 3px rgb(from var(--admin-input-focus) r g b / 0.1);
+}
+
+/* Admin component styles */
+.admin-header {
+  background: var(--admin-header-bg);
+  border-bottom: 1px solid var(--admin-header-border);
+  box-shadow: var(--admin-header-shadow);
+  backdrop-filter: blur(12px);
+}
+
+.admin-sidebar {
+  background: var(--admin-sidebar-bg);
+  border-right: 1px solid var(--admin-sidebar-border);
+}
+
+.admin-sidebar-item {
+  color: var(--admin-sidebar-text);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.admin-sidebar-item:hover {
+  background: var(--admin-sidebar-hover);
+}
+
+.admin-sidebar-item.active {
+  background: var(--admin-sidebar-active);
+  font-weight: 600;
+}
+
+.admin-stat-card {
+  background: var(--admin-stat-bg);
+  border: 1px solid var(--admin-stat-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+/* Admin button variants */
+.admin-btn-primary {
+  background: var(--admin-primary);
+  color: white;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.admin-btn-primary:hover {
+  background: var(--admin-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.admin-btn-secondary {
+  background: var(--admin-secondary);
+  color: white;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.admin-btn-secondary:hover {
+  background: var(--admin-secondary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Admin badge variants */
+.admin-badge-success {
+  background: var(--admin-badge-success);
+  color: var(--admin-success);
+}
+
+.admin-badge-warning {
+  background: var(--admin-badge-warning);
+  color: var(--admin-warning);
+}
+
+.admin-badge-danger {
+  background: var(--admin-badge-danger);
+  color: var(--admin-danger);
+}
+
+.admin-badge-info {
+  background: var(--admin-badge-info);
+  color: var(--admin-info);
+}
+
+/* Admin loading animations */
+.admin-loading-pulse {
+  animation: adminPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.admin-loading-spin {
+  animation: adminRotate 1s linear infinite;
+}
+
+.admin-loading-bounce {
+  animation: adminBounce 1s infinite;
+}
+
+/* Modal animations */
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+/* Modal styles */
+.modal-overlay {
+  background: var(--modal-overlay);
+  backdrop-filter: blur(8px);
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background: var(--modal-bg);
+  box-shadow: var(--modal-shadow);
+  animation: modalSlideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.modal-header {
+  background: var(--modal-header-bg);
+  border-bottom: 1px solid var(--modal-border);
+}
+
+.modal-footer {
+  background: var(--modal-footer-bg);
+  border-top: 1px solid var(--modal-border);
+}
+
+.modal-input {
+  background: var(--modal-input-bg);
+  border: 1px solid var(--modal-input-border);
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  outline: none;
+}
+
+.modal-input:focus {
+  border-color: var(--modal-input-focus);
+  box-shadow: 0 0 0 3px rgb(from var(--modal-input-focus) r g b / 0.1);
+}
+
+.modal-button-primary {
+  background: var(--modal-button-primary);
+  color: white;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.modal-button-primary:hover:not(:disabled) {
+  background: var(--modal-button-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgb(from var(--modal-button-primary) r g b / 0.25);
+}
+
+.modal-button-secondary {
+  background: transparent;
+  color: var(--modal-button-secondary);
+  border: 1px solid var(--modal-border);
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.modal-button-secondary:hover:not(:disabled) {
+  background: var(--modal-button-secondary-hover);
+  color: white;
+  border-color: var(--modal-button-secondary-hover);
+}
+
+.modal-error {
+  animation: modalShake 0.5s ease-in-out;
+}
+
+/* Modal tab styles */
+.modal-tab {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.7;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  border-bottom: 2px solid transparent;
+}
+
+.modal-tab:hover {
+  opacity: 1;
+  background: var(--hover);
+}
+
+.modal-tab.active {
+  opacity: 1;
+  color: var(--modal-button-primary);
+  border-bottom-color: var(--modal-button-primary);
+  background: transparent;
+}
+
+.modal-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--modal-button-primary);
+  animation: slideInLeft 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Mobile Table Optimization - moved to admin/layout.css */
+
+/* Accessibility utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

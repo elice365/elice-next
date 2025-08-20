@@ -170,7 +170,8 @@ export const Related = memo(function Related({
             // Handle string format
             if (typeof images === 'string') return images;
             
-            return "https://via.placeholder.com/300x200/f3f4f6/9ca3af?text=Blog+Post";
+            // Return a data URL fallback image
+            return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui' font-size='18' fill='%239ca3af'%3EBlog Post%3C/text%3E%3C/svg%3E";
           };
           
           const mainImage = getMainImage(post.images);
@@ -193,6 +194,10 @@ export const Related = memo(function Related({
                       fill
                       sizes={getImageSizes(mobile, tablet)}
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui' font-size='18' fill='%239ca3af'%3EBlog Post%3C/text%3E%3C/svg%3E";
+                      }}
                     />
                     {post.category && (
                       <div className="absolute top-3 left-3">
@@ -233,7 +238,7 @@ export const Related = memo(function Related({
                     <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                       <div className="flex items-center gap-1">
                         <Icon name="Eye" size={14} />
-                        <span>{post.views.toLocaleString()}</span>
+                        <span>{(post.views || 0).toLocaleString()}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Icon name="Heart" size={14} />

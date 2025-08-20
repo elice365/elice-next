@@ -16,9 +16,9 @@ export interface UseAnimatedWidthOptions {
 // ==========================================
 
 export interface UseModalStateProps {
-  onOpen?: () => void;
-  onClose?: () => void;
-  defaultOpen?: boolean;
+  readonly onOpen?: () => void;
+  readonly onClose?: () => void;
+  readonly defaultOpen?: boolean;
 }
 
 export interface UseModalStateReturn {
@@ -29,13 +29,13 @@ export interface UseModalStateReturn {
 }
 
 export interface UseModalFormProps<T> {
-  initialData?: Partial<T>;
-  endpoint: string;
-  method?: 'POST' | 'PATCH' | 'PUT';
-  onSuccess?: (data: any) => void;
-  onUpdate?: () => void;
-  onClose: () => void;
-  isOpen: boolean;
+  readonly initialData?: Partial<T>;
+  readonly endpoint: string;
+  readonly method?: 'POST' | 'PATCH' | 'PUT';
+  readonly onSuccess?: (data: any) => void;
+  readonly onUpdate?: () => void;
+  readonly onClose: () => void;
+  readonly isOpen: boolean;
 }
 
 export interface UseModalStatesOptions {
@@ -60,28 +60,9 @@ export interface UseModalStatesReturn<T> {
 // Auth Hooks
 // ==========================================
 
-export interface TokenRefreshOptions {
-  enabled?: boolean;
-  debounceTime?: number;
-  refreshBeforeExpiry?: number;
-  activityEvents?: string[];
-  enableVisibilityRefresh?: boolean;
-}
+// TokenRefreshOptions moved to types/hooks/auth.ts to avoid duplication
 
-export interface UseAuthFormStateProps {
-  fields: any[]; // Should be AuthFormField[] from auth types
-}
-
-export interface UseAuthFormValidationProps {
-  fields: any[];
-  validate?: (data: Record<string, string>) => string | null;
-}
-
-export interface UseAuthFormSubmissionProps {
-  title: string;
-  successRedirect?: string;
-  onSuccess?: () => void;
-}
+// Auth form interfaces moved to types/hooks/auth.ts to avoid duplication
 
 export type SocialLoginResponse = {
   success: boolean;

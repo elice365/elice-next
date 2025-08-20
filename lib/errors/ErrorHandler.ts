@@ -4,7 +4,7 @@
  */
 
 import { ApiError, ErrorContext } from './ApiError';
-import { logger } from '@/utils/logger';
+import { logger } from '@/lib/services/logger';
 
 export interface ErrorHandlerOptions {
   context?: ErrorContext;
@@ -127,8 +127,8 @@ export class ErrorHandler {
   /**
    * Map ErrorContext to LogContext for logger compatibility
    */
-  private static mapErrorContextToLogger(context: ErrorContext): import('@/utils/logger').LogContext {
-    const mapping: Record<ErrorContext, import('@/utils/logger').LogContext> = {
+  private static mapErrorContextToLogger(context: ErrorContext): string {
+    const mapping: Record<ErrorContext, string> = {
       'AUTH': 'AUTH',
       'BLOG': 'API',
       'USER': 'API', 

@@ -112,9 +112,9 @@ export const SearchModal = memo(() => {
                         </div>
                       );
                     } else if (debouncedQuery.length > 1) {
-                      return <SearchResults results={results} isLoading={isLoading} />;
+                      return <SearchResults results={results} isLoading={isLoading} onNavigate={closeModal} />;
                     } else {
-                      return <Feed recent={recent} popular={popular} staticLoading={isLoading} />;
+                      return <Feed recent={recent} popular={popular} staticLoading={isLoading} onNavigate={closeModal} />;
                     }
                   })()
                 }

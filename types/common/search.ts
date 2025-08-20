@@ -7,6 +7,7 @@ export interface SearchItem {
   category?: string;
   createdTime: string;
   views: number;
+  likeCount: number;
   relevance?: number;
   snippet?: string;
 }

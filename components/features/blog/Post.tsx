@@ -14,6 +14,7 @@ import { useBlogActions } from '@/hooks/blog';
 import { parseContent } from '@/utils/blog/contentParser';
 import type { BlogPostProps } from '@/types/blog/components';
 import { Actions } from './Actions';
+import { DisablePullToRefresh } from './DisablePullToRefresh';
 
 
 export const Post = memo(function Post({
@@ -40,27 +41,24 @@ export const Post = memo(function Post({
 
   return (
     <>
+      <DisablePullToRefresh />
       <ReadingProgress targetRef={articleRef} />
 
       <div className="bg-[var(--color-panel)] w-full min-h-screen">
-        <div>
-          <div className="w-full">
-            {/* Main content area - 통합된 카드 디자인 */}
-            <article
-              ref={articleRef}
-              className={`bg-[var(--background)] border border-[var(--border-color)] shadow-sm `}
-            >
-
-              {/* Product Gallery with Card Style */}
-              {blogContent?.product && blogContent.product.length > 0 && (
-                <Gallery
-                  products={blogContent.product}
-                  author={blogContent.author}
-                  mobile={mobile}
-                  tablet={tablet}
-                />
-              )}
-              <div className='p-4 m-2 md:m-12'>
+        <article
+          ref={articleRef}
+          className="blog-post bg-[var(--background)] md:border border-[var(--border-color)] md:shadow-sm"
+        >
+          {/* Product Gallery with Card Style */}
+          {blogContent?.product && blogContent.product.length > 0 && (
+            <Gallery
+              products={blogContent.product}
+              author={blogContent.author}
+              mobile={mobile}
+              tablet={tablet}
+            />
+          )}
+          <div className='p-4 md:p-8 lg:p-12'>
                 {(!mobile || tablet) && (
                   <Header
                     post={post}
@@ -97,19 +95,17 @@ export const Post = memo(function Post({
                 </div>
 
 
-              </div>
-              {/* Mobile/Tablet Author Info */}
-              {blogContent?.author && (
-                <section>
-                  <SellerInfo
-                    author={blogContent.author}
-                    variant="mobile"
-                  />
-                </section>
-              )}
-            </article>
           </div>
-        </div>
+          {/* Mobile/Tablet Author Info */}
+          {blogContent?.author && (
+            <section>
+              <SellerInfo
+                author={blogContent.author}
+                variant="mobile"
+              />
+            </section>
+          )}
+        </article>
       </div>
     </>
   );

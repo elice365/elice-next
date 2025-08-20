@@ -5,7 +5,7 @@ import { User } from '../common/user';
 import { AdminNotificationData as NotificationData } from '../common/notifications';
 
 // Admin Blog Page
-export interface BlogData extends Post {
+export interface BlogData extends Omit<Post, 'images'> {
   author?: {
     uid: string;
     name: string;
@@ -16,6 +16,8 @@ export interface BlogData extends Post {
     views: number;
     comments: number;
   };
+  image?: string; // Single image for backward compatibility
+  images: string[] | { main: string; additional?: string[] }; // Support multiple image formats
 }
 
 // Admin Category Page

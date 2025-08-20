@@ -6,7 +6,7 @@ import { Card } from "./Card";
 import { ListItem } from "./List";
 import { Tag } from "@/types/blog/post";
 import type { BlogDisplayPost, BlogDisplayProps } from '@/types/blog/components';
-import "@/styles/blog-display.css";
+import "@/styles/blog/display.css";
 
 
 export function Display({ 

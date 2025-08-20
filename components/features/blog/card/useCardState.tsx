@@ -42,11 +42,32 @@ export const useCardState = (post: PostType) => {
   }, []);
 
   const formatDate = useCallback((date: Date) => {
+    // Handle null/undefined dates
+    if (!date) {
+      return new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      }).format(new Date());
+    }
+    
+    // Ensure date is a valid Date object
+    const dateObj = date instanceof Date ? date : new Date(date);
+    
+    // Check if date is valid
+    if (isNaN(dateObj.getTime())) {
+      return new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      }).format(new Date());
+    }
+    
     return new Intl.DateTimeFormat('ko-KR', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
-    }).format(new Date(date));
+    }).format(dateObj);
   }, []);
 
   return {

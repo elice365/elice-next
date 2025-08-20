@@ -140,7 +140,10 @@ export const tokenServer = {
       
       return payload;
     } catch (error) {
-      console.error('Refresh token verification failed:', error);
+      // 개발 모드에서만 상세 로그 출력
+      if (process.env.NODE_ENV === 'development') {
+        console.debug('Refresh token verification failed:', error);
+      }
       return null;
     }
   },

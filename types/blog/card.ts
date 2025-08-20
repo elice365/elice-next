@@ -55,9 +55,9 @@ export interface CardContentProps {
 }
 
 export interface CardTitleProps {
-  title: string;
-  mobile: boolean;
-  tablet: boolean;
+  readonly title: string;
+  readonly mobile: boolean;
+  readonly tablet: boolean;
 }
 
 export interface CardDescriptionProps {

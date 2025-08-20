@@ -1,7 +1,7 @@
 import { prisma } from './prisma';
 import { Prisma } from '@prisma/client';
 import { withRetry } from './connection-manager';
-import { logger } from '@/utils/logger';
+import { logger } from '@/lib/services/logger';
 
 // ================================
 // TypeScript Interfaces

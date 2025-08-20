@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import type { Response, Message } from "@/types/lib/response";
 
+export type { Message };
+
 export const setRequest = (data: any): Response => {
   return { success: true, data: data, status: 200 };
 };

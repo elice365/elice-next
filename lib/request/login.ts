@@ -8,7 +8,7 @@ import { tokenServer } from "@/lib/services/token/server";
 import * as argon2 from 'argon2';
 import { setMessage } from "../response";
 import { loginSchema, validateApiRequest } from "@/lib/validation/schemas";
-import { logger } from "@/utils/logger";
+import { logger } from "@/lib/services/logger";
 import { history } from "@/lib/db/history";
 // 로그인
 export const login = async (request: NextRequest): Promise<APIResult> => {
@@ -21,7 +21,7 @@ export const login = async (request: NextRequest): Promise<APIResult> => {
     // Validate request body using Zod schema
     const validation = await validateApiRequest(loginSchema, request);
     if (!validation.success) {
-      logger.auth.warn('Login validation failed', validation.errors);
+      logger.warn('Login validation failed', 'AUTH', validation.errors);
       return await setMessage('InvalidField', validation.errors, 400);
     }
 
@@ -106,7 +106,7 @@ export const login = async (request: NextRequest): Promise<APIResult> => {
       fingerprint
     },200);
   } catch (error) {
-    logger.auth.error('Login failed', { error });
+    logger.error('Login failed', 'AUTH', { error });
     return await setMessage('UnknownError', null, 500);
   }
 };

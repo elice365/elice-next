@@ -88,7 +88,15 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
   const baseTitle = t("title");
   const fullTitle = `${post.title} | ${baseTitle}`;
   const description = post.description || "Read this insightful blog post.";
-  const postUrl = `${t("openGraph.url")}/blog/${resolvedParams.uid}`;
+  const baseUrl = t("openGraph.url").replace(`/${locale}`, '');
+  const postUrl = `${baseUrl}/${locale}/blog/${resolvedParams.uid}`;
+  
+  // Generate language alternates for SEO
+  const supportedLocales = ['ko', 'en', 'ja', 'ru'];
+  const languageAlternates = supportedLocales.reduce((acc, lang) => {
+    acc[lang] = `${baseUrl}/${lang}/blog/${resolvedParams.uid}`;
+    return acc;
+  }, {} as Record<string, string>);
   
   // Use post image if available, otherwise use default
   const getPostImageUrl = (images: string[] | Record<string, string> | string): string | null => {
@@ -124,11 +132,12 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
       url: postUrl,
       type: "article",
       images: ogImages,
-      publishedTime: post.createdTime.toString(),
-      modifiedTime: post.updatedTime?.toString(),
+      publishedTime: post.createdTime ? new Date(post.createdTime).toISOString() : undefined,
+      modifiedTime: post.updatedTime ? new Date(post.updatedTime).toISOString() : undefined,
       authors: ['Elice'],
       section: post.category?.name,
       tags: post.tags.map(tag => tag.name),
+      locale: locale,
     },
     twitter: {
       card: "summary_large_image",
@@ -140,11 +149,14 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
       icon: t("icons.icon"),
     },
     alternates: {
-      canonical: `/blog/${resolvedParams.uid}`,
+      canonical: `/${locale}/blog/${resolvedParams.uid}`,
+      languages: languageAlternates,
     },
     other: {
       "robots": "index, follow",
       "og:site_name": baseTitle,
+      "og:locale": locale,
+      "og:locale:alternate": supportedLocales.filter(lang => lang !== locale).join(','),
       "article:section": post.category?.name || "Blog",
       "article:tag": post.tags.map(tag => tag.name).join(", "),
     },
@@ -172,10 +184,10 @@ export default async function BlogDetailPage({ params }: BlogPageProps) {
 
   return (
     <>
-      <div className="w-full min-h-screen bg-[var(--color-panel)] transition-colors duration-300">
+      <div className="blog-container w-full min-h-screen bg-[var(--color-panel)] transition-colors duration-300">
         {/* Breadcrumb */}
-        <div className="bg-header border-b border-[var(--border-color)] shadow-sm">
-          <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="bg-header border-b border-[var(--border-color)] shadow-sm md:sticky md:top-16 z-40">
+          <div className="mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-4">
             <nav className="flex" aria-label="Breadcrumb">
               <ol className="flex items-center space-x-2 text-sm">
                 <li>
@@ -189,18 +201,6 @@ export default async function BlogDetailPage({ params }: BlogPageProps) {
                 <li>
                   <span className="text-[var(--text-color)] opacity-40">/</span>
                 </li>
-                {post.category && (
-                  <>
-                    <li>
-                      <span className="text-[var(--text-color)] bg-[var(--selecter)] px-2 py-1 rounded-full text-xs">
-                        {post.category.name}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="text-[var(--text-color)] opacity-40">/</span>
-                    </li>
-                  </>
-                )}
                 <li>
                   <span className="text-[var(--title)] font-medium truncate max-w-xs">
                     {post.title}

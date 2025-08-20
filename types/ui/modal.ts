@@ -200,6 +200,7 @@ export interface BlogData {
   type: string;
   title: string;
   description: string;
+  url?: string;
   category?: import('../blog/post').Category;
   tags: Array<{ uid: string; name: string }>;
   images: string[] | Record<string, unknown>;

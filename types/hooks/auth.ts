@@ -3,18 +3,18 @@
 import { AuthFormField } from '@/types/auth';
 
 export interface UseAuthFormStateProps {
-  fields: AuthFormField[];
+  readonly fields: readonly AuthFormField[];
 }
 
 export interface UseAuthFormValidationProps {
-  fields: AuthFormField[];
-  validate?: (data: Record<string, string>) => string | null;
+  readonly fields: readonly AuthFormField[];
+  readonly validate?: (data: Record<string, string>) => string | null;
 }
 
 export interface UseAuthFormSubmissionProps {
-  title: string;
-  successRedirect?: string;
-  onSuccess?: () => void;
+  readonly title: string;
+  readonly successRedirect?: string;
+  readonly onSuccess?: () => void;
 }
 
 export interface TokenRefreshOptions {

@@ -184,8 +184,8 @@ model Router {
 model Post {
   uid           String     @id @default(uuid()) @map("uid")
   type          String
-  title         String
-  description   String
+  title         String     // Default title (legacy support)
+  description   String     // Default description (legacy support)
   url           String
   images        Json
   status        String     @default("draft")
@@ -200,8 +200,28 @@ model Post {
   tags          Tag[]      @relation("PostTags")
   likes         Like[]     @relation("PostLikes")
   view          PostView[] @relation("PostViewRelation")
+  translations  PostTranslation[]
 
   @@map("posts")
+}
+
+model PostTranslation {
+  id            String    @id @default(uuid()) @map("uid")
+  postId        String    @map("post_id")
+  locale        String    // 'ko', 'en', 'ja', 'ru'
+  title         String
+  description   String
+  content       String?   @db.Text // Full content of the post
+  url           String?   // SEO-friendly URL per language
+  createdTime   DateTime  @default(now()) @map("created_time")
+  updatedTime   DateTime  @updatedAt @map("updated_time")
+  
+  post          Post      @relation(fields: [postId], references: [uid], onDelete: Cascade)
+  
+  @@unique([postId, locale])
+  @@index([locale])
+  @@index([postId])
+  @@map("post_translations")
 }
 
 model Tag {

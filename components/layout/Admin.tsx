@@ -5,7 +5,8 @@ import { Icon } from '@/components/ui/Icon';
 import { StatCard } from '@/components/ui/card/Stat';
 import { Table } from '@/components/ui/Table';
 import { Pagination } from '@/components/ui/Pagination';
-import type { StatCardConfig, FilterConfig, AdminProps } from '@/types/layout/admin';
+import { FloatingActionButton } from '@/components/ui/FloatingActionButton';
+import type { AdminProps } from '@/types/layout/admin';
 
 export function Admin<T>({
   title,
@@ -15,6 +16,7 @@ export function Admin<T>({
   filters = [],
   columns,
   actionButtons,
+  mobileActions,
   bulkActionButtons,
   onRowClick,
   rowKey = "id",
@@ -40,8 +42,8 @@ export function Admin<T>({
   } = actions;
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 py-6 lg:px-8 lg:py-8 admin-layout-container">
+    <div className="min-h-screen w-full overflow-x-hidden">
+      <div className="w-full px-2 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6 lg:px-8 lg:py-8 admin-layout-container">
         {/* Bulk Actions Section */}
         {selectedIds.length > 0 && (
           <div className="mb-6">
@@ -58,7 +60,7 @@ export function Admin<T>({
                 {bulkActionButtons}
                 <button
                   onClick={clearSelection}
-                  className="group relative overflow-hidden px-4 py-2 bg-[var(--button)]/80 hover:bg-[var(--hover)] text-[var(--button-text)] rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg border border-[var(--border-color)] /50"
+                  className="group relative overflow-hidden px-4 py-2 bg-[var(--button)]/80 hover:bg-[var(--hover)] text-[var(--button-text)] rounded-xl text-sm font-medium transition-colors duration-300 border border-[var(--border-color)] /50"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                   <div className="relative flex items-center gap-2">
@@ -73,7 +75,7 @@ export function Admin<T>({
 
         {/* Responsive Statistics Cards - PC: 1줄, Mobile: 2줄 */}
         {stats.length > 0 && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6 lg:mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
             {stats.map((stat) => (
               <div key={`stat-${stat.title}-${stat.value}`} className="group relative w-full">
                 <div className="relative">
@@ -104,7 +106,7 @@ export function Admin<T>({
                       type="text"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 border border-[var(--border-color)]/40 rounded-md bg-[var(--color-panel)]/30 focus:ring-1 focus:ring-blue-500/30 focus:border-blue-500/40 transition-all text-[var(--text-panel)] hover:border-blue-400/40 placeholder:text-[var(--text-color)] placeholder:opacity-50 text-sm"
+                      className="admin-form-control w-full pl-9 pr-3 py-2.5 border border-[var(--border-color)]/40 rounded-md bg-[var(--color-panel)]/30 focus:ring-1 focus:ring-blue-500/30 focus:border-blue-500/40 transition-all text-[var(--text-panel)] hover:border-blue-400/40 placeholder:text-[var(--text-color)] placeholder:opacity-50 text-sm"
                       placeholder="검색..."
                     />
                     <div className="absolute top-1/2 -translate-y-1/2 left-3">
@@ -120,8 +122,8 @@ export function Admin<T>({
                       <div key={filter.key} className="min-w-0">
                         <div className="relative">
                           {filter.icon && (
-                            <div className="absolute left-2.5 top-1/2 transform -translate-y-1/2 z-10">
-                              <Icon name={filter.icon} size={12} className="text-[var(--text-color)] opacity-50" />
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
+                              <Icon name={filter.icon} size={12} className="text-[var(--text-color)] opacity-60" />
                             </div>
                           )}
                           {filter.type === 'select' ? (
@@ -129,7 +131,7 @@ export function Admin<T>({
                               id={filter.key}
                               value={state.filters[filter.key] || ''}
                               onChange={(e) => setFilter(filter.key, e.target.value)}
-                              className={`w-full ${filter.icon ? 'pl-7' : 'pl-2.5'} pr-8 py-2 border border-[var(--border-color)]/40 rounded-md focus:ring-1 focus:ring-blue-500/30 focus:border-blue-500/40 bg-[var(--color-panel)]/30 text-[var(--text-panel)] transition-all hover:border-blue-400/40 appearance-none text-sm bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDEwIDYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xIDFMNSA1TDkgMSIgc3Ryb2tlPSIjNkI3MjgwIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4K')] bg-no-repeat bg-right-3 bg-center`}
+                              className={`admin-filter-select admin-form-control w-full ${filter.icon ? 'pl-8' : 'pl-3'} pr-10 py-2.5 border border-[var(--border-color)]/40 rounded-md focus:ring-1 focus:ring-blue-500/30 focus:border-blue-500/40 bg-[var(--color-panel)]/30 text-[var(--text-panel)] transition-all hover:border-blue-400/40 appearance-none text-sm bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Im0xIDEgNSA1IDUtNSIgc3Ryb2tlPSIjNkI3MjgwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=')] bg-no-repeat`}
                             >
                               <option value="">{filter.label}</option>
                               {filter.options?.map((option) => (
@@ -144,7 +146,7 @@ export function Admin<T>({
                               type="text"
                               value={state.filters[filter.key] || ''}
                               onChange={(e) => setFilter(filter.key, e.target.value)}
-                              className={`w-full ${filter.icon ? 'pl-7' : 'pl-2.5'} pr-2.5 py-2 border border-[var(--border-color)]/40 rounded-md focus:ring-1 focus:ring-blue-500/30 focus:border-blue-500/40 bg-[var(--color-panel)]/30 text-[var(--text-panel)] transition-all hover:border-blue-400/40 placeholder:text-[var(--text-color)] placeholder:opacity-50 text-sm`}
+                              className={`admin-form-control w-full ${filter.icon ? 'pl-8' : 'pl-3'} pr-3 py-2.5 border border-[var(--border-color)]/40 rounded-md focus:ring-1 focus:ring-blue-500/30 focus:border-blue-500/40 bg-[var(--color-panel)]/30 text-[var(--text-panel)] transition-all hover:border-blue-400/40 placeholder:text-[var(--text-color)] placeholder:opacity-50 text-sm`}
                               placeholder={filter.placeholder || filter.label}
                             />
                           )}
@@ -158,7 +160,7 @@ export function Admin<T>({
                 <div className="flex-shrink-0">
                   <button
                     onClick={clearFilters}
-                    className="px-3 py-2 bg-[var(--button)]/60 hover:bg-[var(--hover)] rounded-md border border-[var(--border-color)]/40 text-[var(--button-text)] transition-all hover:shadow-sm font-medium text-sm flex items-center gap-1.5"
+                    className="admin-form-control px-3 py-2.5 bg-[var(--button)]/60 hover:bg-[var(--hover)] rounded-md border border-[var(--border-color)]/40 text-[var(--button-text)] transition-colors font-medium text-sm flex items-center gap-1.5"
                   >
                     <Icon name="RotateCcw" size={12} />
                     <span className="hidden sm:inline">초기화</span>
@@ -169,30 +171,30 @@ export function Admin<T>({
           </div>
         )}
 
-        {/* Enhanced Data Table with Modern Design */}
+        {/* Enhanced Data Table with Modern Design - Mobile Optimized */}
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 to-purple-500/3 rounded-xl"></div>
-          <div className="relative bg-[var(--color-modal)]/90 backdrop-blur-xl border border-[var(--border-color)]/20 rounded-xl overflow-hidden shadow-lg">
+          <div className="relative bg-[var(--color-modal)]/90 backdrop-blur-xl border border-[var(--border-color)]/20 rounded-xl shadow-lg overflow-hidden">
             {/* Streamlined Table Header */}
-            <div className="px-6 py-4 border-b border-[var(--border-color)]/20 bg-gradient-to-r from-[var(--color-header)]/30 to-[var(--color-panel)]/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="relative">
+            <div className="px-3 sm:px-6 py-3 sm:py-4 border-b border-[var(--border-color)]/20 bg-gradient-to-r from-[var(--color-header)]/30 to-[var(--color-panel)]/30">
+              <div className="flex flex-col md:flex-row justify-between gap-2">
+                <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+                  <div className="relative hidden sm:block">
                     <div className="relative p-3 bg-gradient-to-br from-emerald-500/10 to-emerald-600/20 rounded-xl border border-emerald-500/20">
                       <Icon name="Database" size={24} className="text-emerald-600" />
                     </div>
                   </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-[var(--text-panel)]">
-                      {title} 목록
+                  <div className="min-w-0">
+                    <h2 className="text-base sm:text-xl font-semibold text-[var(--text-panel)] truncate">
+                      {title} <span className="hidden sm:inline">목록</span>
                     </h2>
-                    <p className="text-[var(--text-color)] opacity-70 mt-0.5 text-sm">
-                      총 {pagination.totalCount.toLocaleString()}개의 항목
+                    <p className="text-[var(--text-color)] opacity-70 mt-0 sm:mt-0.5 text-xs sm:text-sm">
+                      총 <span className="font-medium">{pagination.totalCount}</span>개
                     </p>
                   </div>
                 </div>
                 {actionButtons && (
-                  <div className="hidden sm:flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                     {actionButtons}
                   </div>
                 )}
@@ -206,7 +208,7 @@ export function Admin<T>({
                 data={data}
                 onRowClick={onRowClick}
                 rowKey={rowKey as any}
-                rowSelection={selectedIds.length > 0 ? {
+                rowSelection={{
                   type: 'checkbox',
                   selectedRowKeys: selectedIds,
                   onSelect: handleSelect,
@@ -214,7 +216,7 @@ export function Admin<T>({
                   getCheckboxProps: (_) => ({
                     disabled: bulkActionLoading
                   })
-                } : undefined}
+                }}
                 columns={columns}
               />
             </div>
@@ -247,6 +249,15 @@ export function Admin<T>({
           </div>
         )}
       </div>
+
+      {/* Mobile Floating Action Button */}
+      {mobileActions && mobileActions.length > 0 && (
+        <FloatingActionButton
+          actions={mobileActions}
+          position="bottom-right"
+          hideOnDesktop={true}
+        />
+      )}
     </div>
   );
 }

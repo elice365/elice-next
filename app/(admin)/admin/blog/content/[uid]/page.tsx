@@ -4,9 +4,10 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { api } from "@/lib/fetch";
-import { APIResult } from "@/types/api";
-import { Post } from "@/types/blog/post";
-import { BlogContent, BlogImage, ProductItem, ContentSection } from '@/types/adminBlog';
+import type { APIResult } from "@/types/api";
+import type { Post } from "@/types/blog/post";
+import type { BlogContent, ProductItem, ContentSection } from '@/types/blog/content';
+import type { BlogImage } from '@/types/admin/blog';
 import { getLanguageName } from '@/utils/admin/blog/utils';
 
 

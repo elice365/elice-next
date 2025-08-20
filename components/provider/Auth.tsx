@@ -28,7 +28,7 @@ const AuthContext = createContext<AuthData>(null);
  * ```tsx
  * const authData = useAuthData();
  * if (authData?.user) {
- *   console.log('User is authenticated:', authData.user.email);
+ *   // User is authenticated, access user data
  * }
  * ```
  */

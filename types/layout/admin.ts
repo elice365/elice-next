@@ -23,6 +23,13 @@ export interface FilterConfig {
   placeholder?: string;
 }
 
+export interface MobileAction {
+  label: string;
+  icon: string;
+  onClick: () => void;
+  variant?: 'default' | 'primary' | 'danger' | 'success';
+}
+
 export interface AdminProps<T> {
   readonly title: string;
   readonly state: AdminPageState<T>;
@@ -31,6 +38,7 @@ export interface AdminProps<T> {
   readonly filters?: readonly FilterConfig[];
   readonly columns: any[];
   readonly actionButtons?: React.ReactNode;
+  readonly mobileActions?: MobileAction[];
   readonly bulkActionButtons?: React.ReactNode;
   readonly onRowClick?: (record: T) => void;
   readonly rowKey?: string;

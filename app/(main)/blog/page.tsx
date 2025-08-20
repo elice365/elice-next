@@ -1,12 +1,13 @@
 import { Metadata } from "next";
 import { ImageMeta } from "@/types/ui/image";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { metaImage } from "@/utils/parse/metaImage";
 import { BlogLayout } from "@/components/layout/Blog";
 
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
   const t = await getTranslations("metaData");
   const blogT = await getTranslations("router");
   const ogRawImages = t.raw("openGraph.images") as ImageMeta[];
@@ -16,6 +17,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseTitle = t("title");
   const fullTitle = `${blogTitle} | ${baseTitle}`;
   const description = "Discover insightful articles, tutorials, and updates from our blog.";
+  const baseUrl = t("openGraph.url").replace(`/${locale}`, '');
+  
+  // Generate language alternates for blog index
+  const supportedLocales = ['ko', 'en', 'ja', 'ru'];
+  const languageAlternates = supportedLocales.reduce((acc, lang) => {
+    acc[lang] = `${baseUrl}/${lang}/blog`;
+    return acc;
+  }, {} as Record<string, string>);
 
   return {
     title: fullTitle,
@@ -23,9 +32,10 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: fullTitle,
       description: description,
-      url: `${t("openGraph.url")}/blog`,
+      url: `${baseUrl}/${locale}/blog`,
       type: "website",
       images: metaImage(ogRawImages),
+      locale: locale,
     },
     twitter: {
       card: "summary_large_image",
@@ -37,11 +47,14 @@ export async function generateMetadata(): Promise<Metadata> {
       icon: t("icons.icon"),
     },
     alternates: {
-      canonical: "/blog",
+      canonical: `/${locale}/blog`,
+      languages: languageAlternates,
     },
     other: {
       "robots": "index, follow",
       "og:site_name": baseTitle,
+      "og:locale": locale,
+      "og:locale:alternate": supportedLocales.filter(lang => lang !== locale).join(','),
       "article:section": "Blog",
     },
   };

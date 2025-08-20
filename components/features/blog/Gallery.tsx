@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import { Icon } from '@/components/ui/Icon';
-import { ProductItem, AuthorInfo } from '@/utils/blog/contentParser';
 import type { BlogPostGalleryProps } from '@/types/blog/components';
 
 // Import Swiper styles
@@ -40,15 +39,15 @@ export const Gallery = memo(function Gallery({
 }: BlogPostGalleryProps) {
   return (
     <motion.section
-      className="mb-8 w-full overflow-hidden max-w-screen"
+      className="md:mb-8 w-full overflow-hidden max-w-screen"
       style={{ 
         maxWidth: getMaxWidth(mobile, tablet),
         width: '100%',
         position: 'relative'
       }}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: mobile ? 1 : 0, y: mobile ? 0 : 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+      transition={{ duration: mobile ? 0 : 0.8, delay: mobile ? 0 : 0.2, ease: "easeOut" }}
     >
  
       <div 

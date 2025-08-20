@@ -93,8 +93,8 @@ export const Pagination = memo(function Pagination({
           <div className={`flex items-center justify-center sm:justify-start ${sizeClass.gap} text-sm text-[var(--text-color)] opacity-70 order-2 sm:order-1`}>
             <Icon name="Book" size={sizeClass.icon} />
             <span className="text-center sm:text-left">
-              <span className="hidden sm:inline">{currentPage}페이지 / 전체 {totalPages}페이지 (총 {totalCount.toLocaleString()}개)</span>
-              <span className="sm:hidden">{currentPage}/{totalPages} ({totalCount.toLocaleString()}개)</span>
+              <span className="hidden sm:inline">{currentPage}페이지 / 전체 {totalPages}페이지 (총 {totalCount}개)</span>
+              <span className="sm:hidden">{currentPage}/{totalPages} ({totalCount}개)</span>
             </span>
           </div>
         )}

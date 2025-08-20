@@ -4,6 +4,7 @@ import { tokenServer } from "../services/token/server";
 import { searchSession, searchSessionId, updateSession } from "@/lib/db/session";
 import { setMessage } from "../response";
 import { requestIP } from "../server/info";
+import { logger } from "@/lib/services/logger";
 import type { TokenValidationResult, RefreshTokens } from "@/types/lib/token";
 
 // Validation functions to reduce complexity
@@ -40,7 +41,7 @@ async function validateToken(refreshToken: string, fingerprint: string): Promise
     const refreshTokenResult = tokenServer.verifyRefreshToken(refreshToken);
 
     if (!refreshTokenResult) {
-      console.warn('[REFRESH] Invalid refresh token structure');
+      logger.warn('[REFRESH] Invalid refresh token structure', 'AUTH');
       return await setMessage('InvalidToken', null, 401);
     }
 
@@ -51,12 +52,12 @@ async function validateToken(refreshToken: string, fingerprint: string): Promise
     } = refreshTokenResult;
 
     if (!refreshsessionId) {
-      console.warn('[REFRESH] Missing sessionId in refresh token');
+      logger.warn('[REFRESH] Missing sessionId in refresh token', 'AUTH');
       return await setMessage('InvalidToken', null, 401);
     }
 
     if (refreshfp !== fingerprint) {
-      console.warn('[REFRESH] Fingerprint mismatch:', { expected: refreshfp, received: fingerprint });
+      logger.warn('[REFRESH] Fingerprint mismatch', 'AUTH', { expected: refreshfp, received: fingerprint });
       return await setMessage('InvalidToken', null, 401);
     }
 
@@ -66,7 +67,7 @@ async function validateToken(refreshToken: string, fingerprint: string): Promise
       fingerprint: refreshfp
     };
   } catch (error) {
-    console.error('[REFRESH] Token validation error:', error);
+    logger.error('[REFRESH] Token validation error', 'AUTH', error);
     return await setMessage('InvalidToken', null, 401);
   }
 }
@@ -114,9 +115,19 @@ async function refreshToken(
 async function validateIP(request: NextRequest, session: any): Promise<APIResult | null> {
   const currentIP = await requestIP(request);
 
+  // IP 변경 시 경고 로그만 남기고 세션 유지 (보안과 사용성의 균형)
   if (session.active && session.ipAddress && session.ipAddress !== currentIP) {
-    await updateSession(session.sessionId, { active: false });
-    return await setMessage('TokenDenied', null, 401);
+    logger.warn('[REFRESH] IP address changed', 'AUTH', {
+      sessionId: session.sessionId,
+      oldIP: session.ipAddress?.substring(0, 8) + '***',
+      newIP: currentIP?.substring(0, 8) + '***'
+    });
+
+    // IP 주소 업데이트 (세션 무효화하지 않음)
+    await updateSession(session.sessionId, {
+      ipAddress: currentIP,
+      updateTime: new Date()
+    });
   }
 
   return null;
@@ -128,31 +139,31 @@ async function tokenGen(
   refreshToken: string
 ): Promise<APIResult> {
   try {
-    console.log('[REFRESH] tokenGen - Searching session with:', {
+    logger.debug('[REFRESH] tokenGen - Searching session', 'AUTH', {
       userId: tokenValidation.userId,
       sessionId: tokenValidation.sessionId,
       hasRefreshToken: !!refreshToken
     });
-    
+
     const session = await searchSession(refreshToken, tokenValidation.userId);
 
     if (!session) {
-      console.error('[REFRESH] No session found for:', {
+      logger.error('[REFRESH] No session found', 'AUTH', {
         userId: tokenValidation.userId,
-        refreshTokenPrefix: refreshToken.substring(0, 20)
+        refreshTokenPrefix: refreshToken?.substring(0, 20) || 'undefined'
       });
       return await setMessage('TokenExpired', null, 401);
     }
 
     // Check if session is still active
     if (!session.active) {
-      console.warn('[REFRESH] Session is not active:', session.sessionId);
+      logger.warn('[REFRESH] Session is not active', 'AUTH', { sessionId: session.sessionId });
       return await setMessage('TokenExpired', null, 401);
     }
 
     // Check if session is expired
     if (new Date(session.expiresTime) < new Date()) {
-      console.warn('[REFRESH] Session expired:', session.sessionId);
+      logger.warn('[REFRESH] Session expired', 'AUTH', { sessionId: session.sessionId });
       return await setMessage('TokenExpired', null, 401);
     }
 
@@ -175,33 +186,33 @@ async function tokenGen(
 
     const { accessToken, refreshToken: newRefreshToken } = tokenServer.genTokenPair(tokenPayload);
 
-    // Update session with new tokens and extend expiry (14일로 연장)
-    const newExpiryTime = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000); // 14일
+    // Update session with new tokens and extend expiry (30일로 연장)
+    const newExpiryTime = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30일
     const updateResult = await updateSession(session.sessionId, {
       refreshToken: newRefreshToken,
       lastActivityTime: new Date(),
       expiresTime: newExpiryTime,
       updateTime: new Date()
     });
-    
-    console.log('[REFRESH] Session extended:', {
+
+    logger.info('[REFRESH] Session extended', 'AUTH', {
       sessionId: session.sessionId,
       newExpiry: newExpiryTime,
       userId: session.user.id
     });
 
     if (!updateResult) {
-      console.error('[REFRESH] Failed to update session:', session.sessionId);
+      logger.error('[REFRESH] Failed to update session', 'AUTH', { sessionId: session.sessionId });
       return await setMessage('UnknownError', null, 500);
     }
 
-    console.log('[REFRESH] Token generation successful for session:', session.sessionId);
+    logger.info('[REFRESH] Token generation successful', 'AUTH', { sessionId: session.sessionId });
     return await setMessage('loginSuccess', {
       token: accessToken,
       refreshToken: newRefreshToken
     }, 200);
   } catch (error) {
-    console.error('[REFRESH] Token generation error:', error);
+    logger.error('[REFRESH] Token generation error', 'AUTH', error);
     return await setMessage('UnknownError', null, 500);
   }
 }
@@ -231,7 +242,7 @@ export const refresh = async (request: NextRequest): Promise<APIResult> => {
     // Step 3: Extract and validate tokens
     const tokens = extractTokens(request);
     const tokenValidation = await validateTokens(tokens);
-        if (tokenValidation) return tokenValidation;
+    if (tokenValidation) return tokenValidation;
 
     // Step 4: Validate refresh token
     const refreshValidation = await validateToken(tokens.refreshToken!, tokens.fingerprint!);

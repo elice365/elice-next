@@ -30,7 +30,7 @@ export function useModalForm<T extends Record<string, any>>({
   }, [isOpen, initialData]);
 
   // Handle field change
-  const handleFieldChange = useCallback((name: keyof T, value: any) => {
+  const handleFieldChange = useCallback(<K extends keyof T>(name: K, value: T[K]) => {
     setFormData(prev => ({ ...prev, [name]: value }));
     clearError(String(name));
   }, []);

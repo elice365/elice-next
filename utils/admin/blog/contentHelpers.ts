@@ -1,4 +1,4 @@
-import { BlogContent, ProductItem, ContentSection } from '@/types/adminBlog';
+import { BlogContent, ProductItem, ContentSection } from '@/types/blog/content';
 
 // Product management helpers
 export function addProduct(content: BlogContent): BlogContent {

@@ -113,9 +113,9 @@ export default function AdminRouterPageOptimized() {
       key: 'roles',
       title: '접근 권한',
       render: (_: any, router: WebRouter) => (
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1 md:flex-wrap admin-mobile-roles">
           {router.role.map((role) => (
-            <Badge key={`${router.uid}-${role}`} className={`${getBadgeStyle('role', role)} rounded-full shadow-sm px-2 py-1 text-xs`}>
+            <Badge key={`${router.uid}-${role}`} className={`${getBadgeStyle('role', role)} rounded-full shadow-sm px-2 py-1 text-xs admin-mobile-badge`}>
               {getBadgeText('role', role)}
             </Badge>
           ))}
@@ -138,26 +138,30 @@ export default function AdminRouterPageOptimized() {
       key: 'actions',
       title: '작업',
       render: (_: any, router: WebRouter) => (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               modalActions.openEditModal(router, e);
             }}
-            className="text-green-600 hover:text-[var(--hover-success)] text-xs px-3 py-1.5 border border-green-300 hover:border-[var(--hover-success)] rounded-full transition-all duration-200 hover:shadow-sm flex items-center gap-1"
+            className="admin-role-button inline-flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 text-xs px-2 py-1 rounded-md hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 cursor-pointer group"
+            title="라우터 편집"
           >
-            <Icon name="Edit" size={12} />
-            편집
+            <Icon name="Edit" size={12} className="group-hover:scale-110 transition-transform duration-200" />
+            <span className="hidden sm:inline">편집</span>
           </button>
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               modalActions.openDeleteModal(router, e);
             }}
-            className="text-red-600 hover:text-[var(--hover-danger)] text-xs px-3 py-1.5 border border-red-300 hover:border-[var(--hover-danger)] rounded-full transition-all duration-200 hover:shadow-sm flex items-center gap-1"
+            className="admin-role-button inline-flex items-center gap-1 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-xs px-2 py-1 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 cursor-pointer group"
+            title="라우터 삭제"
           >
-            <Icon name="Trash2" size={12} />
-            삭제
+            <Icon name="Trash2" size={12} className="group-hover:scale-110 transition-transform duration-200" />
+            <span className="hidden sm:inline">삭제</span>
           </button>
         </div>
       )
@@ -209,20 +213,23 @@ export default function AdminRouterPageOptimized() {
   // 액션 버튼
   const actionButtons = (
     <>
-      <button className="bg-button text-[var(--button-text)] flex items-center gap-2 px-4 py-2 border border-[var(--border-color)]  rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-all duration-200 hover:shadow-md hover:scale-105">
+      <button className="bg-button text-[var(--button-text)] flex items-center gap-2 px-4 py-2 border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-colors duration-200">
         <Icon name="Download" size={16} />
-        내보내기
+        <span className="hidden sm:inline">내보내기</span>
       </button>
-      <button className="bg-button text-[var(--button-text)] flex items-center gap-2 px-4 py-2 border border-[var(--border-color)]  rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-all duration-200 hover:shadow-md hover:scale-105">
+      <button 
+        onClick={pageActions.refresh}
+        className="bg-button text-[var(--button-text)] flex items-center gap-2 px-4 py-2 border border-[var(--border-color)] rounded-lg hover:bg-[var(--hover)] hover:text-[var(--hover-text)] text-sm font-medium transition-colors duration-200"
+      >
         <Icon name="RefreshCw" size={16} />
-        캐시 새로고침
+        <span className="hidden sm:inline">새로고침</span>
       </button>
       <button
         onClick={modalActions.openCreateModal}
-        className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-[var(--hover-success)] text-white rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-lg hover:scale-105"
+        className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors duration-200"
       >
         <Icon name="Plus" size={16} />
-        라우터 추가
+        <span className="hidden sm:inline">라우터 추가</span>
       </button>
     </>
   );
@@ -232,7 +239,7 @@ export default function AdminRouterPageOptimized() {
     <button
       onClick={handleBulkDeleteRouters}
       disabled={pageState.bulkActionLoading}
-      className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-[var(--hover-danger)] text-white rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {pageState.bulkActionLoading ? (
         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

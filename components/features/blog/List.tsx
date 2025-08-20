@@ -12,10 +12,11 @@ import type { BlogListItemProps, BlogListProps } from '@/types/blog/components';
 
 
 // Default images array for posts without images
+// Use data URLs for fallback images to avoid external dependencies
 const DEFAULT_POST_IMAGES = [
-  "https://via.placeholder.com/400x300/f3f4f6/9ca3af?text=Blog+Post+1",
-  "https://via.placeholder.com/400x300/e5e7eb/6b7280?text=Blog+Post+2",
-  "https://via.placeholder.com/400x300/d1d5db/4b5563?text=Blog+Post+3"
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui' font-size='20' fill='%239ca3af'%3EBlog Post 1%3C/text%3E%3C/svg%3E",
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui' font-size='20' fill='%236b7280'%3EBlog Post 2%3C/text%3E%3C/svg%3E",
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23d1d5db'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='system-ui' font-size='20' fill='%234b5563'%3EBlog Post 3%3C/text%3E%3C/svg%3E"
 ];
 
 // Helper functions to avoid nested ternary operators
@@ -67,15 +68,14 @@ const PostTags = memo(({ post, mobile }: { post: PostType; mobile: boolean }) =>
       </span>
     )}
     {post.tags.slice(0, mobile ? 1 : 2).map((tag: any, index: number) => (
-      <motion.span 
+      <span 
         key={`tag-${tag.uid || tag.name}-${index}`} 
-        className={`${mobile ? 'text-[11px]' : 'text-xs'} bg-[var(--selecter)] hover:bg-[#5c5049]/10 text-[var(--text-color)] px-2 py-1 rounded-full transition-all duration-300 flex items-center gap-1 border border-transparent hover:border-[#5c5049]/20`}
-        whileHover={!mobile ? { scale: 1.05 } : {}}
-        whileTap={{ scale: 0.95 }}
+        className={`${mobile ? 'text-[11px]' : 'text-xs'} bg-[var(--selecter)] text-[var(--text-color)] px-2 py-1 rounded-full transition-all duration-300 flex items-center gap-1 border border-transparent`}
+        aria-label={`태그: ${tag.name}`}
       >
         <Icon name="Tag" size={mobile ? 10 : 11} className="opacity-60" />
         <span>{tag.name}</span>
-      </motion.span>
+      </span>
     ))}
     {mobile && post.tags.length > 1 && (
       <span className="text-[11px] text-[var(--text-color)] opacity-60">+{post.tags.length - 1}</span>
@@ -83,11 +83,11 @@ const PostTags = memo(({ post, mobile }: { post: PostType; mobile: boolean }) =>
   </div>
 ));
 
-const PostMeta = memo(({ post, mobile, formatDate }: { post: PostType; mobile: boolean; formatDate: (date: Date) => string }) => (
+const PostMeta = memo(({ post, mobile, formatDate }: { post: PostType; mobile: boolean; formatDate: (date: Date | string) => string }) => (
   <div className={`flex ${getMetaClassNames(mobile)} text-[var(--text-color)] opacity-60 pt-2`}>
     <span className="flex gap-1 items-center hover:text-[#5c5049] transition-colors duration-300">
       <Icon name="Eye" size={mobile ? 12 : 14} className="opacity-70" />
-      <span className="font-medium">{post.views.toLocaleString()}</span>
+      <span className="font-medium">{(post.views || 0).toLocaleString()}</span>
     </span>
     <span className="flex gap-1 items-center hover:text-[#5c5049] transition-colors duration-300">
       <Icon name="Heart" size={mobile ? 12 : 14} className="opacity-70" fill={post.isLiked ? 'currentColor' : 'none'} />
@@ -122,11 +122,13 @@ const PostActions = memo(({ post, mobile, handleLike, isLikeAnimating, isLiking 
           className="bg-[#5c5049]/10 text-[#5c5049] p-2 rounded-full transition-all duration-300 active:bg-[#5c5049] active:text-white"
           whileTap={{ scale: 0.9 }}
           animate={isLikeAnimating ? { scale: [1, 1.2, 1] } : {}}
+          aria-label={post.isLiked ? '좋아요 취소' : '좋아요'}
+          aria-pressed={post.isLiked}
         >
           <Icon name="Heart" size={14} fill={post.isLiked ? 'currentColor' : 'none'} />
         </motion.button>
         <Link href={`/blog/${post.uid}`} className="flex-1">
-          <button className="bg-[var(--blog-accent)] text-white px-4 py-2 rounded-full transition-all duration-300 active:bg-[#5c5049] text-xs font-medium w-full flex items-center justify-center gap-1">
+          <button className="bg-[var(--blog-accent)] text-white px-4 py-2 rounded-full transition-all duration-300 active:bg-[#5c5049] text-xs font-medium w-full flex items-center justify-center gap-1" aria-label={`${post.title} 읽기`}>
             <span>읽기</span>
             <Icon name="ArrowRight" size={12} />
           </button>
@@ -143,6 +145,8 @@ const PostActions = memo(({ post, mobile, handleLike, isLikeAnimating, isLiking 
         className="bg-[#5c5049]/10 backdrop-blur-sm text-[#5c5049] p-2 rounded-full transition-all duration-300 hover:bg-[#5c5049] hover:text-white shadow-md"
         whileTap={{ scale: 0.9 }}
         animate={isLikeAnimating ? { scale: [1, 1.2, 1] } : {}}
+        aria-label={post.isLiked ? '좋아요 취소' : '좋아요'}
+        aria-pressed={post.isLiked}
       >
         <Icon name="Heart" size={16} fill={post.isLiked ? 'currentColor' : 'none'} />
       </motion.button>
@@ -151,6 +155,7 @@ const PostActions = memo(({ post, mobile, handleLike, isLikeAnimating, isLiking 
           className="bg-[var(--blog-accent)] text-white px-4 py-2 rounded-full transition-all duration-300 hover:bg-[#5c5049] text-sm font-medium shadow-md flex items-center gap-1"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          aria-label={`${post.title} 읽기`}
         >
           <span>읽기</span>
           <Icon name="ArrowRight" size={14} />
@@ -195,6 +200,12 @@ const PostImageArea = memo(({ post, mobile, tablet, postImages, mainImage, image
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={handleInteraction}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleInteraction();
+              }
+            }}
             type="button"
             aria-label="이미지 갤러리 토글"
           >
@@ -225,7 +236,8 @@ const PostImageArea = memo(({ post, mobile, tablet, postImages, mainImage, image
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex scale-x-[1] transition-all duration-500 ease-in-out absolute top-0 -left-27 gap-1 z-20 group -translate-x-[96px] sm:-translate-x-[125px] lg:-translate-x-[128px]"
+            className="flex scale-x-[1] transition-all duration-500 ease-in-out absolute top-0 -left-27 gap-1 z-20 group 
+     -translate-x-[110px] sm:-translate-x-[120px] lg:-translate-x-[128px] xl:-translate-x-[90px]"
           >
             {postImages.slice(1, 4).map((imageSrc, index) => (
               <motion.div
@@ -256,7 +268,7 @@ const PostImageArea = memo(({ post, mobile, tablet, postImages, mainImage, image
   );
 });
 
-export const ListItem = memo(function ListItem({ post, className = '' }: BlogListItemProps) {
+export const ListItem = memo(function ListItem({ post }: BlogListItemProps) {
   const { mobile, tablet } = useAppSelector((state) => state.device);
   const { getPostImages, handleLike, formatDate, isLikeAnimating } = useListItem(post, mobile);
   const imageSlider = useImageSlider(mobile);

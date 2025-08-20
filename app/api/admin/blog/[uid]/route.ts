@@ -62,7 +62,8 @@ const updateBlogPost = async (
       categoryId,
       tags,
       images,
-      status
+      status,
+      translations
     } = body;
 
     // Update blog post
@@ -78,6 +79,31 @@ const updateBlogPost = async (
       },
       tags
     );
+
+    // Update translations if provided
+    if (translations && typeof translations === 'object') {
+      for (const [locale, data] of Object.entries(translations)) {
+        if (data && typeof data === 'object') {
+          const translationData = data as { title: string; description: string; content?: string; url?: string };
+          
+          // Skip if no title and description
+          if (!translationData.title || !translationData.description) {
+            continue;
+          }
+
+          await BlogDB.upsertPostTranslation(
+            uid,
+            locale,
+            {
+              title: translationData.title,
+              description: translationData.description,
+              content: translationData.content || null,
+              url: translationData.url || null
+            }
+          );
+        }
+      }
+    }
 
     const result = {
       success: true,

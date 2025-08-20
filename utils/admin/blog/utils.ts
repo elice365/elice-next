@@ -1,6 +1,7 @@
-import { BlogContent, BlogImage } from '@/types/adminBlog';
+import type { BlogContent } from '@/types/blog/content';
+import type { BlogImage } from '@/types/admin/blog';
+import type { APIResult } from '@/types/api';
 import { api } from '@/lib/fetch';
-import { APIResult } from '@/types/api';
 import { logger } from '@/lib/services/logger';
 
 export const DEFAULT_BLOG_CONTENT: BlogContent = {
