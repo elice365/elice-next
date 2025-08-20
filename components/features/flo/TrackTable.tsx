@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { TrackTableProps } from '@/types/flo';
 import { Pagination } from '@/components/ui/Pagination';
 import { useAppDispatch } from '@/stores';
-import { setCurrentTrack, setPlaylist, setPlaying } from '@/stores/slice/music';
+import { setCurrentTrack, setPlaylist } from '@/stores/slice/music';
 import { logger } from '@/utils/logger';
 import {
   formatPlayTime,
@@ -17,11 +17,6 @@ import {
   openVcoloringPlayer,
   calculatePagination
 } from '@/utils/flo/track';
-import {
-  getResponsiveTextClass,
-  getResponsivePaddingClass,
-  getIconSizeClass
-} from '@/utils/flo/responsive';
 
 const ResponsiveTrackTable: React.FC<TrackTableProps> = ({
   album,

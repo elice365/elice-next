@@ -14,7 +14,6 @@ import TrackTable from '../TrackTable';
 import apiUtils from '@/lib/api';
 import { logger } from '@/utils/logger';
 import { FLO_ERROR_MESSAGES } from '@/utils/flo';
-import { getResponsiveTextClass, getResponsivePaddingClass } from '@/utils/flo/responsive';
 
 interface MultiSearchState {
   loading: boolean;

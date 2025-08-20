@@ -14,12 +14,7 @@ import {
 import { logger } from '@/utils/logger';
 import apiUtils from '@/lib/api';
 import TrackTable from '../TrackTable';
-import { 
-  getResponsiveGridClass, 
-  getResponsiveTextClass, 
-  getCardContainerClass,
-  getResponsivePaddingClass 
-} from '@/utils/flo/responsive';
+import AlbumExpandable from './AlbumExpandable';
 
 // 검색 타입 정의
 type SearchType = 'TRACK' | 'ALBUM' | 'ARTIST' | 'PLAYLIST' | 'LYRICS';
@@ -42,7 +37,6 @@ interface SearchState {
   artists: FloSearchedArtist[];
   playlists: FloSearchedPlaylist[];
   lyrics: FloSearchedLyrics[];
-  albumTracks: Record<number, FloSearchedTrack[]>; // 앨범별 트랙 캐시
   artistAlbums: Record<number, FloSearchedAlbum[]>; // 아티스트별 앨범 캐시
   playlistTracks: Record<number, FloSearchedTrack[]>; // 플레이리스트별 트랙 캐시
 }
@@ -64,7 +58,6 @@ const TabSearchResults: React.FC<TabSearchResultsProps> = ({
     artists: [],
     playlists: [],
     lyrics: [],
-    albumTracks: {},
     artistAlbums: {},
     playlistTracks: {}
   });
@@ -160,30 +153,6 @@ const TabSearchResults: React.FC<TabSearchResultsProps> = ({
     }
   }, [keyword]);
 
-  // 앨범의 트랙 가져오기
-  const fetchAlbumTracks = useCallback(async (albumId: number) => {
-    // 이미 캐시된 경우 캐시 사용
-    if (searchState.albumTracks[albumId]) {
-      return;
-    }
-
-    try {
-      logger.flo.info('Fetching album tracks', { albumId });
-      
-      const response = await apiUtils.get<any>(`/api/flo/meta/v1/album/${albumId}/track?mixYn=N`);
-      
-      if (response.success && response.data) {
-        const tracks = response.data?.data?.list || [];
-        setSearchState(prev => ({
-          ...prev,
-          albumTracks: { ...prev.albumTracks, [albumId]: tracks }
-        }));
-        logger.flo.info('Album tracks fetched', { albumId, trackCount: tracks.length });
-      }
-    } catch (error) {
-      logger.flo.error('Failed to fetch album tracks', { albumId, error });
-    }
-  }, [searchState.albumTracks]);
 
   // 아티스트의 앨범 가져오기
   const fetchArtistAlbums = useCallback(async (artistId: number) => {
@@ -243,16 +212,6 @@ const TabSearchResults: React.FC<TabSearchResultsProps> = ({
     }
   }, [searchState.playlistTracks]);
 
-  // 앨범 클릭 핸들러
-  const handleAlbumExpand = useCallback(async (album: FloSearchedAlbum) => {
-    if (expandedAlbum === album.id) {
-      setExpandedAlbum(null);
-    } else {
-      setExpandedAlbum(album.id);
-      await fetchAlbumTracks(album.id);
-    }
-    onAlbumClick?.(album);
-  }, [expandedAlbum, fetchAlbumTracks, onAlbumClick]);
 
   // 아티스트 클릭 핸들러
   const handleArtistExpand = useCallback(async (artist: FloSearchedArtist) => {
@@ -383,50 +342,15 @@ const TabSearchResults: React.FC<TabSearchResultsProps> = ({
           {searchState.activeTab === 'ALBUM' && (
             <div className="space-y-4">
               {searchState.albums.map(album => (
-                <div key={album.id} className="bg-card rounded-lg p-4 space-y-3">
-                  <button
-                    onClick={() => handleAlbumExpand(album)}
-                    className="w-full flex items-center gap-4 hover:bg-hover p-2 rounded-lg transition-colors"
-                  >
-                    <div className="relative w-[60px] h-[60px] flex-shrink-0">
-                      <Image
-                        src={album.imgList?.[3]?.url || album.imgList?.[2]?.url || album.imgList?.[0]?.url || '/images/default-album.jpg'}
-                        alt={album.title}
-                        fill
-                        className="rounded-lg object-cover"
-                        sizes="60px"
-                      />
-                    </div>
-                    <div className="flex-1 text-left">
-                      <h3 className="font-semibold text-foreground">{album.title}</h3>
-                      <p className="text-sm text-foreground/70">
-                        {album.representationArtist.name} • {album.releaseYmd?.substring(0, 4)}
-                      </p>
-                    </div>
-                    <svg
-                      className={`w-5 h-5 text-foreground/50 transition-transform ${
-                        expandedAlbum === album.id ? 'rotate-180' : ''
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {/* 앨범 트랙 목록 - TrackTable 컴포넌트 재사용 */}
-                  {expandedAlbum === album.id && searchState.albumTracks[album.id] && (
-                    <div className="pl-4">
-                      <TrackTable
-                        album={album}
-                        tracks={searchState.albumTracks[album.id]}
-                        onAddToPlaylist={(track) => logger.flo.info('Add to playlist', { track })}
-                        onAddToMyList={(track) => logger.flo.info('Add to my list', { track })}
-                      />
-                    </div>
-                  )}
-                </div>
+                <AlbumExpandable
+                  key={album.id}
+                  album={album}
+                  defaultExpanded={expandedAlbum === album.id}
+                  onToggle={(albumId, expanded) => {
+                    setExpandedAlbum(expanded ? albumId : null);
+                  }}
+                  onAlbumClick={onAlbumClick}
+                />
               ))}
             </div>
           )}
@@ -472,46 +396,15 @@ const TabSearchResults: React.FC<TabSearchResultsProps> = ({
                   {expandedArtist === artist.id && searchState.artistAlbums[artist.id] && (
                     <div className="space-y-4 pl-4">
                       {searchState.artistAlbums[artist.id].map(album => (
-                        <div key={album.id} className="space-y-2">
-                          <button
-                            onClick={() => handleAlbumExpand(album)}
-                            className="w-full flex items-center gap-3 hover:bg-hover p-2 rounded-lg transition-colors"
-                          >
-                            <Image
-                              src={album.imgList?.[3]?.url || album.imgList?.[2]?.url || album.imgList?.[0]?.url || '/images/default-album.jpg'}
-                              alt={album.title}
-                              width={50}
-                              height={50}
-                              className="rounded-lg object-cover"
-                            />
-                            <div className="flex-1 text-left">
-                              <h4 className="text-sm font-medium">{album.title}</h4>
-                              <p className="text-xs text-foreground/70">{album.releaseYmd?.substring(0, 4)}</p>
-                            </div>
-                            <svg
-                              className={`w-4 h-4 text-foreground/50 transition-transform ${
-                                expandedAlbum === album.id ? 'rotate-180' : ''
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                          </button>
-                          
-                          {/* 앨범 트랙 목록 - TrackTable 컴포넌트 재사용 */}
-                          {expandedAlbum === album.id && searchState.albumTracks[album.id] && (
-                            <div className="pl-4">
-                              <TrackTable
-                                album={album}
-                                tracks={searchState.albumTracks[album.id]}
-                                onAddToPlaylist={(track) => logger.flo.info('Add to playlist', { track })}
-                                onAddToMyList={(track) => logger.flo.info('Add to my list', { track })}
-                              />
-                            </div>
-                          )}
-                        </div>
+                        <AlbumExpandable
+                          key={album.id}
+                          album={album}
+                          defaultExpanded={expandedAlbum === album.id}
+                          onToggle={(albumId, expanded) => {
+                            setExpandedAlbum(expanded ? albumId : null);
+                          }}
+                          onAlbumClick={onAlbumClick}
+                        />
                       ))}
                     </div>
                   )}

@@ -17,8 +17,7 @@ import {
   getResponsiveGridClass, 
   getResponsiveTextClass, 
   getCardContainerClass,
-  getResponsivePaddingClass,
-  getIconSizeClass 
+  getResponsivePaddingClass
 } from '@/utils/flo/responsive';
 
 interface SearchResultsProps {
