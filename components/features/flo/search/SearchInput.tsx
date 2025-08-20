@@ -37,7 +37,7 @@ const SearchInput: React.FC<SearchInputProps> = memo(({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout | undefined>();
+  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const fetchControllerRef = useRef<AbortController | null>(null);
 
   // 모바일 체크 및 input 위치 업데이트
@@ -98,15 +98,14 @@ const SearchInput: React.FC<SearchInputProps> = memo(({
       const response = await apiUtils.get<FloAutocompleteResponse>(`/api/flo/search/autocomplete?keyword=${encodeURIComponent(keyword)}`);
 
 
-      if (response.success && response.data?.data?.list) {
-        const suggestionsList = response.data.data.list;
-        setSuggestions(suggestionsList);
-        setShowSuggestions(true);
-        setSelectedIndex(-1);
-      } else if (response.success && response.data?.code === '2000000' && response.data?.data) {
-        const dataContent = response.data.data as any;
-        if (dataContent.list) {
-          setSuggestions(dataContent.list);
+      if (response.success) {
+        // normalize possible response shapes (some APIs wrap payload in .data)
+        const respAny = response.data as any;
+        const dataContent = respAny?.data ?? respAny;
+
+        if (dataContent?.list && Array.isArray(dataContent.list)) {
+          const suggestionsList = dataContent.list as FloAutocompleteSection[];
+          setSuggestions(suggestionsList);
           setShowSuggestions(true);
           setSelectedIndex(-1);
         } else {
@@ -258,6 +257,26 @@ const SearchInput: React.FC<SearchInputProps> = memo(({
     };
   }, []);
 
+  const endAdornment = useMemo(() => {
+    if (loading) {
+      return <div className="w-4 h-4 border-2 border-foreground/30 border-t-foreground/60 rounded-full animate-spin" />;
+    }
+    if (value) {
+      return (
+        <button
+          onClick={handleClear}
+          className="text-foreground/50 hover:text-foreground transition-colors p-1"
+          disabled={disabled}
+        >
+          <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      );
+    }
+    return null;
+  }, [loading, value, handleClear, disabled]);
+
   return (
     <div ref={containerRef} className={`relative w-full ${className}`} style={{ overflow: 'visible' }}>
       {/* 검색 입력 필드 */}
@@ -280,15 +299,9 @@ const SearchInput: React.FC<SearchInputProps> = memo(({
 
         <input
           ref={inputRef}
-          type="text"
           value={value}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => {
-            if (value.trim()) {
-              fetchSuggestions(value.trim());  // 즉시 자동완성 표시
-            }
-          }}
           placeholder={placeholder}
           disabled={disabled}
           autoFocus={autoFocus}
@@ -297,19 +310,7 @@ const SearchInput: React.FC<SearchInputProps> = memo(({
 
         {/* 지우기 버튼 또는 로딩 스피너 */}
         <div className="absolute inset-y-0 right-2.5 sm:right-3 flex items-center">
-          {loading ? (
-            <div className="w-4 h-4 border-2 border-foreground/30 border-t-foreground/60 rounded-full animate-spin" />
-          ) : value ? (
-            <button
-              onClick={handleClear}
-              className="text-foreground/50 hover:text-foreground transition-colors p-1"
-              disabled={disabled}
-            >
-              <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          ) : null}
+          {endAdornment}
         </div>
       </div>
 
