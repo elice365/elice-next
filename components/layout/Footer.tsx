@@ -8,8 +8,8 @@ export const Footer = () => {
 
   return (
     <footer className="bg-footer text-[var(--text-color)] text-sm">
-      <div className="max-w-7xl mx-auto px-5 gap-12 py-12 flex flex-col sm:flex-row justify-evenly">
-        <div className="flex gap-12 flex-col">
+      <div className="max-w-7xl mx-auto px-5 gap-6 sm:gap-12 py-6 sm:py-12 flex flex-col sm:flex-row justify-evenly">
+        <div className="flex gap-6 sm:gap-12 flex-col">
           <div className="border-l-3 px-3 flex flex-col gap-3  py-1">
             <div className="font-bold text-[var(--text-color)] text-xl">
               {Translated("footer", "company")}
@@ -47,7 +47,7 @@ export const Footer = () => {
             </ul>
           </div>
         </div>
-        <div className="flex gap-10 flex-col">
+        <div className="hidden sm:flex gap-10 flex-col">
           <div className="border-l-3 px-5 flex flex-col justify-between py-1">
             <h2 className="text-[var(--text-color)] font-semibold mb-2">COMPANY INFO</h2>
             <div className="space-y-1 text-sm opacity-60">

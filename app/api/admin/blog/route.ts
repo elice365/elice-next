@@ -4,6 +4,9 @@ import { setMessage, setRequest } from '@/lib/response';
 import { APIResult, AuthInfo } from '@/types/api';
 import * as BlogDB from '@/lib/db/blog';
 import { logger } from '@/lib/services/logger';
+import { PAGINATION_DEFAULTS } from '@/constants/admin/pagination';
+import { BLOG_DEFAULTS, BLOG_STATUS, URL_SLUG_REGEX } from '@/constants/admin/blog';
+import { ADMIN_MESSAGES } from '@/constants/admin/responses';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/blog
@@ -17,14 +20,14 @@ const getBlogPosts = async (
     const { searchParams } = new URL(request.url);
     
     // Parse query parameters
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '10', 10);
+    const page = parseInt(searchParams.get('page') || PAGINATION_DEFAULTS.PAGE.toString(), 10);
+    const limit = parseInt(searchParams.get('limit') || PAGINATION_DEFAULTS.LIMIT.toString(), 10);
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
     const status = searchParams.get('status') || '';
     const type = searchParams.get('type') || '';
-    const sortBy = searchParams.get('sortBy') || 'createdTime';
-    const sortOrder = (searchParams.get('sortOrder') || 'desc') as 'asc' | 'desc';
+    const sortBy = searchParams.get('sortBy') || PAGINATION_DEFAULTS.SORT_BY;
+    const sortOrder = (searchParams.get('sortOrder') || PAGINATION_DEFAULTS.SORT_ORDER) as 'asc' | 'desc';
 
     // Get blog posts from DB
     const { posts, totalCount } = await BlogDB.getAdminBlogPosts({
@@ -43,7 +46,7 @@ const getBlogPosts = async (
       return {
         ...post,
         id: post.uid, // Map uid to id for frontend compatibility
-        status: post.status || 'draft',
+        status: post.status || BLOG_DEFAULTS.STATUS,
         views: post._count?.view || 0, // PostView 테이블에서 계산된 조회수
         likeCount: post.likeCount || 0
       };
@@ -66,8 +69,8 @@ const getBlogPosts = async (
     return setRequest(result);
 
   } catch (error) {
-    logger.error('블로그 목록 조회 실패', 'API', error);
-    return { success: false, message: '서버 오류가 발생했습니다' };
+    logger.error(ADMIN_MESSAGES.BLOG_LIST_ERROR, 'API', error);
+    return { success: false, message: ADMIN_MESSAGES.SERVER_ERROR };
   }
 };
 
@@ -82,14 +85,14 @@ const createBlogPost = async (
   try {
     const body = await request.json();
     const {
-      type = 'post',
+      type = BLOG_DEFAULTS.TYPE,
       title,
       description,
       url: providedUrl,
       categoryId,
-      tags = [],
+      tags = BLOG_DEFAULTS.TAGS,
       images,
-      status = 'draft',
+      status = BLOG_DEFAULTS.STATUS,
       publishedAt
     } = body;
 
@@ -101,8 +104,8 @@ const createBlogPost = async (
     // Use provided URL or create URL slug from title
     const url = providedUrl || title
       .toLowerCase()
-      .replace(/[^a-z0-9가-힣]+/g, '-')
-      .replace(/(^-+)|(-+$)/g, '');
+      .replace(URL_SLUG_REGEX.NORMALIZE, '-')
+      .replace(URL_SLUG_REGEX.TRIM, '');
 
     // Prepare post data
     const postData: any = {
@@ -116,9 +119,9 @@ const createBlogPost = async (
     };
 
     // Add publishedAt if provided and status is published
-    if (publishedAt && status === 'published') {
+    if (publishedAt && status === BLOG_STATUS.PUBLISHED) {
       postData.publishedAt = new Date(publishedAt);
-    } else if (status === 'published' && !publishedAt) {
+    } else if (status === BLOG_STATUS.PUBLISHED && !publishedAt) {
       postData.publishedAt = new Date();
     }
 
@@ -127,15 +130,15 @@ const createBlogPost = async (
 
     const result = {
       success: true,
-      message: '블로그 글이 생성되었습니다.',
+      message: ADMIN_MESSAGES.BLOG_CREATED,
       post: newPost
     };
 
     return setRequest(result);
 
   } catch (error) {
-    logger.error('블로그 글 생성 실패', 'API', error);
-    return { success: false, message: '서버 오류가 발생했습니다' };
+    logger.error(ADMIN_MESSAGES.BLOG_CREATE_ERROR, 'API', error);
+    return { success: false, message: ADMIN_MESSAGES.SERVER_ERROR };
   }
 };
 
@@ -181,15 +184,15 @@ const updateBlogPost = async (
 
     const result = {
       success: true,
-      message: '블로그 글이 수정되었습니다.',
+      message: ADMIN_MESSAGES.BLOG_UPDATED,
       post: updatedPost
     };
 
     return setRequest(result);
 
   } catch (error) {
-    logger.error('블로그 글 수정 실패', 'API', error);
-    return { success: false, message: '서버 오류가 발생했습니다' };
+    logger.error(ADMIN_MESSAGES.BLOG_UPDATE_ERROR, 'API', error);
+    return { success: false, message: ADMIN_MESSAGES.SERVER_ERROR };
   }
 };
 
@@ -214,15 +217,15 @@ const deleteBlogPosts = async (
 
     const result = {
       success: true,
-      message: `${deleteResult.count}개의 글이 삭제되었습니다.`,
+      message: ADMIN_MESSAGES.BLOG_BULK_DELETED(deleteResult.count),
       deletedCount: deleteResult.count
     };
 
     return setRequest(result);
 
   } catch (error) {
-    logger.error('블로그 글 삭제 실패', 'API', error);
-    return { success: false, message: '서버 오류가 발생했습니다' };
+    logger.error(ADMIN_MESSAGES.BLOG_DELETE_ERROR, 'API', error);
+    return { success: false, message: ADMIN_MESSAGES.SERVER_ERROR };
   }
 };
 

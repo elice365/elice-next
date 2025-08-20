@@ -13,6 +13,36 @@ html, body {
   overscroll-behavior-y: contain;
 }
 
+/* Mobile viewport fix */
+@supports (-webkit-touch-callout: none) {
+  /* iOS specific */
+  body {
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Fix for FLO page mobile scrolling */
+  .flo-container,
+  [class*="flo-"] {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Scrollbar utilities */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure background/text follow theme tokens globally */
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
 /* Navigation Loading - Hide on Mobile */
 @media (max-width: 768px) {
   .navigation-skeleton {
@@ -40,6 +70,42 @@ html, body {
   .blog-container {
     overscroll-behavior-y: none;
     position: relative;
+  }
+  
+  /* FLO page mobile optimization */
+  .flo-container {
+    min-height: auto !important;
+    height: auto !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* FLO page specific styles - Hide footer and remove bottom spacing */
+body.flo-page-active footer {
+  display: none !important;
+}
+
+body.flo-page-active main {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+body.flo-page-active .flex-1 {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Mobile specific FLO adjustments */
+@media (max-width: 768px) {
+  body.flo-page-active {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  
+
+  
+  body.flo-page-active .flo-container {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
 
@@ -181,7 +247,7 @@ html, body {
   
   /* Mobile table min width for scroll */
   .admin-mobile-table {
-    min-width: 500px !important; /* Reduced minimum width for better mobile experience */
+    min-width: 320px !important; /* Fit very small devices and containers */
     table-layout: fixed !important;
   }
   
@@ -265,6 +331,18 @@ html, body {
   /* Card hover state */
   --card-hover: #ebebeb;
   
+  /* Music Player - Default Theme */
+  --player-bg: #ffffff;
+  --player-border: #e5e7eb;
+  --player-text: #374151;
+  --player-text-secondary: #6b7280;
+  --player-button: #3b82f6;
+  --player-button-hover: #2563eb;
+  --player-progress-bg: #e5e7eb;
+  --player-progress-fill: #3b82f6;
+  --player-volume-bg: #e5e7eb;
+  --player-volume-fill: #3b82f6;
+  
   /* Admin Design System - Default */
   --admin-sidebar-bg: #ffffff;
   --admin-sidebar-text: #6b7280;
@@ -287,6 +365,33 @@ html, body {
   --admin-primary-hover: #2563eb;
   --admin-secondary: #6b7280;
   --admin-secondary-hover: #4b5563;
+  
+  /* FLO Multi Search - Default Theme */
+  --flo-bg-primary: #ffffff;
+  --flo-bg-secondary: #f8fafc;
+  --flo-bg-elevated: #ffffff;
+  --flo-border: #e2e8f0;
+  --flo-border-active: #3b82f6;
+  --flo-text-primary: #1e293b;
+  --flo-text-secondary: #64748b;
+  --flo-text-muted: #94a3b8;
+  --flo-brand-primary: #3b82f6;
+  --flo-brand-secondary: #1e40af;
+  --flo-brand-accent: #6366f1;
+  --flo-success: #10b981;
+  --flo-success-bg: #ecfdf5;
+  --flo-error: #ef4444;
+  --flo-error-bg: #fef2f2;
+  --flo-warning: #f59e0b;
+  --flo-warning-bg: #fffbeb;
+  --flo-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --flo-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --flo-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+/* FLO Component Styles */
+.flo-button-icon {
+  @apply w-6 h-6 flex items-center justify-center rounded-full hover:bg-[var(--hover)] transition-colors text-foreground/60 focus:outline-none focus:ring-2 focus:ring-blue-500;
 }
 
 /* Tailwind CSS v4 theme configuration - Valid v4 syntax, ignore SonarCloud warnings */
@@ -356,6 +461,18 @@ html.light {
   --blog-radius-lg: 1rem;
   --card-hover: #ebebeb;
   
+  /* Music Player - Light Theme */
+  --player-bg: #fafafa;
+  --player-border: #e3e1e1;
+  --player-text: #2c2c2c;
+  --player-text-secondary: #666666;
+  --player-button: #5c5049;
+  --player-button-hover: #4a3f39;
+  --player-progress-bg: #e3e1e1;
+  --player-progress-fill: #5c5049;
+  --player-volume-bg: #e3e1e1;
+  --player-volume-fill: #5c5049;
+  
   /* Modal specific */
   --modal-header-bg: #faf8f5;
   --modal-footer-bg: #faf8f5;
@@ -415,6 +532,28 @@ html.light {
   --admin-input-bg: #ffffff;
   --admin-input-border: #d1d5db;
   --admin-input-focus: #5c5049;
+  
+  /* FLO Multi Search - Light Theme */
+  --flo-bg-primary: #fafafa;
+  --flo-bg-secondary: #f8fafc;
+  --flo-bg-elevated: #ffffff;
+  --flo-border: #e3e1e1;
+  --flo-border-active: #5c5049;
+  --flo-text-primary: #2c2c2c;
+  --flo-text-secondary: #666666;
+  --flo-text-muted: #999999;
+  --flo-brand-primary: #5c5049;
+  --flo-brand-secondary: #4a3f39;
+  --flo-brand-accent: #6b5b52;
+  --flo-success: #16a34a;
+  --flo-success-bg: #d1fae5;
+  --flo-error: #dc2626;
+  --flo-error-bg: #fee2e2;
+  --flo-warning: #ea580c;
+  --flo-warning-bg: #fed7aa;
+  --flo-shadow-sm: 0 1px 3px 0 rgb(92 80 73 / 0.08);
+  --flo-shadow-md: 0 4px 8px -1px rgb(92 80 73 / 0.12);
+  --flo-shadow-lg: 0 12px 20px -3px rgb(92 80 73 / 0.15);
 }
 
 html.dark {
@@ -460,6 +599,18 @@ html.dark {
   --blog-radius-md: 0.75rem;
   --blog-radius-lg: 1rem;
   --card-hover: #404040;
+  
+  /* Music Player - Dark Theme */
+  --player-bg: #1f1f1f;
+  --player-border: #404040;
+  --player-text: #e5e5e5;
+  --player-text-secondary: #a1a1aa;
+  --player-button: #6b7280;
+  --player-button-hover: #9ca3af;
+  --player-progress-bg: #404040;
+  --player-progress-fill: #6b7280;
+  --player-volume-bg: #404040;
+  --player-volume-fill: #6b7280;
   
   /* Modal specific */
   --modal-header-bg: #1a1a1a;
@@ -520,6 +671,28 @@ html.dark {
   --admin-input-bg: #0f0f0f;
   --admin-input-border: #374151;
   --admin-input-focus: #6b7280;
+  
+  /* FLO Multi Search - Dark Theme */
+  --flo-bg-primary: #1f1f1f;
+  --flo-bg-secondary: #242424;
+  --flo-bg-elevated: #2f2f2f;
+  --flo-border: #404040;
+  --flo-border-active: #6b7280;
+  --flo-text-primary: #e5e5e5;
+  --flo-text-secondary: #a1a1aa;
+  --flo-text-muted: #71717a;
+  --flo-brand-primary: #6b7280;
+  --flo-brand-secondary: #9ca3af;
+  --flo-brand-accent: #4b5563;
+  --flo-success: #22c55e;
+  --flo-success-bg: #064e3b;
+  --flo-error: #ef4444;
+  --flo-error-bg: #7f1d1d;
+  --flo-warning: #f59e0b;
+  --flo-warning-bg: #78350f;
+  --flo-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+  --flo-shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.4);
+  --flo-shadow-lg: 0 12px 20px -3px rgb(0 0 0 / 0.5);
 }
 html.deepblue {
   --background: #1e2530;
@@ -564,6 +737,18 @@ html.deepblue {
   --blog-radius-md: 0.75rem;
   --blog-radius-lg: 1rem;
   --card-hover: #3e4a5f;
+  
+  /* Music Player - Deep Blue Theme */
+  --player-bg: #2a3441;
+  --player-border: #475569;
+  --player-text: #e2e8f0;
+  --player-text-secondary: #cbd5e1;
+  --player-button: #4a90e2;
+  --player-button-hover: #357abd;
+  --player-progress-bg: #475569;
+  --player-progress-fill: #4a90e2;
+  --player-volume-bg: #475569;
+  --player-volume-fill: #4a90e2;
   
   /* Modal specific */
   --modal-header-bg: #2a3441;
@@ -624,6 +809,28 @@ html.deepblue {
   --admin-input-bg: #1e2530;
   --admin-input-border: #334155;
   --admin-input-focus: #4a90e2;
+  
+  /* FLO Multi Search - Deep Blue Theme */
+  --flo-bg-primary: #2a3441;
+  --flo-bg-secondary: #2f3845;
+  --flo-bg-elevated: #34405a;
+  --flo-border: #475569;
+  --flo-border-active: #4a90e2;
+  --flo-text-primary: #e2e8f0;
+  --flo-text-secondary: #cbd5e1;
+  --flo-text-muted: #94a3b8;
+  --flo-brand-primary: #4a90e2;
+  --flo-brand-secondary: #357abd;
+  --flo-brand-accent: #5b9bd5;
+  --flo-success: #4ade80;
+  --flo-success-bg: #064e3b;
+  --flo-error: #f87171;
+  --flo-error-bg: #7f1d1d;
+  --flo-warning: #fbbf24;
+  --flo-warning-bg: #78350f;
+  --flo-shadow-sm: 0 1px 3px 0 rgb(30 37 48 / 0.3);
+  --flo-shadow-md: 0 4px 8px -1px rgb(30 37 48 / 0.4);
+  --flo-shadow-lg: 0 12px 20px -3px rgb(30 37 48 / 0.5);
 }
 
 html.brown {
@@ -729,6 +936,28 @@ html.brown {
   --admin-input-bg: #ffffff;
   --admin-input-border: #e8dfd6;
   --admin-input-focus: #8b6331;
+  
+  /* FLO Multi Search - Brown Theme */
+  --flo-bg-primary: #fffefb;
+  --flo-bg-secondary: #faf8f5;
+  --flo-bg-elevated: #ffffff;
+  --flo-border: #e8dfd6;
+  --flo-border-active: #8b6331;
+  --flo-text-primary: #3d2914;
+  --flo-text-secondary: #6b5444;
+  --flo-text-muted: #8d7566;
+  --flo-brand-primary: #8b6331;
+  --flo-brand-secondary: #7a5429;
+  --flo-brand-accent: #a67c52;
+  --flo-success: #16a34a;
+  --flo-success-bg: #d1fae5;
+  --flo-error: #dc2626;
+  --flo-error-bg: #fee2e2;
+  --flo-warning: #ea580c;
+  --flo-warning-bg: #fed7aa;
+  --flo-shadow-sm: 0 1px 3px 0 rgb(139 99 49 / 0.08);
+  --flo-shadow-md: 0 4px 8px -1px rgb(139 99 49 / 0.12);
+  --flo-shadow-lg: 0 12px 20px -3px rgb(139 99 49 / 0.15);
 }
 
 
@@ -1154,6 +1383,277 @@ body {
 
 /* Mobile Table Optimization - moved to admin/layout.css */
 
+/* FLO Multi Search Animations */
+@keyframes floFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes floScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes floShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes floPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* FLO Multi Search Component Styles */
+.flo-multi-search-container {
+  background: var(--flo-bg-elevated);
+  border: 1px solid var(--flo-border);
+  border-radius: 1rem;
+  box-shadow: var(--flo-shadow-lg);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flo-multi-search-container:hover {
+  box-shadow: var(--flo-shadow-lg), 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
+}
+
+.flo-multi-search-header {
+  background: linear-gradient(135deg, var(--flo-bg-primary) 0%, var(--flo-bg-secondary) 100%);
+  border-bottom: 1px solid var(--flo-border);
+}
+
+.flo-multi-search-input {
+  background: var(--flo-bg-primary);
+}
+
+.flo-multi-search-input textarea {
+  background: var(--flo-bg-elevated);
+  border: 2px solid var(--flo-border);
+  color: var(--flo-text-primary);
+  transition: all 0.3s ease;
+}
+
+.flo-multi-search-input textarea:focus {
+  border-color: var(--flo-border-active);
+  box-shadow: 0 0 0 3px rgb(from var(--flo-border-active) r g b / 0.1);
+}
+
+.flo-multi-search-input textarea::placeholder {
+  color: var(--flo-text-muted);
+}
+
+.flo-multi-search-results {
+  background: linear-gradient(180deg, var(--flo-bg-primary) 0%, var(--flo-bg-secondary) 100%);
+  border-top: 1px solid var(--flo-border);
+}
+
+.flo-result-card {
+  background: var(--flo-bg-elevated);
+  border: 2px solid var(--flo-border);
+  border-radius: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flo-result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--flo-shadow-md);
+}
+
+.flo-result-card.success {
+  border-color: var(--flo-success);
+  background: linear-gradient(135deg, var(--flo-success-bg) 0%, transparent 50%);
+}
+
+.flo-result-card.error {
+  border-color: var(--flo-error);
+  background: linear-gradient(135deg, var(--flo-error-bg) 0%, transparent 50%);
+}
+
+/* FLO Brand Buttons */
+.flo-btn-primary {
+  background: linear-gradient(135deg, var(--flo-brand-primary) 0%, var(--flo-brand-accent) 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: var(--flo-shadow-sm);
+}
+
+.flo-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--flo-brand-secondary) 0%, var(--flo-brand-primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--flo-shadow-md);
+}
+
+.flo-btn-secondary {
+  background: transparent;
+  color: var(--flo-brand-primary);
+  border: 2px solid var(--flo-border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flo-btn-secondary:hover:not(:disabled) {
+  background: var(--flo-brand-primary);
+  color: white;
+  border-color: var(--flo-brand-primary);
+  transform: translateY(-1px);
+}
+
+/* FLO Progress Bar */
+.flo-progress-container {
+  background: var(--flo-border);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.flo-progress-bar {
+  background: linear-gradient(90deg, var(--flo-brand-primary) 0%, var(--flo-brand-accent) 100%);
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.5s ease-out;
+  position: relative;
+}
+
+.flo-progress-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+  animation: floShimmer 2s infinite;
+}
+
+/* FLO Loading States */
+.flo-loading-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--flo-border);
+  border-top: 2px solid var(--flo-brand-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.flo-loading-dots {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.flo-loading-dots > div {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--flo-brand-primary);
+  border-radius: 50%;
+  animation: floPulse 1.4s ease-in-out infinite both;
+}
+
+.flo-loading-dots > div:nth-child(1) { animation-delay: -0.32s; }
+.flo-loading-dots > div:nth-child(2) { animation-delay: -0.16s; }
+.flo-loading-dots > div:nth-child(3) { animation-delay: 0s; }
+
+/* FLO Animation Utilities */
+.flo-animate-fade-in {
+  animation: floFadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flo-animate-slide-in {
+  animation: floSlideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flo-animate-scale-in {
+  animation: floScaleIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* FLO Text Styles */
+.flo-text-primary {
+  color: var(--flo-text-primary);
+}
+
+.flo-text-secondary {
+  color: var(--flo-text-secondary);
+}
+
+.flo-text-muted {
+  color: var(--flo-text-muted);
+}
+
+.flo-text-brand {
+  color: var(--flo-brand-primary);
+}
+
+/* FLO Responsive Utilities */
+@media (max-width: 640px) {
+  .flo-multi-search-container {
+    border-radius: 0.75rem;
+    margin: 0.5rem;
+  }
+  
+  .flo-result-card {
+    border-radius: 0.5rem;
+  }
+  
+  .flo-btn-primary,
+  .flo-btn-secondary {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .flo-multi-search-container {
+    border-radius: 1.25rem;
+  }
+  
+  .flo-result-card {
+    border-radius: 1rem;
+  }
+  
+  .flo-btn-primary,
+  .flo-btn-secondary {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+  }
+}
+
 /* Accessibility utilities */
 .sr-only {
   position: absolute;
@@ -1165,4 +1665,83 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* FLO Layout Mobile Fix - Prevent 430px rendering on 375px screens */
+@media (max-width: 430px) {
+  .flo-layout,
+  .flo-layout * {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+  
+  .flo-layout .grid {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .flo-layout img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Force mobile viewport constraints */
+  .flo-layout > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+
+/* FLO Search Autocomplete Animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.15s ease-out;
+}
+
+/* FLO Autocomplete Dropdown Theme Styles */
+.flo-autocomplete-dropdown {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(10px);
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .flo-autocomplete-dropdown {
+  background: rgba(30, 30, 30, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Light mode styles */
+[data-theme="light"] .flo-autocomplete-dropdown {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Deepblue mode styles */
+[data-theme="deepblue"] .flo-autocomplete-dropdown {
+  background: rgba(20, 25, 45, 0.98);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Brown mode styles */
+[data-theme="brown"] .flo-autocomplete-dropdown {
+  background: rgba(45, 35, 30, 0.98);
+  border: 1px solid rgba(139, 69, 19, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.15);
 }

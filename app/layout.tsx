@@ -25,10 +25,11 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className={`${pretendard.className} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme={theme?.value || "dark"} enableSystem themes={["system", "light", "dark", "deepblue"]} disableTransitionOnChange={true} storageKey="theme">
+        <ThemeProvider attribute="class" defaultTheme={theme?.value || "dark"} enableSystem themes={["system", "light", "dark", "deepblue", "brown"]} disableTransitionOnChange={true} storageKey="theme">
           <NextIntlClientProvider locale={locale}>
             {children}
           </NextIntlClientProvider>

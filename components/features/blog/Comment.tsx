@@ -6,6 +6,7 @@ import { useAppSelector } from '@/stores/hook';
 import { motion } from 'framer-motion';
 import { logger } from '@/lib/services/logger';
 import { CommentItem } from './CommentItem';
+import apiUtils from '@/lib/api';
 import type { CommentSectionProps, Comment as CommentType } from '@/types/common/comment';
 
 // Helper functions to reduce nesting complexity
@@ -72,21 +73,15 @@ export const Comment = memo(function Comment({
     setIsSubmitting(true);
     try {
       // Submit comment to API
-      const response = await fetch(`/api/posts/${postId}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content: newComment.trim(),
-        }),
+      const result = await apiUtils.post(`/api/posts/${postId}/comments`, {
+        content: newComment.trim(),
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to submit comment');
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to submit comment');
       }
       
-      const comment: CommentType = await response.json();
+      const comment: CommentType = result.data as CommentType;
       setComments(prev => [comment, ...prev]);
       setNewComment('');
     } catch (error) {

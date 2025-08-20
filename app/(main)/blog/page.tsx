@@ -4,7 +4,8 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { metaImage } from "@/utils/parse/metaImage";
 import { BlogLayout } from "@/components/layout/Blog";
 
-export const dynamic = 'force-dynamic';
+// Use ISR for better performance
+export const revalidate = 3600; // Revalidate every hour
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();

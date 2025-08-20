@@ -2,6 +2,9 @@
   "locales": {
     "lang": "en"
   },
+  "flo": {
+    "subtitle": "Where all music flows"
+  },
   "common": {
     "all": "All",
     "search": "Search",
@@ -52,13 +55,14 @@
     "product": "Product",
     "login": "Login Page",
     "register": "Sign Up Page",
+    "dashboard": "Admin Dashboard",
     "user": "User Management",
     "role": "User Roles",
-    "category": "category",
+    "category": "Category",
     "router": "Router Management",
     "settings": "System Settings",
     "notification": "Notification Management",
-    "session":"User Session"
+    "session": "User Session"
   },
   "article": {
     "title": "Article",

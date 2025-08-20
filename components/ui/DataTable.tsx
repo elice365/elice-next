@@ -4,7 +4,7 @@
  */
 import React, { ReactNode } from 'react';
 import { Pagination } from '@/components/ui/Pagination';
-import type { Column, DataTableProps } from '@/types/ui/table';
+import type { TableColumn, DataTableProps } from '@/types/ui/table';
 
 function getAlignmentClass(align?: 'left' | 'center' | 'right'): string {
   switch (align) {
@@ -17,7 +17,7 @@ function getAlignmentClass(align?: 'left' | 'center' | 'right'): string {
   }
 }
 
-export function DataTable<T extends Record<string, any>>({
+export const DataTable = React.memo(function DataTable<T extends Record<string, any>>({
   columns,
   data,
   loading = false,
@@ -37,7 +37,7 @@ export function DataTable<T extends Record<string, any>>({
     return record[rowKey]?.toString() || index.toString();
   };
 
-  const getValue = (record: T, key: keyof T | string) => {
+  const getValue = (record: T, key: keyof T | string): any => {
     if (typeof key === 'string' && key.includes('.')) {
       // Support nested keys like 'user.name'
       return key.split('.').reduce((obj, k) => obj?.[k], record);
@@ -45,10 +45,10 @@ export function DataTable<T extends Record<string, any>>({
     return record[key as keyof T];
   };
 
-  const handleSort = (column: Column<T>) => {
+  const handleSort = (column: TableColumn<T>) => {
     if (column.sortable && onSort) {
       // Simple sort direction toggle - in real app, you'd track current sort state
-      onSort(column.key, 'asc');
+      onSort(String(column.key), 'asc');
     }
   };
 
@@ -179,7 +179,7 @@ export function DataTable<T extends Record<string, any>>({
       )}
     </div>
   );
-}
+}) as <T extends Record<string, any>>(props: DataTableProps<T>) => React.JSX.Element;
 
 // Utility function to create columns easily
 export function createColumns<T>(config: {
@@ -189,13 +189,13 @@ export function createColumns<T>(config: {
     sortable?: boolean;
     render?: (value: T[K], record: T) => ReactNode;
   }
-} | Column<T>[]): Column<T>[] {
+} | TableColumn<T>[]): TableColumn<T>[] {
   if (Array.isArray(config)) {
     return config;
   }
 
   return Object.entries(config).map(([key, options]: [string, any]) => ({
-    key: key as keyof T,
+    key: key,
     title: options?.title || key,
     width: options?.width,
     sortable: options?.sortable,

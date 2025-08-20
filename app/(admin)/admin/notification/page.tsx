@@ -134,7 +134,7 @@ export default function AdminNotificationPage() {
       icon: 'CheckCircle',
       options: [
         { value: '', label: '모든 상태' },
-        { value: 'read', label: '✅ 읽음' },
+        { value: 'read', label: '읽음' },
         { value: 'unread', label: '📭 읽지 않음' }
       ]
     }

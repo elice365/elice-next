@@ -38,7 +38,7 @@ export default function AdminSessionPageOptimized() {
       icon: 'Activity',
       options: [
         { value: '', label: '모든 상태' },
-        { value: 'active', label: '✅ 활성' },
+        { value: 'active', label: '활성' },
         { value: 'expired', label: '❌ 만료' }
       ]
     },

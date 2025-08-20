@@ -23,34 +23,38 @@ export function NavigationProgress() {
     };
   }, []);
 
+  // timeoutId를 외부에서 관리
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
+  const handleStart = () => {
+    setIsNavigating(true);
+    
+    // 최대 1.5초 후 자동으로 로딩 종료
+    const id = setTimeout(() => {
+      setIsNavigating(false);
+      setTimeoutId(null);
+    }, 1500);
+    setTimeoutId(id);
+  };
+
+  const handleComplete = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
+    }
+    setIsNavigating(false);
+  };
+
   useEffect(() => {
     // 데스크톱이 아니면 아무것도 하지 않음
     if (!isDesktop) return;
-    
-    let timeoutId: NodeJS.Timeout;
-
-    const handleStart = () => {
-      setIsNavigating(true);
-      
-      // 최대 1.5초 후 자동으로 로딩 종료
-      timeoutId = setTimeout(() => {
-        setIsNavigating(false);
-      }, 1500);
-    };
-
-    const handleComplete = () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      setIsNavigating(false);
-    };
 
     // Link 클릭 감지
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const link = target.closest('a');
       
-      if (link && link.href && !link.target) {
+      if (link?.href && !link.target) {
         const url = new URL(link.href);
         if (url.origin === window.location.origin && url.pathname !== pathname) {
           handleStart();
@@ -63,16 +67,24 @@ export function NavigationProgress() {
 
     return () => {
       document.removeEventListener('click', handleClick, true);
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
     };
   }, [pathname, isDesktop]);
 
   // 경로 변경 시 로딩 종료
   useEffect(() => {
-    setIsNavigating(false);
+    if (isNavigating) {
+      handleComplete();
+    }
   }, [pathname, searchParams]);
+
+  // 컴포넌트 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [timeoutId]);
 
   // 데스크톱이 아니거나 네비게이션 중이 아니면 null 반환
   if (!isDesktop || !isNavigating) {

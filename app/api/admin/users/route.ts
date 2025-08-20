@@ -5,6 +5,9 @@ import { Prisma } from '@prisma/client';
 import { handler } from '@/lib/request';
 import { APIResult, AuthInfo } from '@/types/api';
 import { logger } from '@/lib/services/logger';
+import { PAGINATION_DEFAULTS } from '@/constants/admin/pagination';
+import { USER_ALLOWED_FIELDS } from '@/constants/admin/validation';
+import { ADMIN_MESSAGES } from '@/constants/admin/responses';
 
 /* ------------------------------------------------------------------
  * GET /api/admin/users
@@ -19,13 +22,13 @@ const getUsers = async (
     const { searchParams } = new URL(request.url);
 
     // 쿼리 파라미터 파싱
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '10', 10);
+    const page = parseInt(searchParams.get('page') || PAGINATION_DEFAULTS.PAGE.toString(), 10);
+    const limit = parseInt(searchParams.get('limit') || PAGINATION_DEFAULTS.LIMIT.toString(), 10);
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || '';
     const role = searchParams.get('role') || '';
-    const sortBy = searchParams.get('sortBy') || 'createdTime';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
+    const sortBy = searchParams.get('sortBy') || PAGINATION_DEFAULTS.SORT_BY;
+    const sortOrder = searchParams.get('sortOrder') || PAGINATION_DEFAULTS.SORT_ORDER;
 
     // 사용자 목록 조회
     const { users, totalCount } = await getAdminUsers({
@@ -118,7 +121,7 @@ const getUsers = async (
     return setRequest(result);
 
   } catch (error) {
-    logger.error('[API] /admin/users GET error', 'API', error);
+    logger.error(ADMIN_MESSAGES.USER_LIST_ERROR, 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };
@@ -141,10 +144,9 @@ const updateUsers = async (
     }
 
     // 허용된 필드만 업데이트
-    const allowedFields = ['name', 'phoneNumber', 'status', 'marketing', 'terms'];
     const updateData: Record<string, any> = {};
 
-    for (const field of allowedFields) {
+    for (const field of USER_ALLOWED_FIELDS) {
       if (field in updates) {
         updateData[field] = updates[field];
       }
@@ -159,7 +161,7 @@ const updateUsers = async (
     return setRequest(userWithRelations);
 
   } catch (error) {
-    logger.error('[API] /admin/users PATCH error', 'API', error);
+    logger.error(ADMIN_MESSAGES.USER_UPDATE_ERROR, 'API', error);
     return setMessage('NetworkError', null, 500);
   }
 };

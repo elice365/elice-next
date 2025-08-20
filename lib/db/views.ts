@@ -89,7 +89,7 @@ export async function trackPostView(data: ViewTrackingData): Promise<boolean> {
         return false; // 이미 조회한 기록이 있음
       }
 
-      logger.info('✅ New view, recording...', 'DB');
+      logger.info('New view, recording...', 'DB');
 
       // PostView 기록만 생성 (views는 관계형으로 자동 계산됨)
       const postView = await tx.postView.create({

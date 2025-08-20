@@ -596,7 +596,7 @@ export function BlogEditMultilangModal({ isOpen, onClose, onSuccess, post }: Rea
                 className="w-full modal-input px-4 py-2.5 border border-[var(--modal-input-border)] rounded-lg bg-[var(--modal-input-bg)] focus:border-[var(--modal-input-focus)] focus:ring-2 focus:ring-[var(--modal-input-focus)]/20 transition-all duration-200"
               >
                 <option value="draft">📝 임시저장</option>
-                <option value="published">✅ 게시</option>
+                <option value="published">게시</option>
               </select>
             </div>
 

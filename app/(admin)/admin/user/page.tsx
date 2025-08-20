@@ -40,7 +40,7 @@ export default function AdminUserPageOptimized() {
       icon: 'User',
       options: [
         { value: '', label: '모든 상태' },
-        { value: 'active', label: '✅ 활성' },
+        { value: 'active', label: '활성' },
         { value: 'inactive', label: '⏸️ 비활성' },
         { value: 'suspended', label: '🚫 정지' }
       ]

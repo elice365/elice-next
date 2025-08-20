@@ -1,6 +1,5 @@
 'use client';
 
-/* eslint-disable sonarjs/no-unused-vars */
 /* eslint-disable react/no-unused-prop-types */
 // SonarCloud incorrectly reports props as unused when they are used in JSX and helper functions
 

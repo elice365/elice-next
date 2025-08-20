@@ -106,7 +106,7 @@ export const Table = memo(function Table<T = any>({
 
     if (loading) {
         return (
-            <div className={`bg-[var(--background)] overflow-hidden ${className}`}>
+            <div className={`bg-[var(--background)] ${className}`}>
                 <div className="p-12 text-center">
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--hover-primary)]"></div>
                     <p className="mt-4 text-[var(--text-color)] opacity-70">{loadingText}</p>
@@ -116,7 +116,7 @@ export const Table = memo(function Table<T = any>({
     }
 
     return (
-        <div className={`bg-[var(--background)] overflow-hidden ${className}`}>
+        <div className={`bg-[var(--background)] ${className}`}>
             {/* Screen reader announcements for scroll state */}
             <output className="sr-only" aria-live="polite" aria-atomic="true">
                 테이블을 좌우로 스크롤할 수 있습니다. 화살표 키를 사용하여 탐색하세요.
@@ -137,7 +137,7 @@ export const Table = memo(function Table<T = any>({
                             <tr>
                                 {finalColumns.map((column) => (
                                     <th
-                                        key={column.key}
+                                        key={String(column.key)}
                                         className={`px-2 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-semibold text-[var(--color-text-header)] whitespace-nowrap ${column.headerClassName || column.className || ""}`}
                                         style={column.width ? { width: column.width } : undefined}
                                     >
@@ -172,50 +172,86 @@ export const Table = memo(function Table<T = any>({
                                 data.map((record, index) => {
                                     const rowKeyValue = getRowKey(record, index);
                                     const isRowSelected = selectedRowKeys.includes(rowKeyValue);
-                                    return (
-                                        <tr
-                                            key={rowKeyValue}
-                                            onClick={() => onRowClick?.(record, index)}
-                                            onKeyDown={(e) => {
-                                                if ((e.key === 'Enter' || e.key === ' ') && onRowClick) {
-                                                    e.preventDefault();
-                                                    onRowClick(record, index);
-                                                }
-                                            }}
-                                            tabIndex={onRowClick ? 0 : undefined}
-                                            role={onRowClick ? "button" : undefined}
-                                            aria-pressed={onRowClick ? isRowSelected : undefined}
-                                            aria-label={onRowClick ? `행 ${index + 1} 선택` : undefined}
-                                            className={(() => {
-                                                const baseClasses = 'transition-all duration-200';
-                                                const clickableClasses = onRowClick 
-                                                    ? 'hover:bg-[var(--hover)] hover:text-[var(--hover-text)] hover:shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--hover-primary)] focus:ring-inset' 
-                                                    : '';
-                                                const selectedClasses = isRowSelected 
-                                                    ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' 
-                                                    : '';
-                                                
-                                                return `${baseClasses} ${clickableClasses} ${selectedClasses}`.trim();
-                                            })()}
-                                        >
-                                            {finalColumns.map((column) => {
-                                                const value = getValue(record, column.key);
-                                                const content = column.render
-                                                    ? column.render(value, record, index)
-                                                    : value;
 
-                                                return (
-                                                    <td
-                                                        key={column.key}
-                                                        className={`px-2 py-2 text-[10px] sm:text-xs text-[var(--text-color)] ${column.className || ""}`}
-                                                        style={column.width ? { width: column.width } : undefined}
+                                    if (onRowClick) {
+                                        return (
+                                            <tr
+                                                key={rowKeyValue}
+                                                className={(() => {
+                                                    const baseClasses = 'transition-all duration-200';
+                                                    const clickableClasses = 'hover:bg-[var(--hover)] hover:text-[var(--hover-text)] hover:shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--hover-primary)] focus:ring-inset';
+                                                    const selectedClasses = isRowSelected 
+                                                        ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' 
+                                                        : '';
+                                                    return `${baseClasses} ${clickableClasses} ${selectedClasses}`.trim();
+                                                })()}
+                                            >
+                                                <td colSpan={finalColumns.length} style={{ padding: 0, border: 0 }}>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => onRowClick(record, index)}
+                                                        aria-pressed={isRowSelected}
+                                                        aria-label={`행 ${index + 1} 선택`}
+                                                        className="w-full flex text-left px-0 py-0 bg-transparent border-none focus:outline-none"
+                                                        style={{ background: "none", border: "none", padding: 0 }}
                                                     >
-                                                        {content}
-                                                    </td>
-                                                );
-                                            })}
-                                        </tr>
-                                    );
+                                                        <table style={{ width: "100%" }}>
+                                                            <tbody>
+                                                                <tr>
+                                                                    {finalColumns.map((column) => {
+                                                                        const value = getValue(record, String(column.key));
+                                                                        const content = column.render
+                                                                            ? column.render(value, record, index)
+                                                                            : value;
+
+                                                                        return (
+                                                                            <td
+                                                                                key={String(column.key)}
+                                                                                className={`px-2 py-2 text-[10px] sm:text-xs text-[var(--text-color)] ${column.className || ""}`}
+                                                                                style={column.width ? { width: column.width } : undefined}
+                                                                            >
+                                                                                {content}
+                                                                            </td>
+                                                                        );
+                                                                    })}
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    } else {
+                                        return (
+                                            <tr
+                                                key={rowKeyValue}
+                                                className={(() => {
+                                                    const baseClasses = 'transition-all duration-200';
+                                                    const selectedClasses = isRowSelected 
+                                                        ? 'bg-[var(--selected)] border-l-4 border-l-[var(--hover-primary)] shadow-sm' 
+                                                        : '';
+                                                    return `${baseClasses} ${selectedClasses}`.trim();
+                                                })()}
+                                            >
+                                                {finalColumns.map((column) => {
+                                                    const value = getValue(record, String(column.key));
+                                                    const content = column.render
+                                                        ? column.render(value, record, index)
+                                                        : value;
+
+                                                    return (
+                                                        <td
+                                                            key={String(column.key)}
+                                                            className={`px-2 py-2 text-[10px] sm:text-xs text-[var(--text-color)] ${column.className || ""}`}
+                                                            style={column.width ? { width: column.width } : undefined}
+                                                        >
+                                                            {content}
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        );
+                                    }
                                 })
                             )}
                         </tbody>
@@ -292,7 +328,7 @@ export const Table = memo(function Table<T = any>({
                                         {finalColumns
                                             .filter(column => column.key !== 'selection')
                                             .map((column) => {
-                                                const value = getValue(record, column.key);
+                                                const value = getValue(record, String(column.key));
                                                 const content = column.render
                                                     ? column.render(value, record, index)
                                                     : value;
@@ -301,7 +337,7 @@ export const Table = memo(function Table<T = any>({
                                                 if (!content && content !== 0) return null;
 
                                                 return (
-                                                    <div key={column.key} className="flex flex-col gap-1">
+                                                    <div key={String(column.key)} className="flex flex-col gap-1">
                                                         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                                             {column.title}
                                                         </div>

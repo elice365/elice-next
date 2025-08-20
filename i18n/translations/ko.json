@@ -2,6 +2,9 @@
   "locales": {
     "lang": "ko"
   },
+  "flo": {
+    "subtitle": "모든 음악이 흐르는 곳"
+  },
   "common": {
     "all": "전체",
     "search": "검색",

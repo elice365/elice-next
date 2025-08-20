@@ -14,18 +14,18 @@ export interface PaginationProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export interface TableColumn<T = any> {
+export interface TableColumn<T> {
     key: keyof T | string;
     title: string;
     width?: string;
     align?: 'left' | 'center' | 'right';
     sortable?: boolean;
-    render?: (value: any, record: T, index: number) => ReactNode;
+    render?: (value: T[keyof T], record: T, index: number) => ReactNode;
     className?: string;
     headerClassName?: string;
 }
 
-export interface TableSelectionConfig<T = any> {
+export interface TableSelectionConfig<T> {
     type: 'checkbox';
     selectedRowKeys?: string[];
     onSelect?: (record: T, selected: boolean, selectedRows: T[]) => void;
@@ -34,7 +34,7 @@ export interface TableSelectionConfig<T = any> {
     preserveSelectedRowKeys?: boolean;
 }
 
-export interface TableProps<T = any> {
+export interface TableProps<T> {
     columns: TableColumn<T>[];
     data: T[];
     loading?: boolean;
@@ -58,7 +58,7 @@ export interface DataTableProps<T> {
     pageSizeOptions?: number[];
   };
   onPaginationChange?: (page: number, pageSize: number) => void;
-  onSort?: (column: keyof T | string, direction: 'asc' | 'desc') => void;
+  onSort?: (column: string, direction: 'asc' | 'desc') => void;
   rowSelection?: {
     selectedRowKeys?: string[];
     onSelect?: (record: T, selected: boolean) => void;

@@ -151,6 +151,25 @@ const config = {
 export default config;
 ```
 
+### Theme Rendering Troubleshooting
+
+If UI does not change with light/dark/deepblue, use this checklist:
+
+- Import FLO styles globally so tokens and integration rules load:
+  - In `app/layout.tsx`: `import "@/styles/flo.css";`
+- Ensure `ThemeProvider` uses class-based theming and includes all themes:
+  - `attribute="class"` and `themes={["system","light","dark","deepblue"]}` (add `"brown"` if needed)
+- Confirm that a theme class is on `<html>` at runtime (`html.light`, `html.dark`, `html.deepblue`).
+- Replace hard-coded palette utilities with token utilities:
+  - Prefer `bg-background`, `text-foreground`, `bg-card`, `text-title` over `bg-white`, `text-slate-*`.
+- For components not yet migrated, add small CSS hooks and apply `var(--flo-*)` tokens in `styles/flo.css`.
+- Keep CSS import order: `globals.css` → `pretendard.css` → `flo.css`.
+- Avoid inline hard-coded colors; if needed, use tokens: `style={{ color: 'var(--flo-text-secondary)' }}`.
+
+Quick test:
+1) Toggle theme with ThemeSwitcher. 2) Inspect a FLO card background.  
+Computed value should come from `var(--flo-bg-elevated)` and change per theme. Active Swiper bullets should use `var(--flo-brand-text)`.
+
 ## Architecture Patterns
 
 ### Component Styling Strategy
@@ -164,9 +183,9 @@ const Button = ({ variant, size, children, ...props }) => {
         'inline-flex items-center justify-center rounded-md font-medium',
         'transition-colors focus-visible:outline-none focus-visible:ring-2',
         
-        // Variant styles using theme variables
-        variant === 'primary' && 'bg-primary text-white hover:bg-primary/90',
-        variant === 'secondary' && 'bg-secondary text-white hover:bg-secondary/90',
+        // Variant styles using tokens mapped via @theme
+        variant === 'primary' && 'bg-primary text-foreground hover:bg-primary/90',
+        variant === 'secondary' && 'bg-secondary text-foreground hover:bg-secondary/90',
         
         // Size styles
         size === 'sm' && 'h-9 px-3 text-sm',
@@ -182,6 +201,21 @@ const Button = ({ variant, size, children, ...props }) => {
   );
 };
 ```
+
+### Component Migration Guide (Practical)
+
+- Replace palette utilities with tokens:
+  - Before: `bg-white text-slate-900 border-slate-200`
+  - After: `bg-background text-foreground border-[--border-color]`
+- FLO gradual refactor pattern:
+  - Add stable hooks/classes in TSX (e.g., `.flo-card`, `.track-row`).
+  - In `styles/flo.css`, apply `var(--flo-*)` tokens to those hooks.
+  - This enables theming without a large Tailwind class rewrite.
+
+### SSR and Hydration
+
+- Use `suppressHydrationWarning` on `<html>` and keep `ThemeProvider` with `attribute="class"`.
+- If you still see flashes, consider `defaultTheme="system"` or server `forcedTheme` for critical screens.
 
 ### Theme Integration with JavaScript
 ```typescript

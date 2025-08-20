@@ -5,6 +5,8 @@ import device from './slice/device';
 import search from './slice/search';
 import auth from './slice/auth';
 import blog from './slice/blog';
+import flo from './slice/flo';
+import music from './slice/music';
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 
@@ -15,7 +17,9 @@ export const store = configureStore({
     device,
     search,
     auth,
-    blog
+    blog,
+    flo,
+    music
   },
 });
 

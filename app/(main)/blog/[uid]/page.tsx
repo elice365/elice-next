@@ -8,7 +8,8 @@ import { PostDetailResponse, PostContent } from "@/types/blog/post";
 import { api } from "@/lib/fetch";
 import type { BlogPageProps } from "@/types/admin/pages";
 
-export const dynamic = 'force-dynamic';
+// Use ISR (Incremental Static Regeneration) for better performance
+export const revalidate = 3600; // Revalidate every hour
 
 // Fetch post data for metadata and content
 async function fetchPostData(uid: string, language: string = 'ko') {
@@ -41,7 +42,7 @@ async function fetchPostData(uid: string, language: string = 'ko') {
     return data.data;
   } catch (error) {
     // Failed to fetch post data
-    console.error('Failed to fetch post data:', error);
+    // Failed to fetch post data
     return null;
   }
 }

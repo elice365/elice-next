@@ -10,6 +10,8 @@ export type { LogLevel, LogContext };
 class Logger {
   private readonly isDevelopment = process.env.NODE_ENV === 'development';
   private readonly isProduction = process.env.NODE_ENV === 'production';
+  private readonly dedupeWindowMs = 2000;
+  private lastErrorAt = new Map<string, number>();
 
   private formatMessage(entry: LogEntry): string {
     const timestamp = entry.timestamp.toISOString();
@@ -41,7 +43,8 @@ class Logger {
       message,
       data,
       timestamp: new Date(),
-      stack: level === 'error' ? new Error().stack : undefined,
+      // Do not attach synthetic stack traces to reduce noise in all envs
+      stack: undefined,
     };
   }
 
@@ -49,6 +52,16 @@ class Logger {
     if (!this.shouldLog(entry.level)) return;
 
     const formattedMessage = this.formatMessage(entry);
+    // Simple dedupe for repeated errors in short window
+    if (entry.level === 'error') {
+      const key = `${entry.context}|${entry.message}`;
+      const now = Date.now();
+      const last = this.lastErrorAt.get(key) || 0;
+      if (now - last < this.dedupeWindowMs) {
+        return;
+      }
+      this.lastErrorAt.set(key, now);
+    }
     
     switch (entry.level) {
       case 'debug':
@@ -62,7 +75,6 @@ class Logger {
         break;
       case 'error':
         console.error(formattedMessage, entry.data);
-        if (entry.stack) console.error(entry.stack);
         break;
     }
   }
@@ -111,6 +123,20 @@ class Logger {
   performance = {
     info: (message: string, data?: any) => this.info(message, 'PERFORMANCE', data),
     warn: (message: string, data?: any) => this.warn(message, 'PERFORMANCE', data),
+  };
+
+  music = {
+    debug: (message: string, data?: any) => this.debug(message, 'MUSIC', data),
+    info: (message: string, data?: any) => this.info(message, 'MUSIC', data),
+    warn: (message: string, data?: any) => this.warn(message, 'MUSIC', data),
+    error: (message: string, data?: any) => this.error(message, 'MUSIC', data),
+  };
+
+  flo = {
+    debug: (message: string, data: any = {}) => this.debug(message, 'FLO', data),
+    info: (message: string, data: any = {}) => this.info(message, 'FLO', data),
+    warn: (message: string, data: any = {}) => this.warn(message, 'FLO', data),
+    error: (message: string, data: any = {}) => this.error(message, 'FLO', data),
   };
 }
 

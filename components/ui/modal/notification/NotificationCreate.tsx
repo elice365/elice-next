@@ -307,7 +307,7 @@ export function NotificationCreateModal({ isOpen, onClose, onSuccess }: Notifica
                   </div>
                   {formData.link && (
                     <div className="text-xs text-blue-600 mt-2">
-                      🔗 {formData.link}
+                       {formData.link}
                     </div>
                   )}
                 </div>

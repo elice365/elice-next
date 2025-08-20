@@ -1,13 +1,30 @@
+'use client';
+
 import { Translated } from "@/components/i18n/Translated";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/Button";
 import dynamic from "next/dynamic";
+
+// Dynamic imports with loading states for better UX
+const Theme = dynamic(() => import('@/components/features/theme/ThemeSwitcher'), {
+  loading: () => <div className="w-10 h-10 animate-pulse bg-gray-200 rounded-lg" />,
+  ssr: false
+});
+const Locale = dynamic(() => import('@/components/features/locale/LocaleSwitcher'), {
+  loading: () => <div className="w-10 h-10 animate-pulse bg-gray-200 rounded-lg" />,
+  ssr: false
+});
+const Notification = dynamic(() => import('@/components/features/notification/Button'), {
+  loading: () => <div className="w-10 h-10 animate-pulse bg-gray-200 rounded-lg" />,
+  ssr: false
+});
+const Profile = dynamic(() => import('@/components/features/profile/Button'), {
+  loading: () => <div className="w-10 h-10 animate-pulse bg-gray-200 rounded-lg" />,
+  ssr: false
+});
+
 export const Header = () => {
-  const Theme = dynamic(() => import('@/components/features/theme/ThemeSwitcher'));
-  const Locale = dynamic(() => import('@/components/features/locale/LocaleSwitcher'));
-  const Notification = dynamic(() => import('@/components/features/notification/Button'));
-  const Profile = dynamic(() => import('@/components/features/profile/Button'));
   return (
     <header className="fixed top-0 left-0 right-0 bg-header backdrop-blur-xl border-b border-[var(--border-color)]  z-50 shadow-sm">
       <div className="mx-auto px-1 sm:px-4">

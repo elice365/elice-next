@@ -90,11 +90,25 @@ export interface UseAdminTableOptions<T> {
   statsEndpoint?: string;
 }
 
+export interface PaginationState {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface AdminStats {
+  totalCount: number;
+  activeCount: number;
+  inactiveCount: number;
+  recentCount: number;
+}
+
 export interface UseAdminTableReturn<T> {
   items: T[];
   loading: boolean;
-  pagination: any; // Should be PaginationState from admin types
-  stats: any;
+  pagination: PaginationState;
+  stats: AdminStats | null;
   search: string;
   filters: Record<string, string>;
   refetch: () => Promise<void>;
@@ -129,10 +143,10 @@ export interface UseApiCallOptions {
   autoFetch?: boolean;
 }
 
-export interface ApiCallState<T = any> {
+export interface ApiCallState<T = unknown> {
   data: T | null;
   loading: boolean;
   error: Error | null;
-  execute: (body?: any) => Promise<T | null>;
+  execute: (body?: unknown) => Promise<T | null>;
   reset: () => void;
 }

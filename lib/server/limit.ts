@@ -1,53 +1,71 @@
-import { NextRequest } from "next/server";
-import { requestIP } from "@/lib/server/info";
-import { RateLimitEntry, RateLimitResult } from "@/types/api";
+import { NextRequest } from 'next/server';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 
-const requestStore = new Map<string, RateLimitEntry>();
+import { requestIP } from '@/lib/server/info';
 
-setInterval(() => {
-    const now = Date.now();
-    for (const [key, entry] of requestStore) {
-        if (now >= entry.resetTime) {
-            requestStore.delete(key);
-        }
-    }
-},  5 * 60 * 1000);
+import type { RateLimitResult } from '@/types/api';
 
+// Initialize Redis client with fallback for development
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN 
+  ? Redis.fromEnv() 
+  : null;
+
+// Create rate limiter with fallback for development
+const limiter = redis ? new Ratelimit({
+  redis,
+  limiter: Ratelimit.fixedWindow(100, '60 s'),
+  analytics: true,
+}) : null;
+
+/**
+ * Improved rate limiting using Upstash Redis for distributed environments
+ * Replaces memory-based Map with distributed Redis-backed solution
+ */
 export async function limitAPI(
-    request: NextRequest,
-    url: string,
-    limit: number = 10,
-    defaultTime: number = 60 * 1000
+  request: NextRequest,
+  url: string,
+  limit: number = 100,
+  windowMs: number = 60 * 1000
 ): Promise<RateLimitResult> {
-    const clientIP = await requestIP(request);
-    const key = `${clientIP}:${url}`;
-    const now = Date.now();
-
-    let entry = requestStore.get(key);
-
-    if (!entry || now >= entry.resetTime) {
-        entry = {
-            count: 1,
-            resetTime: now + defaultTime
-        };
-        requestStore.set(key, entry);
-
-        return {
-            access: true,
-            limit,
-            remaining: limit - 1,
-            resetTime: entry.resetTime
-        };
-    }
-
-    // 요청 수 증가
-    entry.count++;
-    const remaining = Math.max(0, limit - entry.count);
-
+  // If Redis is not configured, skip rate limiting in development
+  if (!redis || !limiter) {
     return {
-        access: entry.count <= limit,
-        limit,
-        remaining,
-        resetTime: entry.resetTime
+      access: true,
+      limit,
+      remaining: limit - 1,
+      resetTime: Date.now() + windowMs,
     };
+  }
+
+  try {
+    const clientIP = await requestIP(request);
+    const key = `ratelimit:${clientIP}:${url}`;
+    
+    // Use Upstash rate limiter with custom limit if needed
+    const customLimiter = limit !== 100 ? 
+      new Ratelimit({
+        redis,
+        limiter: Ratelimit.fixedWindow(limit, `${Math.floor(windowMs / 1000)} s`),
+        analytics: true,
+      }) : limiter;
+
+    const { success, limit: rateLimitCount, reset, remaining } = await customLimiter?.limit(key) || { success: true, limit, reset: Date.now() + windowMs, remaining: limit - 1 };
+    
+    return {
+      access: success,
+      limit: rateLimitCount,
+      remaining,
+      resetTime: reset,
+    };
+  } catch (error) {
+    // Fallback to allowing request if Redis is unavailable
+    console.error('Rate limiting failed, allowing request:', error);
+    return {
+      access: true,
+      limit,
+      remaining: limit - 1,
+      resetTime: Date.now() + windowMs,
+    };
+  }
 }

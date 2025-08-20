@@ -2,6 +2,9 @@
   "locales": {
     "lang": "ja"
   },
+  "flo": {
+    "subtitle": "すべての音楽が流れる場所"
+  },
   "common": {
     "all": "すべて",
     "search": "検索",
@@ -52,6 +55,7 @@
     "product": "製品",
     "login": "ログインページ",
     "register": "新規登録ページ",
+    "dashboard": "管理者ダッシュボード",
     "user": "ユーザー管理",
     "role": "ユーザー権限",
     "category":"カテゴリ",

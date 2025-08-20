@@ -3,20 +3,7 @@
 import React, { useState } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { motion, AnimatePresence } from 'framer-motion';
-
-interface ActionItem {
-  label: string;
-  icon: string;
-  onClick: () => void;
-  variant?: 'default' | 'primary' | 'danger' | 'success';
-}
-
-interface FloatingActionButtonProps {
-  actions: ActionItem[];
-  mainIcon?: string;
-  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
-  hideOnDesktop?: boolean;
-}
+import type { FloatingActionButtonProps, MobileActionBarProps } from '@/types/ui/components';
 
 /**
  * FloatingActionButton - 모바일 환경을 위한 플로팅 액션 버튼
@@ -162,10 +149,7 @@ export function FloatingActionButton({
 export function MobileActionBar({
   actions,
   visible = true
-}: {
-  actions: ActionItem[];
-  visible?: boolean;
-}) {
+}: Readonly<MobileActionBarProps>) {
   if (!visible) return null;
 
   return (

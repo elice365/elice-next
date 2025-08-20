@@ -5,21 +5,23 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SearchModal } from "@/components/ui/modal/common/Search";
 import { NavigationProgress } from "@/components/features/navigation/NavigationProgress";
+import ConditionalMusicPlayer from "@/components/ui/ConditionalMusicPlayer";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Auth } from "./Auth";
 import { UserInfo } from "@/lib/server/auth";
 import type { AppProps } from '@/types/common/provider';
+import { logger } from "@/utils/logger";
 
 
-export async function App({ children, type }: AppProps) {
+export async function App({ children, type }: Readonly<AppProps>) {
   let AuthData = null;
 
   try {
     AuthData = await UserInfo();
   } catch (error) {
-    // 세션 만료나 네트워크 오류 시 AuthData는 null로 유지
-    // 로그는 UserInfo 함수 내부에서 처리됨
+
+   logger.error("Failed to fetch user info", "AUTH", { error }); // Ensure you have a logger set up
   }
 
   return (
@@ -28,7 +30,7 @@ export async function App({ children, type }: AppProps) {
       <SpeedInsights />
       <Auth AuthData={AuthData}>
         <NavigationProgress />
-        <div className="bg-background flex flex-col">
+        <div className="bg-background flex flex-col min-h-screen">
           <div className="h-[64px]">
             <Header />
           </div>
@@ -36,13 +38,14 @@ export async function App({ children, type }: AppProps) {
             <div className="max-w-[250px]">
               <Panel type={type} />
             </div>
-            <main className="flex-1 flex items-center justify-center min-h-[90vh]">
+            <main className="flex-1">
               {children}
             </main>
           </div>
           {type === "user" && <Footer />}
         </div>
         <SearchModal />
+        <ConditionalMusicPlayer />
       </Auth>
     </Redux>
   );

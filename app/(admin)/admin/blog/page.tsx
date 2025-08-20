@@ -170,7 +170,7 @@ export default function AdminBlogPage() {
       icon: 'CheckCircle',
       options: [
         { value: '', label: '모든 상태' },
-        { value: 'published', label: '✅ 게시됨' },
+        { value: 'published', label: '게시됨' },
         { value: 'draft', label: '📝 임시저장' }
       ]
     },

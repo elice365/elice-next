@@ -1,4 +1,5 @@
 // UI Component Type Definitions
+import type { FloContentType, FloUnifiedItem } from '../flo';
 
 // Common UI component props
 
@@ -23,4 +24,30 @@ export interface WindowLinkProps {
   size?: "small" | "medium" | "large" | { width: number; height: number };
   children: React.ReactNode;
   className?: string;
+}
+
+// Floating Action Button Types
+export interface ActionItem {
+  label: string;
+  icon: string;
+  onClick: () => void;
+  variant?: 'default' | 'primary' | 'danger' | 'success';
+}
+
+export interface FloatingActionButtonProps {
+  actions: ActionItem[];
+  mainIcon?: string;
+  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+  hideOnDesktop?: boolean;
+}
+
+export interface MobileActionBarProps {
+  actions: ActionItem[];
+  visible?: boolean;
+}
+
+// FLO 페이지 props
+export interface FloProps {
+  initialData?: FloUnifiedItem[];
+  initialType?: FloContentType;
 }

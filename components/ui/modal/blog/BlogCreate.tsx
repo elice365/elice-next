@@ -600,7 +600,7 @@ export function BlogCreateModal({ isOpen, onClose, onSuccess }: BlogCreateModalP
                 onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
                 className="w-4 h-4 text-blue-600"
               />
-              <span className="text-[var(--text-color)]">✅ 게시</span>
+              <span className="text-[var(--text-color)]">게시</span>
             </label>
           </div>
         </fieldset>

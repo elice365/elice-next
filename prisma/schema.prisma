@@ -202,6 +202,9 @@ model Post {
   view          PostView[] @relation("PostViewRelation")
   translations  PostTranslation[]
 
+  @@index([status, publishedAt]) // Optimize for listing queries
+  @@index([categoryId, status]) // Optimize for category filtering
+  @@index([createdTime]) // Optimize for ordering
   @@map("posts")
 }
 
@@ -275,4 +278,18 @@ model PostView {
   @@index([postId, userId])
   @@index([postId, ip, userAgent])
   @@map("post_views")
+}
+
+model FloSession {
+  id           String    @id @default(uuid()) @map("uid")
+  appVersion   String    @map("app_version")
+  latestVersion String   @map("latest_version")
+  accessToken  String    @map("access_token")
+  refreshToken String?   @map("refresh_token")
+  expiresAt    DateTime  @map("expires_at")
+  savedAt      DateTime  @default(now()) @map("saved_at")
+  updatedTime  DateTime  @updatedAt @map("updated_time")
+
+  @@index([updatedTime])
+  @@map("flo_sessions")
 }

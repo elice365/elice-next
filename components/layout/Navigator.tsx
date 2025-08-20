@@ -100,6 +100,7 @@ export default memo(function Navigator({ router }: PanelProps) {
                                                     pathname: item.path
                                                 }}
                                                 className="px-5 py-3 border-b  border-[var(--border-color)]   flex items-center  hover:bg-[var(--hover)] cursor-pointer overflow-hidden"
+                                                onClick={() => mobile && setPanel(false)}
                                             >
                                                 <motion.div
                                                     initial={{ opacity: 0, x: mobile ? 0 : -20 }}

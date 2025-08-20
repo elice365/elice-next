@@ -399,7 +399,7 @@ Ensure your generated documentation includes:
 
 ---
 
-## 🔄 Continuous Documentation
+## Continuous Documentation
 
 ### Update Triggers
 Update documentation when:
